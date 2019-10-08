@@ -1,0 +1,307 @@
+\documentclass[]{article}
+
+\usepackage{amsmath}
+\usepackage{indentfirst}
+\usepackage{listings}
+\usepackage{tabularx}
+\usepackage[brazil]{babel}
+\usepackage[utf8]{inputenc}
+
+%opening
+\title{Algoritmo genético - Pseudocódigo}
+\author{Fabricio Kassardjia - nusp:2234961}
+
+% Define Colors
+\usepackage{color}
+\definecolor{eclipseBlue}{RGB}{42,0.0,255}
+\definecolor{eclipseGreen}{RGB}{63,127,95}
+\definecolor{eclipsePurple}{RGB}{127,0,85}
+
+%define linguagem visualG
+\lstdefinelanguage{visualG}
+{
+	% list of keywords
+	morekeywords={
+		algoritmo, fimalgoritmo,
+		var, inteiro, real, caractere, logico,
+		inicio,	se,	entao, senao, fimse,
+		para, de, ate, passo, faca, fimpara,
+		enquanto, fimenquanto,
+		repita,	ate, interrompa,
+		escreval, escreva, leia,
+		escolha, caso, outrocaso, fimescolha,
+		procedimento, fimprocedimento,
+		funcao, retorne, fimfuncao,
+		limpatela,
+		abs, arccos, arcsen, arctan, cos, cotan, exp, int, log, logn, pi, quad, raizq, rand, randi, sen, tan,
+		<-, =, +, *, -, /, MOD, \%, \^, \\, <, <=, =, >=, >,
+		nao, ou, e, xou 
+	},
+	sensitive=false, % keywords are not case-sensitive
+	morecomment=[l]{//}, % l is for line comment
+	morecomment=[s]{/*}{*/}, % s is for start and end delimiter
+	morestring=[b]" % defines that strings are enclosed in double quotes
+}
+
+% Set Language
+\lstset{
+	language={visualG},
+	basicstyle=\scriptsize\ttfamily, % Global Code Style
+	captionpos=b, % Position of the Caption (t for top, b for bottom)
+	extendedchars=true, % Allows 256 instead of 128 ASCII characters
+	tabsize=2, % number of spaces indented when discovering a tab 
+	columns=fixed, % make all characters equal width
+	keepspaces=true, % does not ignore spaces to fit width, convert tabs to spaces
+	showstringspaces=false, % lets spaces in strings appear as real spaces
+	breaklines=true, % wrap lines if they don't fit
+	frame=trbl, % draw a frame at the top, right, left and bottom of the listing
+	%frameround=tttt, % make the frame round at all four corners
+	framesep=4pt, % quarter circle size of the round corners
+	numbers=left, % show line numbers at the left
+	numberstyle=\tiny\ttfamily, % style of the line numbers
+	commentstyle=\color{eclipseGreen}, % style of comments
+	keywordstyle=\color{eclipsePurple}, % style of keywords
+	stringstyle=\color{eclipseBlue}, % style of strings
+}
+
+\begin{document}
+\selectlanguage{brazil}
+
+\maketitle
+
+\section{Introdução}
+Pseudocódigo representando o algoritmo genético simples de forma a apresentar uma solução para modelo de Ising em uma matriz $10 \times 10$, com cada nó (spin) representado pelos possíveis valores $-1$ e $1$. 
+
+Sendo $\Lambda = \left[-5,5\right]^2$ as posições da matriz, e $\sigma_t \in \{-1,1\}$ representando os valores de cada spin em determinada posição da matriz, e seja $(\sigma_t)_{t \in \Lambda} = \sigma$ um conjunto de valores da matriz. 
+
+A função de avaliação que deve ser minimizada é dada por $H(\sigma) = -\sum_{<t,t'>}\sigma_t \sigma_{t'}$ onde $t$ e $t'$ representam dois spins vizinhos.   
+
+\section{Pseudocódigo}
+O código irá representar cada cromossomo da população como um vetor de valores inteiros de tamanho $100$, representando assim a matriz $10 \times 10$, alinhando uma linha da matriz na sequencia da outra no vetor. Assim o nosso genótipo é uma cadeia de inteiros, onde o fenótipo será a matriz correspondente quebrando o vetor em linhas de tamanho $10$.
+
+Exemplo da relação genótipo x fenótipo para uma matriz $3 \times 3$:
+\begin{align*}
+\text{cromossomo} &= \left[-1, 1, 1, 1, -1, 1, 1, 1, -1 \right]\\
+\text{fenótipo} &= \begin{bmatrix}
+					-1 & 1 & 1 \\
+					1 & -1 & 1 \\
+					1 & 1 & -1
+					\end{bmatrix}
+\end{align*}
+
+Na listagem em pseudocódigo a seguir temos um SGA (\textit{Simple Genetic Algorithm}), usando \textit{crossover} em ponto único e mutação simples com seleção por roleta viciada.
+
+A função \textit{RAND()} gera um número real aleatório com distribuição $\sim U[0,1)$ e a função \textit{RANDI(}limite\textit{)} gera um número inteiro aleatório com distribuição $\sim U[0,\text{limite}]$.
+
+\clearpage
+
+\begin{lstlisting}[language=visualG]
+algoritmo "Genetic Algorithm"
+var
+	tamPopulacao, tamCromossomo, qtdGeracoes, geracao: inteiro
+	linhas, colunas: inteiro
+	// cada linha da matriz representa um individuo
+	populacao: vetor[1..30,1..100] de inteiro	
+	// vetor contendo nova populacao	
+	novaPopulacao: vetor[1..30, 1..100] de inteiro 	
+	avaliacao: vetor[1..30] de inteiro
+	cromossomo, gene: inteiro
+	probMutacao, probCross: real
+	somaAvaliacao: inteiro
+	melhor: vetor[1..100] de inteiro
+	melhorAvaliacao: inteiro
+	cromo1, cromo2: inteiro
+	i, j: inteiro
+
+// funcoes auxiliares
+// seleciona um individuo baseado na avaliacao
+// roleta viciada
+funcao seleciona(): inteiro
+var
+	cromo, sorteio, soma: inteiro
+inicio:
+	// sorteia numero
+	sorteio <- RANDI(somaAvaliacao)
+	cromo <- 1
+	soma <- avaliacao[cromo]
+	enquanto soma < sorteio faca
+		cromo <- cromo + 1
+		soma <- soma + avaliacao[cromo]
+	fimenquanto
+	retorne cromo
+fimfuncao
+
+// calcula a avaliacao do cromossomo
+funcao calculaAvaliacao(cromo: inteiro): inteiro
+var
+	i, j, soma, maximoNeg: inteiro
+inicio
+	soma <- 0
+	para i de 1 ate linhas faca
+		para j de 1 ate colunas faca
+			// soma elo com proximo vizinho
+			se i < linhas - 1 entao
+				soma <- soma + populacao[cromo, colunas * i + j] * populacao[cromo, colunas * (i+1) + j]
+			fimse
+			// soma elo com vizinho de baixo
+			se j < colunas - 1 entao
+				soma <- soma + populacao[cromo, colunas * i + j] * populacao[cromo, colunas * i + j+1]
+			fimse
+		fimpara
+	fimpara
+	// calcula qual o valor maximo negativo
+	maximoNeg <- 2 * linhas * colunas - linhas - colunas
+	// dessa forma a avaliacao e sempre positiva para uso na selecao
+	soma <- soma + maximoNeg
+	retorne soma
+fimfuncao
+
+// executa o crossover de um ponto entre os pais (gera um filho)
+procedimento crossover(pai1: inteiro, pai2: inteiro, filho: inteiro)
+var
+	ponto, i: inteiro
+inicio:
+	ponto <- RANDI(tamCromossomo) + 1
+	
+	se RAND() > probCross
+		// se nao deve fazer cross coloca no fim
+		// assim so copia o cromossomo
+		ponto = limite
+	fimse
+	
+	se RAND() < 0.5 entao
+		// comeca pelo pai1
+		para i de 1 ate ponto faca
+			novaPopulacao[filho, i] <- populacao[pai1, i]
+		fimpara 
+		para i de ponto + 1 ate tamCromossomo faca
+			novaPopulacao[filho, i] <- populacao[pai2, i]
+		fimpara
+	senao
+		// comeca pelo pai2
+		para i de 1 ate ponto faca
+		novaPopulacao[filho, i] <- populacao[pai2, i]
+		fimpara 
+		para i de ponto + 1 ate tamCromossomo faca
+		novaPopulacao[filho, i] <- populacao[pai1, i]
+		fimpara
+	fimse
+fimprocedimento
+
+// faz mutacao no cromossomo com a prob definida
+procedimento mutacao(filho: inteiro)
+var
+	i: inteiro
+inicio
+	para i de 1 ate tamCromossomo faca
+		se RAND() < probMutacao entao
+			// se deve fazer a mutacao no gene sorteia um novo
+			se RAND() < 0.5 entao
+				novaPopulacao[filho, i] <- 1
+			senao
+				novaPopulacao[filho, i] <- -1
+			fimse
+		fimse
+	fimpara
+fimprocedimento
+
+// copia cromossomo da populacao para o melhor
+procedimento copiaMelhor(cromo: inteiro, cromoAval: inteiro)
+var
+	i: inteiro
+inicio:
+	para i de 1 ate tamCromossomo faca
+		melhor[i] <- populacao[cromo, i]
+	fimpara
+	melhorAvaliacao <- cromoAval
+fimprocedimento
+
+// inicio da rotina principal
+inicio	
+	tamPopulacao <- 30
+	tamCromossomo <- 100
+	linhas <- 10			// qtd de linhas na matriz
+	colunas <- 10			// qtd de colunas na matriz
+	qtdGeracoes <- 200		// qts geracoes serao testadas
+	
+	probCross <- 0.80
+	probMutacao <- 0.02
+	
+	somaAvaliacao <- 0
+	melhorAvaliacao <- 0
+	
+	//inicia a populacao
+	para cromossomo de 1 ate tamPopulacao faca
+		para gene de 1 ate tamCromossomo faca
+			// atribui valor randomico 1 ou -1
+			se RAND() < 0.5 entao
+				populacao[cromossomo, gene] <- 1
+			senao
+				populacao[cromossomo, gene] <- -1
+			fimse
+		fimpara
+		avaliacao[cromossomo] <- calculaAvaliacao(cromossomo)
+		somaAvaliacao <- somaAvaliacao + avaliacao[cromossomo]
+		se avaliacao[cromossomo] > melhorAvaliacao entao
+			copiaMelhor(cromossomo, avaliacao[cromossomo])
+		fimse
+	fimpara
+	
+	// roda as geracoes
+	para geracao de 1 ate qtdGeracoes faca
+		para cromossomo de 1 ate tamPopulacao faca
+			cromo1 <- seleciona()
+			cromo2 <- seleciona()
+			// crossover
+			crossover(cromo1, cromo2, cromossomo)
+			// mutacao
+			mutacao(cromossomo)
+		fimpara
+		
+		// copia a nova populacao
+		somaAvaliaca <- 0
+		para cromossomo de 1 ate tamPopulacao faca
+			// faz a copia de cada individuo
+			para gene de 1 ate tamCromossomo faca
+				populacao[cromossomo, gene] <- novaPopulacao[cromossomo, gene]
+			fimpara
+			avaliacao[cromossomo] <- calculaAvaliacao(cromossomo)
+			somaAvaliacao <- somaAvaliacao + avaliacao[cromossomo]
+			se avaliacao[cromossomo] > melhorAvaliacao entao
+				copiaMelhor(cromossomo, avaliacao[cromossomo])
+			fimse
+		fimpara
+		//repete processo por n geracoes
+	fimpara
+	
+	//imprime o melhor cromossomo
+	escreval ("Melhor cromossomo")
+	para i de 1 ate linhas
+		para j de 1 ate colunas
+			escreva ("| ", melhor[i * colunas + j], " |")
+		fimpara
+		// proxima linha
+		escreval ("")
+	fimpara
+	escreval ("Avaliacao: ", melhorAvaliacao)
+fimalgoritmo
+\end{lstlisting}
+
+%Exemplo de tabela com linha grande tabela \ref{tbl:teste}
+%\begin{table}[h]
+%	\begin{tabular}{|l|l|l|}
+%		Use Case Navn:          & \multicolumn{2}{l|} {Opret Server} \\
+%		Scenarie:               & \multicolumn{2}{p{10cm}|} {At oprette en server med bestemte regler som tillader folk at spille sammen. More Text more text More Text} \\
+%	\end{tabular}
+%\caption{Teste com linhas grandes}
+%\label{tbl:teste}
+%\end{table}
+%
+%\begin{table}[h]
+%	\begin{tabularx}{\textwidth}{|l|X|}
+%		Use Case Navn:          & Opret Server \\
+%		Scenarie:               & At oprette en server med bestemte regler som tillader folk at spille sammen. More Text more text More Text \\
+%	\end{tabularx}
+%\end{table}
+
+\end{document}

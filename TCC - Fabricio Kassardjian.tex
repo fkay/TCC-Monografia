@@ -93,6 +93,8 @@
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
+\usepackage{bbm}
+\usepackage{mathrsfs}
 %\usepackage{graphicx}
 %\usepackage{float}
 \usepackage{url}
@@ -101,7 +103,7 @@
 % ---
 % Informações de dados para CAPA e FOLHA DE ROSTO
 % ---
-\titulo{Algoritmos Genéticos\\ Trabalho Acadêmico com \abnTeX}
+\titulo{Algoritmo Genético\\Um algoritmo evolucionário de busca e otimização}
 \autor{Fabricio Kassardjian}
 \local{Brasil}
 \data{\today}
@@ -112,7 +114,7 @@
   Insituto de Matemática e Estatística
   \par
   Bacharelado em Matemática Aplicada e Computacional}
-\tipotrabalho{Tese (Doutorado)}
+\tipotrabalho{Monografia}
 % O preambulo deve conter o tipo do trabalho, o objetivo, 
 % o nome da instituição e a área de concentração 
 \preambulo{Monografia de final de curso, Instuto de Matemática e Estatística - USP, Matemática Aplicada}
@@ -254,13 +256,13 @@
 	\imprimirdata.}\\
 	
 	\hspace{0.5cm}
-		1. Palavra-chave1.
-		2. Palavra-chave2.
-		2. Palavra-chave3.
+		1. Algoritmos Evolutivos.
+		2. Algoritmo Genético.
+		3. Otimização.
 		I. Orientador.
 		II. Universidade de São Paulo - USP.
 		III. Instituto de Matemática e Estatística - IME.
-		IV. Algoritmos Genéticos			
+		IV. Titulo			
 	\end{minipage}}
 	\end{center}
 \end{fichacatalografica}
@@ -269,30 +271,30 @@
 % ---
 % Inserir errata
 % ---
-\begin{errata}
-Elemento opcional da \citeonline[4.2.1.2]{NBR14724:2011}. Exemplo:
-
-\vspace{\onelineskip}
-
-FERRIGNO, C. R. A. \textbf{Tratamento de neoplasias ósseas apendiculares com
-reimplantação de enxerto ósseo autólogo autoclavado associado ao plasma
-rico em plaquetas}: estudo crítico na cirurgia de preservação de membro em
-cães. 2011. 128 f. Tese (Livre-Docência) - Faculdade de Medicina Veterinária e
-Zootecnia, Universidade de São Paulo, São Paulo, 2011.
-
-\begin{table}[htb]
-\centering
-\footnotesize
-\begin{tabular}{|p{1.4cm}|p{1cm}|p{3cm}|p{3cm}|}
-  \hline
-   \textbf{Folha} & \textbf{Linha}  & \textbf{Onde se lê}  & \textbf{Leia-se}  \\
-    \hline
-    1 & 10 & auto-conclavo & autoconclavo\\
-   \hline
-\end{tabular}
-\end{table}
-
-\end{errata}
+%\begin{errata}
+%Elemento opcional da \citeonline[4.2.1.2]{NBR14724:2011}. Exemplo:
+%
+%\vspace{\onelineskip}
+%
+%FERRIGNO, C. R. A. \textbf{Tratamento de neoplasias ósseas apendiculares com
+%reimplantação de enxerto ósseo autólogo autoclavado associado ao plasma
+%rico em plaquetas}: estudo crítico na cirurgia de preservação de membro em
+%cães. 2011. 128 f. Tese (Livre-Docência) - Faculdade de Medicina Veterinária e
+%Zootecnia, Universidade de São Paulo, São Paulo, 2011.
+%
+%\begin{table}[htb]
+%\centering
+%\footnotesize
+%\begin{tabular}{|p{1.4cm}|p{1cm}|p{3cm}|p{3cm}|}
+%  \hline
+%   \textbf{Folha} & \textbf{Linha}  & \textbf{Onde se lê}  & \textbf{Leia-se}  \\
+%    \hline
+%    1 & 10 & auto-conclavo & autoconclavo\\
+%   \hline
+%\end{tabular}
+%\end{table}
+%
+%\end{errata}
 % ---
 
 % ---
@@ -403,23 +405,13 @@ Zootecnia, Universidade de São Paulo, São Paulo, 2011.
 % resumo em português
 \setlength{\absparsep}{18pt} % ajusta o espaçamento dos parágrafos do resumo
 \begin{resumo}
-	Um dos problemas mais comuns em matemática é a busca de soluções que maximizem ou
-minimizem certa função. Para tal temos diversas técnicas e algoritmos que podem ser classificadas
-em técnicas baseadas em cálculo, aleatórias ou métodos que verificam todo o espaço solução pela 
-melhor delas. Dentre as técnicas aleatórias temos aquelas puramente aleatória como o \textit{random walk}
-e aquelas consideradas aleatórias guiadas como por exemplo o \textit{simulated annealing} 
-ou resfriamento simulado. O algoritmos genéticos podem ser classificados também como
-métodos aleatórios guiados, onde o estado corrente influencia a próxima escolha para a solução. 
-O objetivo desse trabalho é verificar e avaliar os algoritmos genéticos, 
-explorando as técnicas e os mecanismos usados nesse método. Para tal será desenvolvido o 
-algoritmo em uma linguagem de programação usando o paradigma de orientação a objetos e aplicá-lo 
-em um problema de busca para a solução ótima. \textit{Colocar descrição do problema testado} 
-Com isso poderemos avaliar o funcionamento e perfomance do método e como os parâmetros podem influenciar
-a busca pelo resultado
+Um dos problemas mais comuns em matemática é a busca de soluções que maximizem ou minimizem certa função e temos a disposição diversas formas de resolver que podem ser classificadas em técnicas baseadas em cálculo, aleatórias ou métodos que verificam todo o espaço solução pela melhor delas. Dentre as técnicas aleatórias temos aquelas puramente aleatória como o \textit{random walk} e aquelas consideradas aleatórias guiadas como por exemplo o \textit{simulated annealing} ou resfriamento simulado. No âmbito de sistemas evolutivos, o algoritmo genético pode ser classificado também como
+um método aleatório guiado, onde o estado corrente influencia a próxima escolha para a solução. 
 
-\textit{Talvez acrescentar}
-Se for possível acrescentar que será comparado com outro método como o resfriamento simulado
-	
+O objetivo desse trabalho é verificar e avaliar o algoritmo genético, explorando as técnicas e os mecanismos usados nesse método. Para tal será desenvolvido o algoritmo em uma linguagem de programação usando o paradigma de orientação a objetos e aplicá-lo em um problema de busca pela solução ótima, sendo que buscaremos a melhor solução para um modelo de Ising.
+Com isso poderemos avaliar o funcionamento e perfomance do método e como os parâmetros utilizados podem influenciar o resultado
+
+\textit{Talvez acrescentar que será comparado com outro método como o resfriamento simulado}
 	
 % Segundo a \citeonline[3.1-3.2]{NBR6028:2003}, o resumo deve ressaltar o
 % objetivo, o método, os resultados e as conclusões do documento. A ordem e a extensão
@@ -430,7 +422,7 @@ Se for possível acrescentar que será comparado com outro método como o resfri
 % resumo, antecedidas da expressão Palavras-chave:, separadas entre si por
 % ponto e finalizadas também por ponto.
 
- \textbf{Palavras-chave}: Algoritmos Genéticos. Otimização. Programação Orientada a Objetos.
+ \textbf{Palavras-chave}: Algoritmos Evolutivos. Algoritmo Genético. Otimização. Programação Orientada a Objetos.
 \end{resumo}
 
 % resumo em inglês
@@ -441,28 +433,10 @@ Se for possível acrescentar que será comparado com outro método como o resfri
    \vspace{\onelineskip}
  
    \noindent 
-   \textbf{Keywords}: latex. abntex. text editoration.
+   \textbf{Keywords}: Evolutionary Algorithms. Genetic Algorithm. Optimization. Object Oriented Programming.
  \end{otherlanguage*}
 \end{resumo}
 
-% resumo em francês 
-%\begin{resumo}[Résumé]
-% \begin{otherlanguage*}{french}
-%    Il s'agit d'un résumé en français.
-% 
-%   \textbf{Mots-clés}: latex. abntex. publication de textes.
-% \end{otherlanguage*}
-%\end{resumo}
-
-% resumo em espanhol
-%\begin{resumo}[Resumen]
-% \begin{otherlanguage*}{spanish}
-%   Este es el resumen en español.
-%  
-%   \textbf{Palabras clave}: latex. abntex. publicación de textos.
-% \end{otherlanguage*}
-%\end{resumo}
-% ---
 
 % ---
 % inserir lista de ilustrações
@@ -492,8 +466,8 @@ Se for possível acrescentar que será comparado com outro método como o resfri
 % inserir lista de abreviaturas e siglas
 % ---
 \begin{siglas}
-  \item[ABNT] Associação Brasileira de Normas Técnicas
-  \item[abnTeX] ABsurdas Normas para TeX
+	\item[SGA] Simple Genetic Algorithm
+	\item[GA] Genetic Algorithm
 \end{siglas}
 % ---
 
@@ -526,58 +500,36 @@ Se for possível acrescentar que será comparado com outro método como o resfri
 % ----------------------------------------------------------
 % Introdução (exemplo de capítulo sem numeração, mas presente no Sumário)
 % ----------------------------------------------------------
-\chapter{Introdução}
+\include{introducao}
 % ----------------------------------------------------------
-
-Este documento e seu código-fonte são exemplos de referência de uso da classe
-\textsf{abntex2} e do pacote \textsf{abntex2cite}. O documento 
-exemplifica a elaboração de trabalho acadêmico (tese, dissertação e outros do
-gênero) produzido conforme a ABNT NBR 14724:2011 \emph{Informação e documentação
-- Trabalhos acadêmicos - Apresentação}.
-
-A expressão ``Modelo Canônico'' é utilizada para indicar que \abnTeX\ não é
-modelo específico de nenhuma universidade ou instituição, mas que implementa tão
-somente os requisitos das normas da ABNT. Uma lista completa das normas
-observadas pelo \abnTeX\ é apresentada em \citeonline{abntex2classe}.
-
-Sinta-se convidado a participar do projeto \abnTeX! Acesse o site do projeto em
-\url{http://www.abntex.net.br/}. Também fique livre para conhecer,
-estudar, alterar e redistribuir o trabalho do \abnTeX, desde que os arquivos
-modificados tenham seus nomes alterados e que os créditos sejam dados aos
-autores originais, nos termos da ``The \LaTeX\ Project Public
-License''\footnote{\url{http://www.latex-project.org/lppl.txt}}.
-
-Encorajamos que sejam realizadas customizações específicas deste exemplo para
-universidades e outras instituições --- como capas, folha de aprovação, etc.
-Porém, recomendamos que ao invés de se alterar diretamente os arquivos do
-\abnTeX, distribua-se arquivos com as respectivas customizações.
-Isso permite que futuras versões do \abnTeX~não se tornem automaticamente
-incompatíveis com as customizações promovidas. Consulte
-\citeonline{abntex2-wiki-como-customizar} para mais informações.
-
-Este documento deve ser utilizado como complemento dos manuais do \abnTeX\ 
-\cite{abntex2classe,abntex2cite,abntex2cite-alf} e da classe \textsf{memoir}
-\cite{memoir}. 
-
-Esperamos, sinceramente, que o \abnTeX\ aprimore a qualidade do trabalho que
-você produzirá, de modo que o principal esforço seja concentrado no principal:
-na contribuição científica.
-
-Equipe \abnTeX 
-
-Lauro César Araujo
 
 % ----------------------------------------------------------
 % PARTE
 % ----------------------------------------------------------
-\part{Preparação da pesquisa}
+%\part{Preparação da pesquisa}
 % ----------------------------------------------------------
 
 % ---
 % Capitulo com exemplos de comandos inseridos de arquivo externo 
 % ---
-\include{abntex2-modelo-include-comandos}
+%\include{abntex2-modelo-include-comandos}
 % ---
+
+% ---
+% Capitulo explicando teoria sobre o algoritmo genético
+% ---
+\include{GA}
+
+% ---
+% Capitulo explicando modelo de Ising
+% ---
+%\include{isingModel}
+
+% ---
+% Capitulo explicando implementacao
+% ---
+%\include{implementacaoGA}
+
 
 \chapter{Conteúdos específicos do modelo de trabalho acadêmico}\label{cap_trabalho_academico}
 
@@ -604,25 +556,25 @@ obrigatório da ABNT.
 Primeira opção, utilizando \texttt{autoref}: Ver o \autoref{quadro_exemplo}. 
 Segunda opção, utilizando  \texttt{ref}: Ver o Quadro \ref{quadro_exemplo}.
 
-% ----------------------------------------------------------
-% PARTE
-% ----------------------------------------------------------
-\part{Referenciais teóricos}
-% ----------------------------------------------------------
-
-% ---
-% Capitulo de revisão de literatura
-% ---
-\chapter{Lorem ipsum dolor sit amet}
-% ---
-
-% ---
-\section{Aliquam vestibulum fringilla lorem}
-% ---
-
-\lipsum[1]
-
-\lipsum[2-3]
+%% ----------------------------------------------------------
+%% PARTE
+%% ----------------------------------------------------------
+%\part{Referenciais teóricos}
+%% ----------------------------------------------------------
+%
+%% ---
+%% Capitulo de revisão de literatura
+%% ---
+%\chapter{Lorem ipsum dolor sit amet}
+%% ---
+%
+%% ---
+%\section{Aliquam vestibulum fringilla lorem}
+%% ---
+%
+%\lipsum[1]
+%
+%\lipsum[2-3]
 
 % ----------------------------------------------------------
 % PARTE
@@ -630,31 +582,31 @@ Segunda opção, utilizando  \texttt{ref}: Ver o Quadro \ref{quadro_exemplo}.
 \part{Resultados}
 % ----------------------------------------------------------
 
-% ---
-% primeiro capitulo de Resultados
-% ---
-\chapter{Lectus lobortis condimentum}
-% ---
-
-% ---
-\section{Vestibulum ante ipsum primis in faucibus orci luctus et ultrices
-posuere cubilia Curae}
-% ---
-
-\lipsum[21-22]
-
-% ---
-% segundo capitulo de Resultados
-% ---
-\chapter{Nam sed tellus sit amet lectus urna ullamcorper tristique interdum
-elementum}
-% ---
-
-% ---
-\section{Pellentesque sit amet pede ac sem eleifend consectetuer}
-% ---
-
-\lipsum[24]
+%% ---
+%% primeiro capitulo de Resultados
+%% ---
+%\chapter{Lectus lobortis condimentum}
+%% ---
+%
+%% ---
+%\section{Vestibulum ante ipsum primis in faucibus orci luctus et ultrices
+%posuere cubilia Curae}
+%% ---
+%
+%\lipsum[21-22]
+%
+%% ---
+%% segundo capitulo de Resultados
+%% ---
+%\chapter{Nam sed tellus sit amet lectus urna ullamcorper tristique interdum
+%elementum}
+%% ---
+%
+%% ---
+%\section{Pellentesque sit amet pede ac sem eleifend consectetuer}
+%% ---
+%
+%\lipsum[24]
 
 % ----------------------------------------------------------
 % Finaliza a parte no bookmark do PDF
@@ -668,8 +620,7 @@ elementum}
 % ---
 \chapter{Conclusão}
 % ---
-
-\lipsum[31-33]
+%\lipsum[31-33]
 
 % ----------------------------------------------------------
 % ELEMENTOS PÓS-TEXTUAIS
@@ -680,7 +631,8 @@ elementum}
 % ----------------------------------------------------------
 % Referências bibliográficas
 % ----------------------------------------------------------
-\bibliography{abntex2-modelo-references}
+%\bibliography{abntex2-modelo-references}
+\bibliography{TC}
 
 % ----------------------------------------------------------
 % Glossário
@@ -702,17 +654,17 @@ elementum}
 % Imprime uma página indicando o início dos apêndices
 \partapendices
 
-% ----------------------------------------------------------
-\chapter{Quisque libero justo}
-% ----------------------------------------------------------
-
-\lipsum[50]
-
-% ----------------------------------------------------------
-\chapter{Nullam elementum urna vel imperdiet sodales elit ipsum pharetra ligula
-ac pretium ante justo a nulla curabitur tristique arcu eu metus}
-% ----------------------------------------------------------
-\lipsum[55-57]
+%% ----------------------------------------------------------
+%\chapter{Quisque libero justo}
+%% ----------------------------------------------------------
+%
+%\lipsum[50]
+%
+%% ----------------------------------------------------------
+%\chapter{Nullam elementum urna vel imperdiet sodales elit ipsum pharetra ligula
+%ac pretium ante justo a nulla curabitur tristique arcu eu metus}
+%% ----------------------------------------------------------
+%\lipsum[55-57]
 
 \end{apendicesenv}
 % ---
@@ -730,23 +682,23 @@ ac pretium ante justo a nulla curabitur tristique arcu eu metus}
 % Imprime uma página indicando o início dos anexos
 \partanexos
 
-% ---
-\chapter{Morbi ultrices rutrum lorem.}
-% ---
-\lipsum[30]
-
-% ---
-\chapter{Cras non urna sed feugiat cum sociis natoque penatibus et magnis dis
-parturient montes nascetur ridiculus mus}
-% ---
-
-\lipsum[31]
-
-% ---
-\chapter{Fusce facilisis lacinia dui}
-% ---
-
-\lipsum[32]
+%% ---
+%\chapter{Morbi ultrices rutrum lorem.}
+%% ---
+%\lipsum[30]
+%
+%% ---
+%\chapter{Cras non urna sed feugiat cum sociis natoque penatibus et magnis dis
+%parturient montes nascetur ridiculus mus}
+%% ---
+%
+%\lipsum[31]
+%
+%% ---
+%\chapter{Fusce facilisis lacinia dui}
+%% ---
+%
+%\lipsum[32]
 
 \end{anexosenv}
 
