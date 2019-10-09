@@ -61,13 +61,17 @@ Na reprodução sexuada de seres diplóides, há presença de dois indivíduos q
 
 Dentro da etapa de replicação do DNA podem ocorrer erros ou alterações influenciadas por fatores externos, gerando assim as mutações. Isso pode ser positivo, negativo ou não influenciar o resultado final, mas é um outro mecanismo que pode determinar a evolução das espécies.   
 
+Mendel ainda definiu o conceito de dominância-recessividade em organismos diplóides, assumindo que cada característica é controlada por pares de genes, sendo recebidos um de cada pai. Assim um dos alelos do gene é dominante sobre o outro apresentando a característica final no individuo, e outro alelo será considerado recessivo.
+
 Combinando indivíduos que melhor se adaptaram as condições de sobrevivência, provavelmente deve gerar novos indivíduos que tenha características ainda melhores que seus antecessores. O outro caso pode acontecer também e o novo indivíduo ter piores condições de viver, e assim o processo de seleção natural levará esse espécime a extinção favorecendo outros que se sobressaíram na próxima geração.
 
 A evolução então é um processo adaptativo onde através de mutações e recombinação entre os indivíduos, vão surgindo novas gerações que devem apresentar cada vez mais seres que se adaptam cada vez melhor ao ambiente.
 
 \section{Algoritmo genético}
 
-Alguns autores como \citeauthor{Mitchell1996}, \citeauthor{LeeJacobson2015}, \citeauthor{Kwong2001} entre outros citam eu o criador, ou quem primeiro especificou o algoritmo genético(\textit{Genethic Algorithm} ou GA) foi Holland em 1975 no livro \textit{"Adaptation in Natural and Artificial Systems"}. Nele Holland formaliza uma estrutura para sistemas adaptativos, e encaixa o GA como uma abstração para a evolução biológica.
+Os algoritmos evolucionários vem sendo estudados a um longo tempo, desde da década de 40 que os cientistas se inspiram na natureza para criar os primeiros passos para a inteligência artificial, passando pela década de 50 onde começam os estudos sobre sistemas adaptativos para gerar soluções candidatas para problemas de difícil solução. Na década de 60 Rechenberg desenvolveu as estratégias evolucionárias (\textit{evolutionary strategies}) usando cromossomos compostos de números reais para estudos com aerofólios. Também apareceu a programação evolucionária, usando estruturas de pequenas máquinas de estados para resolver determinadas tarefas, que evolui para programação genética onde pequenos programas passam a ser as soluções candidatas. Existiram outros trabalhos sobre algoritmos evolucionários, programação evolucionária e algoritmos genéticos nas áreas de otimização e aprendizado de máquina, porém foram os trabalhos de Holland nas décadas de 60 e 70 que consolidou os algoritmos genéticos. \cite{Mitchell1996, Linden2008}
+
+Alguns autores como \citeauthor{Mitchell1996}, \citeauthor{LeeJacobson2015}, \citeauthor{Kwong2001} entre outros citam Holland como criador do algoritmo genético(\textit{Genethic Algorithm} ou GA) em 1975 no livro \textit{"Adaptation in Natural and Artificial Systems"}. Nele Holland formaliza uma estrutura para sistemas adaptativos, e encaixa o GA como uma abstração para a evolução biológica.
 
 Na estrutura criada por Holland para um problema bem posto de adaptação temos:
 \begin{itemize}
@@ -80,7 +84,12 @@ Assim:
 \[\tau(\mathcal{I}(t), \mathscr{A}(t)) = \omega_t \in \Omega \text{ e } \omega(t)(\mathscr{A}(t)) = \mathcal{P}(t + 1)\]
 onde \(\mathcal{P}(t + 1) \) é uma distribuição particular sobre \( \mathscr{A} \). \( \mathscr{A}(t+1) \) é determinado retirando uma amostra aleatória de \( \mathscr{A} \) de acordo com essa distribuição. \cite{Holland1992}
 
-Ainda define os seguintes itens, \( \mathcal{T} \) como o conjunto de planos possíveis (\(\tau\)), \(\mathcal{E}\) como sendo o conjunto de ambientes possíveis e \(\mu_E(\mathscr{A}(t))\) como a função de avaliação com \( E \in \mathcal{E} \). 
+Ainda define os seguintes itens, \( \mathcal{T} \) como o conjunto de planos possíveis (\(\tau\)), \(\mathcal{E}\) como sendo o conjunto de ambientes possíveis e dado \( E \in \mathcal{E} \) a função de avaliação \(\mu_E(\mathscr{A}(t))\). Por fim define o \(\mathcal{X})\) como critério de comparação entre os planos em \( \mathcal{T} \) sobre \(\mathcal{E}\).
 
-Usando essa estrutura com a definição do algoritmo genético dado por Holland ....
+Usando essa estrutura com a define o algoritmo genético na forma:
+\begin{itemize}
+	\item \( \mathscr{A} \), como população de cromossomos
+	\item \( \Omega \), operadores genéticos de inversão, mutação, crossover, dominância, etc.
+	\item \( \mathcal{T} \), planos de reprodução baseados na avaliação em conjunto com os operadores genéticos.
+\end{itemize}
 
