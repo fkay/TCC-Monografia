@@ -73,23 +73,4 @@ Os algoritmos evolucionários vem sendo estudados a um longo tempo, desde da dé
 
 Alguns autores como \citeauthor{Mitchell1996}, \citeauthor{LeeJacobson2015}, \citeauthor{Kwong2001} entre outros citam Holland como criador do algoritmo genético(\textit{Genethic Algorithm} ou GA) em 1975 no livro \textit{"Adaptation in Natural and Artificial Systems"}. Nele Holland formaliza uma estrutura para sistemas adaptativos, e encaixa o GA como uma abstração para a evolução biológica.
 
-Na estrutura criada por Holland para um problema bem posto de adaptação temos:
-\begin{itemize}
-	\item \( \mathscr{A} = \{ \mathcal{A}_1, \mathcal{A}_2, \ldots \} \) é um conjunto de estruturas do domínio.
-	\item \( \Omega = \{ \omega_1, \omega_2, \ldots \} \) é um conjunto de operadores para modificar as estruturas de \( \mathscr{A} \).  Sendo \( \omega \in \Omega \) uma função \(\omega : \mathscr{A} \to \mathcal{P} \) onde \(\mathcal{P}\) é uma distribuição de probabilidades sobre \(\mathscr{A}\)
-	\item \( \mathcal{I}\) é o conjunto de entradas do ambiente
-	\item \( \tau : \mathcal{I} \times \mathscr{A} \to \Omega\) é o plano adaptativo baseado nas entradas e nas estruturas no intervalo de tempo \(t\) e determina os operadores a serem aplicados nesse intervalo.
-\end{itemize}
-Assim: 
-\[\tau(\mathcal{I}(t), \mathscr{A}(t)) = \omega_t \in \Omega \text{ e } \omega(t)(\mathscr{A}(t)) = \mathcal{P}(t + 1)\]
-onde \(\mathcal{P}(t + 1) \) é uma distribuição particular sobre \( \mathscr{A} \). \( \mathscr{A}(t+1) \) é determinado retirando uma amostra aleatória de \( \mathscr{A} \) de acordo com essa distribuição. \cite{Holland1992}
-
-Ainda define os seguintes itens, \( \mathcal{T} \) como o conjunto de planos possíveis (\(\tau\)), \(\mathcal{E}\) como sendo o conjunto de ambientes possíveis e dado \( E \in \mathcal{E} \) a função de avaliação \(\mu_E(\mathscr{A}(t))\). Por fim define o \(\mathcal{X})\) como critério de comparação entre os planos em \( \mathcal{T} \) sobre \(\mathcal{E}\).
-
-Usando essa estrutura com a define o algoritmo genético na forma:
-\begin{itemize}
-	\item \( \mathscr{A} \), como população de cromossomos
-	\item \( \Omega \), operadores genéticos de inversão, mutação, crossover, dominância, etc.
-	\item \( \mathcal{T} \), planos de reprodução baseados na avaliação em conjunto com os operadores genéticos.
-\end{itemize}
 
