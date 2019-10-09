@@ -73,4 +73,31 @@ Os algoritmos evolucionários vem sendo estudados a um longo tempo, desde da dé
 
 Alguns autores como \citeauthor{Mitchell1996}, \citeauthor{LeeJacobson2015}, \citeauthor{Kwong2001} entre outros citam Holland como criador do algoritmo genético(\textit{Genethic Algorithm} ou GA) em 1975 no livro \textit{"Adaptation in Natural and Artificial Systems"}. Nele Holland formaliza uma estrutura para sistemas adaptativos, e encaixa o GA como uma abstração para a evolução biológica.
 
+O objetivo de Holland não era fazer algo especifico mas sim analisar os sistemas adaptativos e criar uma solução computacional que simulasse os processos encontrados nos sistemas de adaptação natural. Para isso cria uma abstração da evolução na biologia usando uma estrutural formal teórica que poderia atender diversos sistemas evolutivos e não somente o GA. Na formulação do GA por ele, os cromossomos seria representações binárias e utilizou os operadores de crossover, inversão e mutação inspirados na genética. O fato de ter usado cromossomos binários serviu de influencia para vários outros estudos que se seguiram, mas será exposto no \autoref{chap:GA} que existem outras formas de representar os cromossomos que dependem exclusivamente do problema a ser estudado.
 
+O algoritmo genético geral proposto por Holland se baseia em uma população de cromossomos com alelos '0' e '1' e com os operadores de crossover, mutação e inversão. As evoluções seguiam os seguintes passos: 
+\begin{enumerate}
+	\item \label{en:loop} Seleção de um cromossomo na população de forma estocástica baseada nas avaliações de todos os cromossomos
+	\item \label{en:gene} Aplicações dos operadores genéticos sobre uma cópia do individuo selecionado em \ref{en:loop}.
+	\item Seleção de outro cromossomo de forma aleatória com probabilidade igual para todos a ser substituído pelo novo cromossomo gerado em \ref{en:gene}
+	\item Avaliar o novo cromossomo
+	\item Retonar ao \ref{en:loop}
+\end{enumerate}
+
+Essa é uma descrição bem resumida sobre o algoritmo e serve de base para as derivações. Por exemplo no caso do uso de um operador de crossover no \autoref{en:gene}, há a necessidade de seleção de outro cromossomo para formar um par e assim gerar uma nova estrutura.
+
+Avaliando o algoritmo, temos alguns itens básicos que estarão presentes. A codificação do cromossomo para representar os parâmetros das soluções para os problemas. Uma população de cromossomos que serão avaliados simultaneamente durante as iterações do processo. A função de avaliação, que baseada nos parâmetros de cada estrutura irá fornecer uma forma de comparar os diversos elementos presentes na população. Os operadores genéticos que serão usados, sendo que podem ser combinados de diversas formas. 
+
+De acordo com \citeauthor{Mitchell1996} existem 3 operadores para o algoritmo mais simples:
+\begin{description}
+	\item[Seleção] seleciona cromossomos favorecendo os que tem melhor função de avaliação
+	\item[Crossover] também chamado de recombinação, combina dois cromossomos na geração de um novo
+	\item[Mutação] Altera de forma aleatória alguns alelos dos cromossomos por exemplo em uma codificação binária seria alterar um dos bits do parâmetro.
+\end{description}
+
+No \autoref{chap:GA} será explorado com mais detalhes cada um dos operadores. Holland também descreve um operador de inversão, que apesar de garantir uma melhor diversidade genética impõe uma carga computacional grande para os ganhos efetivos, e nos trabalhos mais recentes se tornou um operador quase nunca usado.
+
+Outro teoria que Holland formula sobre os GAs é em relação ao processo de paralelismo intrínseco, sobre a forma do algoritmo trabalhar com esquemas em vez de testar indivíduos específicos da população. 
+
+\section {Teorema da inexistência do almoço grátis}
+Um ponto chave que vários autores citam sobre o tema dos algoritmos genéticos é sobre o teorema da inexistência do almoço grátis (NFL - \textit{No Free Lunch}). O que de fato deve ser chamado a atenção é que apesar do apelo do algoritmo comparado com a evolução da espécies, é que se houver um método determinístico para determinado problema, definitivamente ele será mais eficiente que o GA. 
