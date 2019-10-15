@@ -1,0 +1,39 @@
+% ---
+% Este capítulo, apresenta os conceitos sobre o algoritmo genético
+% ---
+
+\chapter{Implementação do algoritmo genético}
+\label{chap:implementGA}
+
+Para implementação do algoritmo foi utilizado a linguagem de programação JAVA de forma a aproveitar o paradigma de orientação a objetos e reaproveitamento de código. A estrutura do programa permite com classes básicas formar a lógica do algoritmo e com classes derivadas especializar o algoritmo para especificações de cada problema. Dessa forma com pouco código extra sendo feito é possível reaproveitar as classes já definidas, usando o polimorfismo inerente a linguagens OO, é possível reescrever e acrescentar as partes necessárias para embutir conhecimento específico no problema.
+
+\section{Modelo de Ising}
+
+---Explicação simples sobre o modelo de Ising
+
+O algoritmo genético simples será usado para apresentar uma solução para modelo de Ising em uma matriz \(10 \times 10\), com cada nó (spin) representado pelos possíveis valores $-1$ e $1$. 
+
+Sendo \(\Lambda = \left[-5,5\right]^2\) as posições da matriz, e \(\sigma_t \in \{-1,1\}\) representando os valores de cada spin em determinada posição da matriz, e seja \( (\sigma_t)_{t \in \Lambda} = \sigma \) um conjunto de valores da matriz. 
+
+A função de avaliação que deve ser minimizada é dada por \( H(\sigma) = -\sum_{<t,t'>}\sigma_t \sigma_{t'} \) onde $t$ e $t'$ representam dois spins vizinhos.   
+
+\section{Codificação}
+
+A classe cromossomo será usada para representar cada solução para o problema e conterá um vetor de valores inteiros de tamanho $100$, representando assim a matriz \( 10 \times 10 \), alinhando uma linha da matriz na sequencia da outra no vetor. Assim o nosso genótipo é uma cadeia de inteiros, onde o fenótipo será a matriz correspondente quebrando o vetor em linhas de tamanho $10$.
+
+Exemplo da relação genótipo x fenótipo para uma matriz \( 3 \times 3 \):
+\begin{align*}
+\text{cromossomo} &= \left[-1, 1, 1, 1, -1, 1, 1, 1, -1 \right]\\
+\text{fenótipo} &= \begin{bmatrix}
+-1 & 1 & 1 \\
+1 & -1 & 1 \\
+1 & 1 & -1
+\end{bmatrix}
+\end{align*}
+
+
+\section{Seleção e avaliação}
+
+\section{Crossover e mutação}
+
+\section{Resultados}

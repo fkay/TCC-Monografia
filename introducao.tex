@@ -59,7 +59,9 @@ Na reprodução sexuada de seres diplóides, há presença de dois indivíduos q
 \end{figure}
 
 
-Dentro da etapa de replicação do DNA podem ocorrer erros ou alterações influenciadas por fatores externos, gerando assim as mutações. Isso pode ser positivo, negativo ou não influenciar o resultado final, mas é um outro mecanismo que pode determinar a evolução das espécies.   
+Dentro da etapa de replicação do DNA podem ocorrer erros ou alterações influenciadas por fatores externos, gerando assim as mutações. Isso pode ser positivo, negativo ou não influenciar o resultado final, mas é um outro mecanismo que pode determinar a evolução das espécies.
+
+Os genes definem as características dos indivíduos, mas também existe interação entre os genes, chamada de epistasia(\textit{epistasis}), podendo um par de genes mascarar ou modificar a característica final de outro par de genes. \cite{Klug2011}. Isso é importante do ponto de vista do algoritmo genético pois nem sempre a melhor avaliação estará associada a um único parâmetro, podendo estar associado a uma combinação de parâmetros.
 
 Mendel ainda definiu o conceito de dominância-recessividade em organismos diplóides, assumindo que cada característica é controlada por pares de genes, sendo recebidos um de cada pai. Assim um dos alelos do gene é dominante sobre o outro apresentando a característica final no individuo, e outro alelo será considerado recessivo.
 
@@ -67,7 +69,7 @@ Combinando indivíduos que melhor se adaptaram as condições de sobrevivência,
 
 A evolução então é um processo adaptativo onde através de mutações e recombinação entre os indivíduos, vão surgindo novas gerações que devem apresentar cada vez mais seres que se adaptam cada vez melhor ao ambiente.
 
-\section{Algoritmo genético}
+\section{Surgimento do algoritmo genético}
 
 Os algoritmos evolucionários vem sendo estudados a um longo tempo, desde da década de 40 que os cientistas se inspiram na natureza para criar os primeiros passos para a inteligência artificial, passando pela década de 50 onde começam os estudos sobre sistemas adaptativos para gerar soluções candidatas para problemas de difícil solução. Na década de 60 Rechenberg desenvolveu as estratégias evolucionárias (\textit{evolutionary strategies}) usando cromossomos compostos de números reais para estudos com aerofólios. Também apareceu a programação evolucionária, usando estruturas de pequenas máquinas de estados para resolver determinadas tarefas, que evolui para programação genética onde pequenos programas passam a ser as soluções candidatas. Existiram outros trabalhos sobre algoritmos evolucionários, programação evolucionária e algoritmos genéticos nas áreas de otimização e aprendizado de máquina, porém foram os trabalhos de Holland nas décadas de 60 e 70 que consolidou os algoritmos genéticos. \cite{Mitchell1996, Linden2008}
 
@@ -97,7 +99,19 @@ De acordo com \citeauthor{Mitchell1996} existem 3 operadores para o algoritmo ma
 
 No \autoref{chap:GA} será explorado com mais detalhes cada um dos operadores. Holland também descreve um operador de inversão, que apesar de garantir uma melhor diversidade genética impõe uma carga computacional grande para os ganhos efetivos, e nos trabalhos mais recentes se tornou um operador quase nunca usado.
 
-Outro teoria que Holland formula sobre os GAs é em relação ao processo de paralelismo intrínseco, sobre a forma do algoritmo trabalhar com esquemas em vez de testar indivíduos específicos da população. 
+Outro teoria que Holland formula sobre os GAs é em relação ao processo de paralelismo intrínseco, sobre a forma do algoritmo trabalhar com esquemas em vez de testar indivíduos específicos da população. \citeauthor{Goldberg1989} aborda esse tema com a hipótese dos blocos de construção (\textit{Building block hypothesis}).
 
 \section {Teorema da inexistência do almoço grátis}
-Um ponto chave que vários autores citam sobre o tema dos algoritmos genéticos é sobre o teorema da inexistência do almoço grátis (NFL - \textit{No Free Lunch}). O que de fato deve ser chamado a atenção é que apesar do apelo do algoritmo comparado com a evolução da espécies, é que se houver um método determinístico para determinado problema, definitivamente ele será mais eficiente que o GA. 
+Existe um compromisso entre a eficiência de um algoritmo e sua robustez, isso é, ele pode ser muito eficiente para determinados problemas mas serem ineficientes em outros. Isso implica que não existe um algoritmo que seja eficiente para todos os problemas, e então é razoável supor que algoritmo genético tenha melhor eficiência em determinadas situações. Essa falta de um algoritmo universal é comparado por \citeauthor{Spall2003} a busca de uma agulha no palheiro sem nenhum dado sobre sua posição. Para essa situação a busca aleatória seria um dos melhores métodos de busca e em média nenhum outro seria mais eficiente.
+
+Essa falta de um algoritmo universal para solução dos problemas de otimização parte do teorema da inexistência do almoço grátis (NFL - \textit{No-Free-Lunch Theorem}) proposto por Wolpert. O NFL ainda afirma que todos os algoritmos de busca tem em média o mesmo desempenho\cite{Linden2008}. O que de fato deve ser chamado a atenção é que apesar do apelo do algoritmo comparado com a evolução da espécies, é que se houver um método específico para determinado problema, definitivamente ele será mais eficiente que o GA.
+
+Na \autoref{fig:NFL} \citeauthor{Goldberg1989} mostra que no espectro de problemas de busca e otimização, um método especializado em determinado problema sempre terá a maior eficiência e que os métodos aleatórios e enumerativos apesar de serem considerados menos eficientes podem ter desempenho melhor que o método específico em um espectro mais amplo. O método robusto representa um algoritmo idealizado para solução dos problemas em todas as variedades de problemas. Seria interessante ter um algoritmo robusto, mesmo abandonando o pico de eficiência pois assim atenderia uma variedade de problemas. Como tal algoritmo não é conhecido o que pode ser feito é usar métodos híbridos combinando mais de uma técnica.
+
+\begin{figure}
+	\begin{center}
+		\includegraphics[width=0.5\textwidth]{imagens/David_NFL_Theorem.png}
+		\caption{Exemplo para NFL - \cite{Goldberg1989}}
+		\label{fig:NFL}
+	\end{center}
+\end{figure}
