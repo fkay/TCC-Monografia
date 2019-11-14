@@ -9,13 +9,13 @@ Para implementação do algoritmo foi utilizado a linguagem de programação JAV
 
 \section{Modelo de Ising}
 
----Explicação simples sobre o modelo de Ising
+--- Inserir uma explicação simples sobre o modelo de Ising
 
 O algoritmo genético simples será usado para apresentar uma solução para modelo de Ising em uma matriz \(10 \times 10\), com cada nó (spin) representado pelos possíveis valores $-1$ e $1$. 
 
 Sendo \(\Lambda = \left[-5,5\right]^2\) as posições da matriz, e \(\sigma_t \in \{-1,1\}\) representando os valores de cada spin em determinada posição da matriz, e seja \( (\sigma_t)_{t \in \Lambda} = \sigma \) um conjunto de valores da matriz. 
 
-A função de avaliação que deve ser minimizada é dada por \( H(\sigma) = -\sum_{<t,t'>}\sigma_t \sigma_{t'} \) onde $t$ e $t'$ representam dois spins vizinhos.   
+A função de avaliação que deve ser minimizada é dada por \( H(\sigma) = -\sum \limits_{<t,t'>}\sigma_t \sigma_{t'} \) onde $t$ e $t'$ representam dois spins vizinhos.   
 
 \section{Codificação}
 

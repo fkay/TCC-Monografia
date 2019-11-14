@@ -41,8 +41,8 @@
 	%subsubsection=TITLE,% títulos de subsubseções convertidos em letras maiúsculas
 	% -- opções do pacote babel --
 	english,			% idioma adicional para hifenização
-	french,				% idioma adicional para hifenização
-	spanish,			% idioma adicional para hifenização
+	%french,				% idioma adicional para hifenização
+	%spanish,			% idioma adicional para hifenização
 	brazil				% o último idioma é o principal do documento
 	]{abntex2}
 
@@ -100,6 +100,12 @@
 \usepackage{url}
 \usepackage{verbatim}
 \usepackage{babel}
+\usepackage[portuguesekw]{algorithm2e}
+\usepackage[font=small,labelfont=bf]{caption}
+% --- 
+% --- Configurações extras
+% Acerta nomes dos algoritmos
+\SetAlgorithmName{Algoritmo}{Algoritmo}{Lista de algoritmos}
 % ---
 % Informações de dados para CAPA e FOLHA DE ROSTO
 % ---

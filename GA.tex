@@ -7,14 +7,242 @@
 
 O algoritmo genético (GA) parte de uma população de \textit{cromossomos} que representam as soluções candidatas para o problema de otimização. Cada uma das soluções é avaliada de acordo com critérios inerentes do problema, para posteriormente serem selecionados e combinados de forma a criar novas soluções candidatas.
 
-Já é possível perceber uma das vantagens do algoritmo, que ele irá fazer uma avaliação direta das soluções e de forma paralela. Por exemplo em problemas NP-Completos onde são difíceis de se obter soluções numéricas eficientes, mas é possível testar soluções em tempo polinomial, o algoritmo se torna atrativos com essas características.
+Já é possível perceber uma das vantagens do algoritmo, ao fazer uma avaliação direta das soluções de forma paralela. Por exemplo em problemas NP-Completos onde são difíceis de se obter soluções numéricas eficientes, mas é possível testar soluções em tempo polinomial, o algoritmo se torna atrativo. O teste de múltiplas soluções facilita o processamento paralelo aumentando a eficiência do algoritmo.
 
-\section{Seleção}
+O algoritmo genético mais simples deverá conter pelo menos uma forma de avaliar os elementos da população, uma forma de seleção baseada nas avaliações e operadores genéticos para gerar a nova população.
 
-\section{Crossover}
+\citeauthor{Linden2008} afirma que quanto mais conhecimento especifico sobre o problema for incorporado ao GA, melhor eficiência ele terá. Assim ao definir os operadores que serão utilizados é importante ter em mente que eles devem ser adequados ao problema e não ao contrário.
 
-\section{Mutação}
+\section{Codificação dos genes}
+Cada cromossomo da população possui uma sequência de genes, que representam os parâmetros para solução do problema. Cada gene terá um possível conjunto de valores, os alelos no equivalente biológico, que para o GA será um alfabeto de valores \( \mathcal{A}\), ou um intervalo caso trabalhando com genes de valores reais. O alfabeto mais simples é o binário com \(\mathcal{A} = \{0, 1\}\), e é muito utilizado pela simplicidade e por ter sido originalmente a escolha de \citeauthor{Holland1992} para explicar os esquemas, além disso para ele cromossomos de maior comprimento e com menos alelos geravam mais paralelismo intrínseco. Porém essa questão dos esquemas e paralelismo vem levantado questionamentos sobre sua real contribuição para o algoritmo. 
+
+Com o alfabeto binário, os parâmetros são codificados usando sequências binárias, que podem ser representadas por \textit{strings}. Isso envolve conversões dos parâmetros para binário e vice versa. Os operadores de crossover e mutação ficam simplificados ao utilizar esse tipo de codificação. Uma variação da codificação binária é usar o código gray, que evita o chamado abismo de Hamming\footnote{O abismo de Hamming é o efeito que para mudar o valor inteiro em uma unidade na representação binária é necessário alterar todos os bits, por exemplo para ir do número 7 (0111) para o 8 (1000)} 
+
+A representação dos genes em termos gerais deve ser o mais simples e o mais natural possível ao problema. Então é comum usar outras formas de representar os genes, por exemplo, em um problema de escolha da melhor rota é interessante representar os grafos no cromossomo, com isso uma sequência de números inteiros representando cada vértice seria o mais apropriado. Também tem sido muito utilizada a codificação dos genes como números reais, representando assim diretamente os parâmetros do problema, e adaptando então as técnicas de mutação e crossover para se adequar a essa nova codificação. A representação com números reais é muito presente em problemas de otimização para redes neurais, onde o cromossomo é o conjunto de parâmetros de ajuste da rede.
+
+Quando possível é interessante impor na codificação as restrições que são impostas ao conjunto de soluções. Por exemplo, ao utilizar um alfabeto binário para representar valores inteiros, ou reais, pode ser feita a conversão de maneira que os valores máximos e mínimos da representação binária coincidam com os valores permitidos dos parâmetros após a decodificação dos genes. Com isso mais conhecimento é sobre o problema é agregado ao algoritmo melhorando sua resposta. Nem sempre esses limites serão possíveis e será vista outra maneira de impor as condições ao algoritmo através da avaliação.
+
+\section{População, Avaliação e Seleção}
+\label{sec:avaliacao}
+\subsection{População}
+O conjunto de soluções candidatas é definido como a população do algoritmo, que será modificada a cada iteração através dos operadores genéticos. A cada uma dessas populações geradas no instante \(t\) será dado o nome de geração. O tamanho da população é um parâmetro para o algoritmo, e quanto maior, mais soluções serão testadas em paralelo, porém mais recursos computacionais serão usados para cada geração. No algoritmo mais simples, a população é de tamanho fixo e toda substituída na próxima geração, e em outras formas do algoritmo ela pode ter o tamanho variável.
+
+Não existe um número idealizado para o tamanho da população sendo que boa parte dos trabalhos usam 100 como um parâmetro inicial. \citeauthor{Linden2008} indica que um bom começo seria usar \(40 * p\) onde \(p\) é a quantidade de parâmetros codificados em nosso cromossomo, porém para codificações de grafos ou ordenamentos já não seria prático usar esse tipo de escolha para o tamanho da população.
+
+É importante também definir dois conceitos presentes na literatura sobre os GA, que são o \textit{exploitation} e o \textit{exploration}. O \textit{exploitation} (aproveitamento) é o fato de explorar cada um dos indivíduos da população pelos potenciais resultados que podem gerar através dos descendentes. Já \textit{exploration} (exploração) é o conceito de se manter a diversidade genética da população de forma a explorar o espaço de soluções de forma completa. \citeauthor{Holland1992} indica que deve existir um equilíbrio entre os dois conceitos na população, pois deve-se explorar ao máximo cada solução encontrada que poderá gerar novas soluções melhores, e da mesma maneira manter os horizontes sobre o espaço de soluções aberto para a descoberta de novas soluções, evitando a convergência genética.
+
+Defini-se convergência genética como sendo o fato dos cromossomos presentes na população começarem a ficar todos com a codificação similares, levando a entender que o algoritmo atingiu o objetivo, ou pelo menos um máximo ou minimo local. Algumas GAs criam operadores de comparação entre os cromossomos de forma a quantificar essa proximidade como parâmetro para encerramento do algoritmo, mas o mais comum é executar o processo de iteração por \(T\) gerações. A dificuldade de usar a comparação entre os cromossomos está no custo computacional, que dependendo da forma de codificação usada pode ficar muito complexo. \citeauthor{Linden2008} menciona que uma forma de verificar essa convergência é usando o algoritmo de agrupamento K-Means e e depois comparar a distância entre os centróides gerados pelo algoritmo.
+
+Sobre a população podem existir pequenas variações sobre como é evoluída durante o algoritmo. Uma dessas alterações é o \textbf{elitismo}, que separa os \textit{k} melhores indivíduos para sobreviverem na próxima geração. Isso é usado devido ao fato de que os operadores de crossover e mutação poderem destruir esses indivíduos na geração da próxima geração, perdendo assim os bons resultados alcançados. Essa mudança melhora o equilíbrio entre os conceitos de \textit{exploitation} e \textit{exploration} e consequentemente o desempenho do algoritmo, pois mantemos o \textit{exploitation} sobre os \textit{k} indivíduos preservados entre as gerações, e mantemos o \textit{exploration} dando liberdade de escolha arbitrária para os demais \(n-k\) indivíduos da população, onde normalmente \(n \gg k\). 
+
+Outra estratégia para as populações é chamada de \(\mu + \lambda\), onde são criados \(\lambda\) cromossomos gerados por \(\mu\) indivíduos da população atual (geralmente \(\mu < \lambda\)). Feito isso os \(\mu + \lambda\) cromossomos pais e filhos competem para serem selecionados apenas os \(\mu\) melhores indivíduos para formar a nova população. Essa técnica também pode acelerar a convergência genética, devido ao fato da seleção de apenas os melhores que podem apresentar pouca variação genética, e que para ser compensado deveria ser empregado alguma técnica para manter a diversidade.
+
+Outra alteração possível é denominada \textit{Steady state}, onde em vez de haver a substituição de todos os \textit{n} indivíduos da população anterior para a nova (ou dos \(n - k\) no caso do elitismo) vão sendo criados poucos indivíduos a cada iteração substituindo de forma aleatória os piores pais, isto é, seleciona-se com mais probabilidade os pais com pior avaliação para serem substituídos. Dessa forma existirá uma interação entre cromossomos da geração \textit{t} com as da geração \(t+1\). Um porém de usar essa modificação é de acelerar a convergência genética, pois os indivíduos com pior avaliação sempre serão substituídos de forma rápida, mesmo os recém criados, e também o fato de um cromossomo poder reproduzir com o cromossomo que o gerou, deverá gerar um cromossomo muito parecido com os dois, limitando o \textit{exploitation} desses indivíduos.
+
+Para populações com tamanha variável, basicamente duas técnicas podem ser empregadas, uma para considerar um tempo de vida para cada indivíduo levando em conta su avaliação sobre a média da população, e a outra considerando a variabilidade genética. O método que considera a idade dos indivíduos, mantém eles na população por quanto tempo foi determinado na avaliação, e podem levar a condições que a população cresça indefinidamente ou que seja extinta, sendo necessário um controle extra sobre o tamanho da população.
+
+A técnica levando em conta a diversidade, aumenta a população caso perceba-se, através de algum tipo de medição, que os cromossomos da população são semelhantes. Nesse caso alguns cromossomos gerados aleatoriamente podem ser acrescentados a população de modo a manter a exploração do espaço de soluções. Porém como todas as técnicas que devem comparar semelhança entre cromossomos pode ser custosas computacionalmente.
+
+A população inicial geralmente é iniciada criando cromossomos de forma aleatória, porém pode ser feito de forma a subdividir o espaço de soluções em \textit{n} partes, sendo \textit{n} o tamanho da população, e gerando um cromossomo aleatório para cada uma dessas partes. \cite{Linden2008}.
+
+\subsection{Avaliação}
+Para executar uma seleção sobre os cromossomos da população é necessário primeiro existir uma função de avaliação, que deverá fornecer um escalar, de forma a atribuir para cada cromossomo presente na população uma espécie de nota para sua adaptação. O comum nos algoritmos é usar funções de avaliação que são sempre positivas, para o uso no método de seleção da roleta viciada. Alguns cuidados devem ser tomados ao definir a função de avaliação, pois se ela não apresentar variações suficientes para separar os cromossomos que melhor se adaptam dos demais, o algoritmo irá convergir mais lentamente, e se o contrário ocorrer e a função de avaliação tiver valores muito elevados, teremos uma convergência genética rápida demais impedindo a exploração do espaço de soluções podendo ficar restrito a um máximo local.
+
+De uma forma geral consideremos uma função de avaliação \textit{f} e que a probabilidade de selecionar o individuo \textit{i} para reprodução seja definida por \[p = \frac{f_i}{\sum{f}}\]
+Assim quanto melhor a avaliação de um individuo sobre a média da população, maior é o número esperado de vezes que ele será selecionado. Para evitar que alguns cromossomos, considerados como \textbf{superindivíduos} por \citeauthor{Linden2008}, dominem a próxima geração, devido a uma avaliação muito superior a média dos demais cromossomos, alguns métodos de transformação sobre a função de avaliação podem ser empregados. 
+
+O primeira técnica é a de normalização linear onde pode transformar a função de avaliação na forma \( f' = a * f + b\), onde \textit{a} é normalmente um valor escolhido entre 1 e 2. \citeauthor{Goldberg1989} indica selecionar esses parâmetros de forma que se mantenha o valor médio de \textit{f} e o valor máximo de \textit{f'} seja duas vezes o valor médio. Essa transformação pode gerar problemas pois  dependendo dos valores médio, máximo e mínimo e as escolhas dos coeficientes, a função \(f'\) pode assumir valores negativos que prejudicam a seleção pelo método da roleta viciada que será visto na \autoref{subsec:selecao} sobre seleções. Esse problema pode ser contornado usando outros coeficientes para evitar tal condição passando a se balizar por manter o mínimo de \(f'\) em zero enquanto se mantém o valor médio de \(f'\) igual ao valor médio de \textit{f}.
+
+Outra técnica é o escalonamento Sigma, que procura manter a pressão na seleção constante através das gerações e ao mesmo tempo evitando a convergência genética prematura da população. Assim usando esse método, o valor esperado de vezes que o individuo será selecionado é definido por 
+\begin{equation*}
+E[i,t] = \left \lbrace  \begin{array}{cc} 1 + \frac{f(i) - \overline{f}(t)}{2\sigma(t)} & \text{, se } \sigma(t) \neq 0 \\
+					1.0 & \text{, se } \sigma(t) = 0  \end{array}  \right.
+\end{equation*}
+onde \(E[i,t]\) é o valor esperado do individuo \textit{i} no instante \textit{t}, \textit{f(i)} é a função de avaliação de \textit{i}, \(\overline{f}(t)\) é a média da função de avaliação da população no instante \textit{t} e \(\sigma(t)\) é o desvio padrão da função de avaliação da população no instante \textit{t}. Com essa configuração, mesmo cromossomos que se destaquem demais nas gerações iniciais, devido ao desvio padrão da população ser maior nesse momento, eles não irão dominar a próxima geração, e conforme vai ocorrendo um equilíbrio entre os cromossomos nas gerações futuras e perto da convergência, os que ainda tiverem uma melhor avaliação, serão destacados dos demais para terem maior probabilidade de seleção. Caso o valor esperado se torne negativo para algum individuo, adota-se um valor pequeno como 0.1 permitindo um chance relativamente muito pequena para o individuo se reproduzir. \cite{Mitchell1996}
+
+Em alguns problemas as restrições poderão ser definidas limitando os valores dos parâmetros presentes no cromossomo. Porém em alguns casos isso não é possível, principalmente onde, por exemplo, o espaço de soluções não seja convexo. Assim nesses casos é interessante deixar que as soluções sejam avaliadas também fora do espaço de soluções mas aplicar uma penalidade na função de avaliação. Essa penalidade pode ser proporcional ao desvio da solução do espaço permitido, ou uma penalidade constante, o importante é que com a penalidade esse cromossomo seja menos provável de ser selecionado para a próxima geração. O atrativo de permitir esses cromossomos na população, é que mesmo estando fora do domínio do problema, ele pode apresentar um caminho para evolução de soluções melhores, assim se mesmo com a penalidade ele continua com uma boa avaliação, ele deve conter componentes que podem ser aproveitados nos descendentes (\textit{exploitation}).
+
+\subsection{Seleção}
+\label{subsec:selecao}
+
+Na etapa de seleção do algoritmo, serão separados os cromossomos para reprodução e consequente geração da próxima população a ser testada. Para tanto o comum é se usar uma componente estocástica para escolha dos pais, e uma determinística que define a probabilidade de escolha de cada pai. A determinística deriva da função de avaliação, que irá definir qual o valor esperado, ou probabilidade de seleção de cada cromossomo presente na população atual. Deve-se levar em consideração de que os métodos apresentados a seguir, podem incorporar o elitismo descrito anteriormente, e selecionar uma quantidade de pais que gere apenas os cromossomos restantes para completar a população.
+
+\begin{description}
+	\item[$\bullet$ Roleta Viciada] \text{}
+	
+O método mais comum e mais simples encontrados no GAs é o da roleta viciada. Nesse método cada cromossomo recebe a probabilidade de ser escolhido definido como \(p(i) = f(i) / \sum_{j=0}^{n}f(j)\), com \(i = 1,2,\dots,n\), sendo \textit{n} o tamanho da população e \textit{f} a função de avaliação. Nesse método que percebe-se a necessidade de \(f > 0\) e a preocupação com cromossomos que tem valores de avaliação destacados perante a média levarem a uma convergência genética precoce. Imagina-se uma roleta que para cada cromossomo é separado uma área proporcional a sua probabilidade de escolha definida pela avaliação, e gira-se a roleta para a seleção de um dos cromossomos. Por exemplo, sendo os valores de avaliação para uma população de 6 cromossomos presentes na \autoref{tab:exemplo_roleta}, obtêm-se a roleta mostrada na Figura~\ref{fig:exemplo_roleta}.
+
+%\begin{minipage}[htb]{\textwidth}
+%	\centering
+\begin{table}[htb]
+	\begin{minipage}[b]{.49\textwidth}
+	\centering
+		%\begin{table}[htb]
+			%\caption{Exemplo avaliação cromossomos}
+			%\label{tab:exemplo_roleta}
+			\begin{tabular}{l|c|c}
+				& f   & p        \\ \hline
+				Cromossomo 1 & 152 & 28,84\%  \\
+				Cromossomo 2 & 38  & 7,21\%  \\
+				Cromossomo 3 & 42  & 7,97\%  \\
+				Cromossomo 4 & 5   & 0,95\%   \\
+				Cromossomo 5 & 234 & 44,40\%   \\
+				Cromossomo 6 & 56  & 10,63\%   \\ \hline
+				Total        & 527 & 100,00\%
+			\end{tabular}
+			\captionof{table}{Exemplo avaliação}
+			\label{tab:exemplo_roleta}
+		%\end{table}
+	\end{minipage}
+	\begin{minipage}[b]{.49\textwidth}
+	\centering
+		%\begin{figure}[ht]
+			\includegraphics[width=\linewidth]{imagens/exemplo_roleta.png}
+			%\caption{Exemplo distribuição em uma roleta viciada}
+			\captionof{figure}{Exemplo distribuição em uma roleta viciada}
+			\label{fig:exemplo_roleta}
+		%\end{figure}
+	\end{minipage}
+%\end{minipage}
+\end{table}
+
+A implementação se torna simples, pois não há necessidade de ordenação dos cromossomos, e um algoritmo simples para a seleção pode ser visto em \autoref{alg:roleta}, considerando a função \textit{random()} como um gerador de números aleatórios entre 0 e 1. Como pode ser visto, sorteia-se um número entre 0 e o valor da soma das avaliações da população, depois é feito um \textit{loop} iterando pelos valores das avaliações de cada cromossomo e somando a uma variável auxiliar. Ao atingir o valor sorteado, o ultimo individuo que teve seu valor somado a variável auxiliar é retornado.
+
+\begin{algorithm}
+	\LinesNumbered
+	\Entrada{População de cromossomos: populacao}
+	\Saida{Cromossomo selecionado: cromossomo}
+	valor = random() * somaAvaliacao(populacao)\;
+	aux = 0\;
+	i = 1\;
+	\Enqto{aux < valor  {\normalfont \textbf{e}} i <= populacao.tamanho()} {
+			aux = aux + calculaAvaliacao(populacao[i])\;
+			i = i + 1\;
+	}
+	\Retorna{populacao[i-1]}
+	\caption{Roleta viciada}
+	\label{alg:roleta}
+\end{algorithm}
+
+\item[$\bullet$ Amostragem Estocástica Uniforme] \text{}
+
+Uma variação do método da roleta viciada é o Amostragem Estocástica Uniforme (SUS - \textit{Stochastic Universal Sampling}), onde em vez de girar a roleta \textit{N} vezes, é feito apenas um sorteio. O método consiste em alinhar os valores de avaliação dos indivíduos em uma reta contínua, com segmentos proporcionais as avaliações dos cromossomos e normalizados para que a reta tenha tamanho 1. Sorteia-se um número \textit{i} entre 0 e \(1/n\), onde \textit{n} é a quantidade de pais que serão selecionados, e depois são gerados \textit{n} ponteiros para reta na forma \(i + j/n \) com \(j = 0, 2, \dots, n-1 \). Os cromossomos são selecionados conforme esses ponteiros caiam sobre seu segmento correspondente na reta e colocados em uma lista. Os cromossomos da lista devem ser embaralhados ou sorteados de forma uniforme sem reposição para dar sequência com os operadores genéticos. Isso é necessário pois como os segmentos são contínuos, os cromossomos que forem selecionados mais de uma vez estarão na sequência na lista. Esse método, diferente da roleta, garante que cada individuo será selecionado para reprodução um número de vezes no intervalo \(\left[ \lfloor E[i,t] \rfloor , \lceil E[i,t] \rceil \right] \), onde \(E[i,t] = \dfrac{f_i}{\sum f} \cdot n\) é o valor esperado de vezes que o cromossomo \textit{i} será escolhido na geração \textit{t}, com \textit{f} sendo a função de avaliação e \(\sum f\) a soma das avaliações da população. Importante ressaltar que esse método não impede a questão dos superindivíduos dominarem o processo de seleção podendo levar a convergência genética prematura. 
+
+\item[$\bullet$ Seleção por Torneio] \text{}
+
+Nessa forma de seleção é através do método do torneio. Nesse modelo de seleção, são sorteados dois oi mais cromossomos da população com probabilidade uniforme, depois é feito um confronto direto entre os valores de avaliação de cada um, sendo que o que tiver maior valor será o selecionado. Esse mecanismo de seleção evita o favorecimento de indivíduos dominantes da população evitando a convergência genética prematura. Seja \textit{k} a quantidade de cromossomos selecionados para cada rodada do torneio, e \textit{N} o tamanho da população, a probabilidade de seleção de cada um é dada por \(1/N\). Sendo assim a probabilidade de selecionar o pior indivíduo passa a ser \(1/N^k\)), pois para ele ser selecionado para a próxima geração deve ser o único na rodada do torneio. Em testes empíricos esse método de seleção apresentou resultados melhores que o da roleta quando \(k=2\), sendo que não é sensível a questões de escalas da função de avaliação e também ao fato da função de avaliação ser negativa. \cite{Linden2008}
+
+\item[$\bullet$ \textit{Ranking}] \text{}
+
+Outro método é a seleção por \textit{ranking}, que também busca prevenir o convergência genética muito rápida, e consiste em ordenar os indivíduos por suas avaliações e depois usar este ranking para definir o valor esperado de cada um, em vez do valor da avaliação. Assim como no método de torneio, não é necessário se preocupar com a escala da função de avaliação. A relação entre os indivíduos \textit{i} e o \(i+1\) será a mesma independente dos valores avaliados para cada um. 
+
+Para cada cromossomo é classificado com os valores de 1 a \textit{N} indo do pior avaliado para o melhor. O valor esperado de cada cromossomo será dado por \[E[i,t] = \min + (\max - \min) \frac{rank(i,t) - 1}{N - 1} \] onde \(\max\) é o valor esperado para o melhor indivíduo e \(\min\) para o pior. Como há as restrições de \(\max \geq 0\) e \(\sum_i E[i,t] = N\), pois deve-se manter a população, é necessário então que \(1 \leq \max \leq 2\) e \(\min = 2 - \max\).
+
+O valor proposto por Baker é \(\max = 1,1\), e esse método tem a desvantagem de diminuir a pressão seletiva, o que pode levar ao GA uma convergência mais lenta, porém mantém a diversidade garantindo uma melhor exploração do espaço de soluções. Uma forma de manter a pressão seria usar uma função exponencial para definir os valores esperados de cada cromossomo. Seja qual for a forma de mapeamento dos valores esperados, depois pode ser utilizado o método SUS ou da roleta viciada para selecionar os pais da próxima geração.\cite{Mitchell1996}
+
+
+\item[$\bullet$ Seleção Boltzmann] \text{}
+
+Esse método é inspirado no \textit{simulated annealing}, onde variando a temperatura de forma continua, pode-se controlar a taxa de seleção. O algoritmo inicia com uma temperatura alta, garantindo que todos na população tem maior probabilidade de reprodução, reduzindo a pressão seletiva, e conforme as iterações do algoritmo são executadas, a temperatura é reduzida gradativamente, aumentando assim a pressão seletiva, e restringindo para apenas os melhores continuarem a se reproduzirem. Uma implementação tipica do modelo é \[ E[i,t] = \frac{e^{f_i/T}}{\frac{\sum_j e^{f_j/T}}{N}}\] onde \textit{T} representa a temperatura, e \textit{N} o tamanho da população, assim no denominador da expressão é representada a média da população no instante \textit{t}. \cite{Mitchell1996}
+
+\end{description}
+
+\section{Operadores genéticos}
+
+Definidos como serão a população e a codificação dos cromossomos, além dos métodos de avaliação e seleção do GA, deve-se agora selecionar quais operadores genéticos serão usados. Para cada operador há um parâmetro associado que define uma probabilidade de uso do operador a cada etapa do algoritmo, e os operadores podem ser combinados. Os parâmetros podem ser fixos ou variarem conforme a evolução do algoritmo. Lembrando que com o uso do elitismo, teremos indivíduos que passarão para a próxima geração passar pelos operadores genéticos.
+
+\subsection{Crossover}
+O operador mais característico e diferencial do algoritmo genético é o de crossover ou recombinação. É com esse operador que dois cromossomos tem suas características combinadas gerando um novo indivíduo que potencialmente terá avaliação melhor que seus pais. Na literatura temos exemplos de implementação do operador onde há um parâmetro que determina a probabilidade de ser executado o crossover sobre um par de cromossomos selecionados, porém há também exemplos em que sempre é executado o operador. No caso de ser usado esse parâmetro, ele normalmente é alto entre 0,8 e 1, e se após o sorteio ficar definido que não será usado o operador, um dos pais é passado sem alterações para as próximas etapas.
+
+\begin{description}
+\item[$\bullet$ Crossover de um ponto] \text{}
+
+Esse é o operador mais simples de crossover, onde é sorteado um ponto de corte dentro do cromossomo para ocorrer a ``quebra'' da sequência dos genes. O cromossomo é formado por uma sequência \textit{n} de genes, e entre esses genes há \(n-1\) pontos de corte que definem as posições onde o cromossomo poderá ser interrompido para ser combinado com outra parte. O processo é feito após a seleção de dois pais, é feito um sorteio para o ponto de corte. Pode ser gerados dois novos indivíduos a partir desse ponto, o primeiro combinando o material genético do pai A a esquerda do ponto de corte e o material genético do pai B a direita do ponto, e o segundo com o inverso. Algumas implementações aproveitam os dois novos indivíduos para a nova geração, outros ainda realizam um sorteio com igual probabilidade de escolha para um dos dois novos cromossomos.
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=0.75\linewidth]{imagens/exemplo_cross_1pto.png}
+	\caption{Crossover com um ponto}
+	\label{fig:ex_cross_1pto}
+\end{figure}
+
+Existem dois detalhes sobre o crossover de um ponto, primeiro se uma boa solução do problema estiver codificado nos genes extremos do cromossomo, a chance de manter esse dois genes no novo indivíduo reduz muito, pois o novo elemento da população terá a parte inicial do cromossomo ou a parte final somente. Isso também leva ao segundo problema, pois existem uma certa ``preferência'' no método para determinadas posições do cromossomo, já que as partes trocadas entre os pais sempre contém os extremos. \cite{Mitchell1996}.
+
+\item[$\bullet$ Crossover de dois ou mais pontos] \text{}
+
+Para melhorar as questões levantadas pelo crossover de um ponto, surgiram as derivações para terem mais pontos de corte no operador. O processo se mantém o mesmo, no entanto em vez de sortear um ponto de corte para executar as trocas de material genético, são sorteados dois ou mais pontos, e os cromossomos pais tem então suas sequências de genes intercaladas entre esses pontos de corte. Um exemplo para dois pontos é apresentado na \autoref{fig:ex_cross_2pto}.
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=0.75\linewidth]{imagens/exemplo_cross_2ptos.png}
+	\caption{Crossover com dois ponto}
+	\label{fig:ex_cross_2pto}
+\end{figure}
+
+Fazendo o crossover em  mais pontos diminuí os problemas encontrados quando utilizado apenas um ponto de corte. Aumenta-se a chance de manter os genes que estejam em locus distantes na sequência do cromossomo que contribuem para boa avaliação do indivíduo, e diminui-se um pouco o detalhe de uso dos extremos, pois pode-se combinar apenas a parte central de um dos pais.
+
+\item[$\bullet$ Crossover uniforme] \text{}
+
+Esse operador é capaz de combinar qualquer esquema presente nos cromossomos. O conceito de esquemas será melhor explorado na \autoref{sec:esquemas}, mas para o entendimento do crossover, o esquema pode ser considerado como uma máscara para os genes do cromossomo, fixando alguns desses genes e deixando outros livres. Considerando que os genes fixos no esquema são os responsáveis bela boa avaliação do cromossomo, dependendo da distância das posições desses genes na sequência foi visto que os operadores de crossover usando pontos de cortes podem interromper mais facilmente esses esquemas. Com o crossover uniforme esse efeito é minimizado, permitindo que todos os esquemas tenha probabilidade iguais de serem transmitidos aos filhos. O exemplo simplificado do operador pode ser visto em \autoref{fig:ex_cross_unif}
+	
+	\begin{figure}[ht]
+		\centering
+		\includegraphics[width=0.75\linewidth]{imagens/exemplo_cross_uniforme.png}
+		\caption{Crossover uniforme}
+		\label{fig:ex_cross_unif}
+	\end{figure}
+
+A diferença com relação aos operadores de combinação anteriores se deve ao fato de que é feito um sorteio dos valores 1 ou 0 com iguais probabilidades para cada posição do cromossomo criando uma sequência binária. Utiliza-se então o resultado do sorteio para definir se será usado o gene do pai A ou do B. Como todas as sequências tem iguais probabilidades de ocorrerem, justifica-se o fato de que os esquemas passam a ter a mesma probabilidade de se manterem durante a reprodução.
+
+\citeauthor{Mitchell1996} menciona uma outra forma de realizar o operador de crossover uniforme, onde seguindo o mesmo raciocínio dos pontos de cortes, onde se realiza um primeiro sorteio para decidir por qual pai começa a construção do filho, e para cada posição do gene é feito um novo sorteio com igual probabilidade para decidir se continua copiando a sequência do pai atual ou se passa a copiar do outro pai, alcançando os mesmos resultados do procedimento descrito anteriormente.
+
+\item[$\bullet$ Crossover baseado em maioria] \text{}
+
+O ultimo operador de crossover apresentado será um que combina vários pais simultaneamente, e não é muito utilizado pois pode levar a convergência genética muito rápido. O conceito por trás desse operador é selecionar \textit{z} pais com \(3 \le z \le N\), sendo \textit{N} tamanho da população, e depois definir para cada gene o valor correspondente a maioria. Alternativamente pode ser feito de forma a calcular uma distribuição para cada gene baseado nos valores encontrados no \textit{z} cromossomos, e depois realizando uma seleção nos moldes da roleta viciada para decidir qual gene utilizar. Esse crossover acaba gerando mais um parâmetro para o algoritmo, pois é necessário definir qual o valor de \textit{z}
+ 
+\end{description}
+
+Os operadores descritos podem em geral serem usados com qualquer tipo de codificação, em especial com codificações binárias seu uso são imediatos. Para algumas outras codificações ajustes são necessários. Para representações com reais paras os genes, ou de grafos como na programação genética, os operadores de crossover que usam pontos de corte ou o uniforme funcionam normalmente, pois definido os pontos de corte basta executar os intercâmbios dos valores situados entre eles. 
+
+Para cromossomos baseados em ordem, isto é, a ordem da sequência apresentada no cromossomo que representa o fenótipo do indivíduo e consequentemente sua avaliação, usar o crossover de um ponto ou mais pode gerar um problema. Como o operador se baseia na posição dos genes para fazer a concatenação, e nesse tipo de cromossomo as posições dos genes mudam, é necessário adaptar o operador. A forma mais simples de realizar essa adaptação é, em vez de intercambiar diretamente os valores entre os pontos de corte, mantém-se os valores de um dos pais selecionado, mas utiliza-se a ordem para esses valores encontradas no segundo pai. Por exemplo na \autoref{fig:ex_cross_ordem}, podemos ver que o pai A possui na região entre os dois pontos de corte a ordem 7 - 1, e esses mesmos valores estão na ordem 1 - 7 no pai B, assim o operador muda a ordem dos valores nesse pedaço para ficar com a mesma ordem do pai B e o resultado é visto no filho A. No filho B o inverso ocorre, sendo que na região de corte é usada a ordem que os valores aparecem no pai A. Pode ser feita uma adaptação análoga para o crossover uniforme. Para o operador baseado em maioria, pode ser feito inciando o primeiro item da sequência pela maioria presente nos pais selecionados, e nas demais posições ir pela maioria encontrada nos pais que seguem o gene escolhido anteriormente.
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=0.75\linewidth]{imagens/exemplo_cross_ordem.png}
+	\caption{Crossover com codificação por ordem}
+	\label{fig:ex_cross_ordem}
+\end{figure}
+
+Quando a codificação for baseada em números reais, o operador de crossover pode ser modificado para em vez de escolher um dos dois valores do gene presentes nos pais, considerar um deles como mínimo e o outro como máximo e realizar um sorteio uniforme no intervalo para o valor do gene. Isso irá gerar filhos bem distintos dos pais, aumentando o aspecto de \textit{exploration} do algoritmo.
+
+\subsection{Mutação}
+O operador de mutação é responsável em aumentar o aspecto de \textit{exploration} do GA, e através dele que é possível explorar novas soluções ainda não testadas. Existe um parâmetro associado a esse operador referente a taxa de mutações presentes no algoritmo, sendo que essa taxa usada é um valor baixo na ordem de 0,5\%. A taxa deve ser baixa, pois quanto maior for, mais o algoritmo irá se assemelhar a uma busca randômica. Portanto com probabilidades de mutação nessa ordem garante apenas que novas soluções serão apresentadas quando o algoritmo já estiver convergindo, e assim representa uma alternativa caso o GA estiver convergindo para um máximo local.
+
+O procedimento é simples, para cada gene é feito um sorteio com a probabilidade determinada para a taxa de mutação, caso o sorteio tenha um resultado positivo, o gene em questão será modificado. Essa modificação depende do tipo de codificação que foi utilizado. Para codificação binária há duas opções, inverte-se o estado do bit que deve sofrer a mutação, ou pode-se sortear um novo bit com probabilidade igual para 0 ou 1. Usando essa segunda forma, a taxa de mutação resultante será \(p_m \cdot 0,5\), onde \(p_m\) é o parâmetro de mutação escolhido.
+
+Sobre a codificação binária, existe um detalhe sobre o operador mutação. Como cada bit tem uma significância para o parâmetro que representa do problema, dependendo do bit que for modificado pode representar ``saltos'' maiores ou menores no espaço de soluções e consequentemente nos valores da avaliação. Algumas formas foram propostas para contornar esse dilema, uma seria definir que o \(p_m\) seja proporcional à significância do bit que será modificado. Outra forma seria primeiro transformar a representação binária na variável do problema, realizar uma mutação sobre esse valor, e depois transformar de volta a variável para binário.
+
+Para codificações em inteiro ou em reais, a mutação será na forma de um sorteio sobre o valor do gene. Esse pode usar alguma distribuição conhecida para toda a faixa dos valores que a variável pode assumir, ou usar uma distribuição normal para definir um valor de desvio para a variável e condicionando o resultado para ficar nos limites, ou como visto anteriormente na \autoref{sec:avaliacao}, permitir esse valores fora das restrições que serão penalizados pela função de avaliação.
+
+As mutações para codificações que usam ordem podem ser feita de duas formas. A primeira se um gene deverá ser modificado, sorteia-se outro gene aleatoriamente e é feita a permutação dos dois. Na segunda forma defini-se dois pontos no cromossomo e é feita ou uma mistura dos elementos entre esses dois pontos, ou inverte-se a ordem entre esses dois pontos.
+
+Para cromossomos baseados em grafos, ou árvores, a sugestão é remover o ramo selecionada para mutação, e gerar um novo aleatório, seguindo o mesmo processos usado para gerar a população inicial.
+
+É comum usar para o parâmetro de taxa de mutação, um valor variável, que pode ir aumentando a cada iteração do algoritmo, permitindo assim que conforme vai se atingindo a convergência genética, o GA não perca sua característica de \textit{exploration}, buscando soluções totalmente novas.
+
+\subsection{Outros operadores}
+Existem outros operadores menos usados no algoritmo como por exemplo o de inversão proposto por Holland e alguns que operam sobre como são formados os pares para reprodução.
+
+\citeauthor{Holland1992} propôs um operador que inverte parte da sequência do cromossomo, isso pois percebeu a questão do crossover de um ponto que têm uma maior probabilidade em interromper esquemas com genes mais afastados na sequência. Esse operador é inspirado pelo que acontece na genética real, onde a função do gene não depende da sua posição, portanto invertendo parte do cromossomo, sua essência seria mantida. Para adaptar esse operador no GA, além do valor do gene, o cromossomo deve armazenar qual a sua posição original também, o que acarreta uma maior custo computacional. O funcionamento básico do operador é selecionar dois pontos aleatórios no cromossomo, e inverter a ordem dos genes encontrados nesse intervalo. Quando foi realizar o crossover, como os pais selecionados podem ter a ordem dos genes alteradas, utiliza-se um deles como referência e ordena-se o segundo da mesma forma, assim o crossover não correrá o risco de repetir genes na concatenação das partes. Testes com inversão foram feitos mas nenhum obteve resultados indicando que o uso desse operador melhora o desempenho do GA. \cite{Mitchell1996}.
+
+Além desse operador, foram feitos alguns experimentos com operadores de seleção que procuram determinar outros fatores na seleção dos pais, como por exemplo não selecionar dois indivíduos que tenham o genótipo parecido, evitando assim convergência genética prematura e buscando que a combinação entre pais geram filhos diferentes dos encontrados na população até o momento.
+
+Também existem as versões dos operadores apresentados para cromossomos diplóides, onde o genótipo possui um par de cromossomos, sendo que deve ser utilizado o aspecto de dominância dos alelos para definir o fenótipo. A maior diferença está no operador de crossover, pois por serem indivíduos diplóides, ocorre primeiro a separação do par de cromossomos em gametas, feito o crossover e depois recombinação entre os gametas dos pais selecionados. Em \cite{Goldberg1989} é possível verificar uma análise mais detalhada sobre esse assunto.
 
 \section{Esquemas}
+\label{sec:esquemas}
+O conceito de esquema foi primeiro definido por \citeauthor{Holland1992}, em uma tentativa de especificar por qual razão o algoritmo genético funciona e pode ser eficiente apresentado por \citeauthor{Goldberg1989} como teorema fundamental do GA e o chamou de Teorema dos esquemas (\textit{Schema Theorem}). Por trás desse conceito, Holland ainda explica a teoria do paralelismo implícito presente no algoritmo razão da qual ele apresentar certa eficiência se comparado a outros algoritmos.
+
+Para explicar o conceito primeiro define-se que o cromossomo é uma sequência de tamanho \textit{l} de genes que podem ter os alelos presentes no alfabeto 
 
 \section{Fundamentos teóricos}
