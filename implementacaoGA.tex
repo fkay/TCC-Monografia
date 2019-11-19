@@ -5,11 +5,23 @@
 \chapter{Implementação do algoritmo genético}
 \label{chap:implementGA}
 
-Para implementação do algoritmo foi utilizado a linguagem de programação JAVA de forma a aproveitar o paradigma de orientação a objetos e reaproveitamento de código. A estrutura do programa permite com classes básicas formar a lógica do algoritmo e com classes derivadas especializar o algoritmo para especificações de cada problema. Dessa forma com pouco código extra sendo feito é possível reaproveitar as classes já definidas, usando o polimorfismo inerente a linguagens OO, é possível reescrever e acrescentar as partes necessárias para embutir conhecimento específico no problema.
+Para implementação do algoritmo foi utilizado a linguagem de programação JAVA de forma a aproveitar o paradigma de orientação a objetos com a característica de reaproveitamento de código. A estrutura do programa permite com classes básicas formar a lógica do algoritmo e com classes derivadas especializar o algoritmo para especificações de cada problema. Dessa forma com pouco código extra sendo feito é possível reaproveitar as classes já definidas, e usando o polimorfismo inerente a linguagens OO, é possível reescrever e acrescentar as partes necessárias para embutir conhecimento específico no problema.
+
+Os testes começam sobre um modelo simples usando codificação binária para representar duas variáveis reais \textit{x} e \textit{y} com valores no intervalo \([-100,100]\), e 15 bits de comprimento. A conversão é feita usando um fator \textit{C} definido por \(C = \dfrac{200}{2^15}\) que multiplicado pela representação binária transformada para o inteiro \textit{i} e somado ao valor mínimo, apresenta o valor real da variável, com resolução definida pelo fator.
+\(x = C * i_x - 100\). O cromossomo é formado por uma sequência de 30 bits, 15 para cada variável, concatenados na forma de um vetor (De fato em Java será utilizado os conceitos de Listas por serem mais versáteis com relação aos elementos que podem ser guardados e manipulados). A função que deve ser maximizada é dada por: 
+\[f = \left| x \cdot y \cdot \sin\left(\frac{\pi \cdot y}{4}\right) \right|\]
+Essa mesma função será usada para a avaliação e apresenta o seguinte gráfico:
+
 
 \section{Modelo de Ising}
 
---- Inserir uma explicação simples sobre o modelo de Ising
+O modelo de Ising\footnote{O modelo também é conhecido como Lenz-Ising, pois Lenz introduziu o modelo, porém nunca calculou nenhuma de suas propriedades} é um modelo da física para estudos de fênomenos magnéticos em materiais. Ising calculou o modelo para uma dimensão e depois Onsanger calculou para uma rede quadrada (2D). Apesar do modelo ter sido elaborado para compreender melhor o propriedades magnéticas de certos materiais, ele se mostrou de grande utilidade para modelar problemas de outras áreas de estudos de fenômenos cooperativos, como por exemplo a dissertação de \cite{Lucena2014} onde usa o modelo de Ising aplicado a um estudo de criminalidade. É considerado um dos mais simples e mais estudado dos modelos de mecânica estatística.
+
+O modelo define uma grade de \textit{spins} \(\sigma_i\) que poderiam conter os valores -1 e +1 somente. Esses spins possuem uma interação de energia dada por \(-E(i, i')\sigma_i\sigma_{i'}\), ou seja, o valor de energia de dois spins será \(-E(i, i')\) se os spins forem diferentes, e \(+E(i, i')\) se forem iguais, e adicionalmente pode interagir com um campo magnético externo \textit{H} com energia \(-H\sigma_i\). \cite{McCoy1973}.
+
+O modelo mais simples usa uma grade quadrangular, facilmente representada por uma matriz, e com \(E(i, i')\) um valor fixo independente dos spins e que se \textit{i} e \textit{i'} não forem vizinhos será igual 0.
+
+
 
 O algoritmo genético simples será usado para apresentar uma solução para modelo de Ising em uma matriz \(10 \times 10\), com cada nó (spin) representado pelos possíveis valores $-1$ e $1$. 
 

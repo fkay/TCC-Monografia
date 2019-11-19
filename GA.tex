@@ -29,7 +29,7 @@ O conjunto de soluções candidatas é definido como a população do algoritmo,
 
 Não existe um número idealizado para o tamanho da população sendo que boa parte dos trabalhos usam 100 como um parâmetro inicial. \citeauthor{Linden2008} indica que um bom começo seria usar \(40 * p\) onde \(p\) é a quantidade de parâmetros codificados em nosso cromossomo, porém para codificações de grafos ou ordenamentos já não seria prático usar esse tipo de escolha para o tamanho da população.
 
-É importante também definir dois conceitos presentes na literatura sobre os GA, que são o \textit{exploitation} e o \textit{exploration}. O \textit{exploitation} (aproveitamento) é o fato de explorar cada um dos indivíduos da população pelos potenciais resultados que podem gerar através dos descendentes. Já \textit{exploration} (exploração) é o conceito de se manter a diversidade genética da população de forma a explorar o espaço de soluções de forma completa. \citeauthor{Holland1992} indica que deve existir um equilíbrio entre os dois conceitos na população, pois deve-se explorar ao máximo cada solução encontrada que poderá gerar novas soluções melhores, e da mesma maneira manter os horizontes sobre o espaço de soluções aberto para a descoberta de novas soluções, evitando a convergência genética.
+É importante também definir dois conceitos presentes na literatura sobre os GA, que são o \textit{exploitation}\footnote{Exploitation consiste em testar uma região limitada mas promissora do espaço de soluções com a expectativa de melhorar uma solução já conhecida dentro dessa região} e o \textit{exploration}\footnote{Exploration consiste em testar uma região muito mais ampla do espaço de soluções, com a expectativa de encontrar novas soluções promissoras}. O \textit{exploitation} (aproveitamento) é o fato de explorar cada um dos indivíduos da população pelos potenciais resultados que podem gerar através dos descendentes. Já \textit{exploration} (exploração) é o conceito de se manter a diversidade genética da população de forma a explorar o espaço de soluções de forma completa. \citeauthor{Holland1992} indica que deve existir um equilíbrio entre os dois conceitos na população, pois deve-se aproveitar ao máximo cada solução encontrada que poderá gerar novas soluções melhores, e da mesma maneira manter os horizontes sobre o espaço de soluções aberto para a descoberta de novas soluções, evitando a convergência genética.
 
 Defini-se convergência genética como sendo o fato dos cromossomos presentes na população começarem a ficar todos com a codificação similares, levando a entender que o algoritmo atingiu o objetivo, ou pelo menos um máximo ou minimo local. Algumas GAs criam operadores de comparação entre os cromossomos de forma a quantificar essa proximidade como parâmetro para encerramento do algoritmo, mas o mais comum é executar o processo de iteração por \(T\) gerações. A dificuldade de usar a comparação entre os cromossomos está no custo computacional, que dependendo da forma de codificação usada pode ficar muito complexo. \citeauthor{Linden2008} menciona que uma forma de verificar essa convergência é usando o algoritmo de agrupamento K-Means e e depois comparar a distância entre os centróides gerados pelo algoritmo.
 
@@ -106,23 +106,25 @@ O método mais comum e mais simples encontrados no GAs é o da roleta viciada. N
 %\end{minipage}
 \end{table}
 
-A implementação se torna simples, pois não há necessidade de ordenação dos cromossomos, e um algoritmo simples para a seleção pode ser visto em \autoref{alg:roleta}, considerando a função \textit{random()} como um gerador de números aleatórios entre 0 e 1. Como pode ser visto, sorteia-se um número entre 0 e o valor da soma das avaliações da população, depois é feito um \textit{loop} iterando pelos valores das avaliações de cada cromossomo e somando a uma variável auxiliar. Ao atingir o valor sorteado, o ultimo individuo que teve seu valor somado a variável auxiliar é retornado.
+A implementação se torna simples, pois não há necessidade de ordenação dos cromossomos. 
 
-\begin{algorithm}
-	\LinesNumbered
-	\Entrada{População de cromossomos: populacao}
-	\Saida{Cromossomo selecionado: cromossomo}
-	valor = random() * somaAvaliacao(populacao)\;
-	aux = 0\;
-	i = 1\;
-	\Enqto{aux < valor  {\normalfont \textbf{e}} i <= populacao.tamanho()} {
-			aux = aux + calculaAvaliacao(populacao[i])\;
-			i = i + 1\;
-	}
-	\Retorna{populacao[i-1]}
-	\caption{Roleta viciada}
-	\label{alg:roleta}
-\end{algorithm}
+%, e um algoritmo simples para a seleção pode ser visto em \autoref{alg:roleta}, considerando a função \textit{random()} como um gerador de números aleatórios entre 0 e 1. Como pode ser visto, sorteia-se um número entre 0 e o valor da soma das avaliações da população, depois é feito um \textit{loop} iterando pelos valores das avaliações de cada cromossomo e somando a uma variável auxiliar. Ao atingir o valor sorteado, o ultimo individuo que teve seu valor somado a variável auxiliar é retornado.
+%
+%\begin{algorithm}
+%	\LinesNumbered
+%	\Entrada{População de cromossomos: populacao}
+%	\Saida{Cromossomo selecionado: cromossomo}
+%	valor = random() * somaAvaliacao(populacao)\;
+%	aux = 0\;
+%	i = 1\;
+%	\Enqto{aux < valor  {\normalfont \textbf{e}} i <= populacao.tamanho()} {
+%			aux = aux + calculaAvaliacao(populacao[i])\;
+%			i = i + 1\;
+%	}
+%	\Retorna{populacao[i-1]}
+%	\caption{Roleta viciada}
+%	\label{alg:roleta}
+%\end{algorithm}
 
 \item[$\bullet$ Amostragem Estocástica Uniforme] \text{}
 
@@ -239,10 +241,120 @@ Além desse operador, foram feitos alguns experimentos com operadores de seleç�
 
 Também existem as versões dos operadores apresentados para cromossomos diplóides, onde o genótipo possui um par de cromossomos, sendo que deve ser utilizado o aspecto de dominância dos alelos para definir o fenótipo. A maior diferença está no operador de crossover, pois por serem indivíduos diplóides, ocorre primeiro a separação do par de cromossomos em gametas, feito o crossover e depois recombinação entre os gametas dos pais selecionados. Em \cite{Goldberg1989} é possível verificar uma análise mais detalhada sobre esse assunto.
 
-\section{Esquemas}
-\label{sec:esquemas}
-O conceito de esquema foi primeiro definido por \citeauthor{Holland1992}, em uma tentativa de especificar por qual razão o algoritmo genético funciona e pode ser eficiente apresentado por \citeauthor{Goldberg1989} como teorema fundamental do GA e o chamou de Teorema dos esquemas (\textit{Schema Theorem}). Por trás desse conceito, Holland ainda explica a teoria do paralelismo implícito presente no algoritmo razão da qual ele apresentar certa eficiência se comparado a outros algoritmos.
-
-Para explicar o conceito primeiro define-se que o cromossomo é uma sequência de tamanho \textit{l} de genes que podem ter os alelos presentes no alfabeto 
-
 \section{Fundamentos teóricos}
+\subsection{Esquemas}
+\label{sec:esquemas}
+O conceito de esquema (\textit{schema} ou \textit{schemata}) foi primeiro definido por \citeauthor{Holland1992}, em uma tentativa de especificar por qual razão o algoritmo genético funciona e pode ser eficiente. Foi apresentado também por \citeauthor{Goldberg1989} como teorema fundamental do GA, e ficou conhecido de Teorema dos Esquemas (\textit{Schema Theorem}). Por trás desse conceito, Holland ainda explica a teoria do paralelismo implícito presente no algoritmo razão da qual ele apresentar certa eficiência se comparado a outros algoritmos.
+
+Para explicar o conceito primeiro define-se que o cromossomo é uma sequência, de comprimento \textit{l}, de genes que podem ter os alelos presentes no alfabeto \textit{V}. Para simplificar as definições e cálculos e sem perda de generalidade, foi escolhido um alfabeto binário \(V = \{0, 1\}\) e os cromossomos são portanto sequências binárias. O esquema funciona como um gabarito ou \textit{template} definindo assim subconjuntos de todos os possíveis indivíduos. Para realizar tal gabarito o esquema usa um outro elemento considerado um coringa, que representa uma posição no cromossomo que não importa (\textit{don't care}). Assim para o alfabeto binário utilizado o alfabeto para os esquemas pode ser definido como \(V+ = {0, 1 , *}\), sendo \textit{*} nosso valor coringa. Exemplo, para uma população de cromossomos com \(l=8\), o esquema \(H=**11*0*1\) tem os indivíduos com cromossomos \(A_1=00110001\) e \(A_2=10111011\) como representantes desse esquema e são chamados de instâncias de \textit{H}. Assim se tivermos cromossomos binários com comprimento \textit{l} existirão \(2^l\) combinações possíveis de cromossomos e \(3^l\) combinações de esquemas.
+
+Existem duas características importantes sobre os esquemas, uma delas é sua \textbf{ordem}, denotada por \(o(H)\), que define quantas posições possuem valor fixo no esquemas, isto é, quantas posições no esquema são diferentes de \textit{*}. No exemplo anterior \(H=**11*0*1\) possui ordem 4(\(o(**11*0*1) = 4\)). Outra característica é o \textbf{tamanho} do esquema (\textit{defining length}), denotado por \(\delta(H)\), que é calculado como a diferença entre as posições do ultimo valor definido no esquema e do primeiro definido. Por exemplo para o esquema \(011*1***\) seu tamanho é 4, pois o ultimo valor definido está na posição 5 e o primeiro na posição 1 (\(\delta(011*1***) = 4\)). 
+
+Goldberg usou o simbolo \textit{H} pois o esquema define um hiperplano do espaço de dimensão \textit{l} que representa as sequências binárias de comprimento \textit{l}. Considerando sequências binárias e esquemas de comprimento \(l=3\), é possível desenhar a representação dos hiperplanos de forma geométrica, que pode ser visto na \autoref{fig:schema_hyperplane}. Os vértices são esquemas de ordem 3, as linhas de ordem 2 e os planos de ordem 1.
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=0.75\linewidth]{imagens/schema_hyperplane.png}
+	\caption{Represetação dos esquemas como hyperplanos em um espaço tridimensional. \cite{Goldberg1989}}
+	\label{fig:schema_hyperplane}
+\end{figure}
+
+Avaliando os novos conceitos, pode ser verificado que quanto maior for o tamanho de um esquema (\(\delta(H)\)), maior será sua probabilidade de ser desfeito com os operadores genéticos de crossover, e quanto maior sua ordem, maior será a probabilidade do operador de mutação também destruí-lo. Apesar da probabilidade de modificar alguns dos esquemas presentes e que foram bem avaliados, pois os operadores serão aplicados aos cromossomos selecionados e portanto que possuem melhor avaliação me média, existe a chance de com isso encontrar esquemas que responderão melhor ainda para o problema em questão. 
+
+Como esquemas de ordem e tamanho maiores estão mais sujeitos a serem destruídos, os esquemas mais curtos e que mais contribuem para a avaliação dos cromossomos, tendem a ser preservados, e esses constituem os blocos de construção (\textit{building blocks}) citados por \citeauthor{Goldberg1989}.
+
+O que \citeauthor{Holland1992} indica como paralelismo intrínseco se atribui ao fato, de que apesar do algoritmo estar avaliando \textit{n} indivíduos contido na população na geração presente, ele está também avaliando de forma implícita um número bem maior de esquemas. Qualquer sequência binária de comprimento \textit{l} é uma instância de \(2^l\) esquemas. Por exemplo a sequência 11, é uma instância dos seguintes esquemas: **, 1*, *1 e 11. Estendendo para a população de tamanho \textit{n} existem portanto um total de até \(n \cdot 2^l\) esquemas, assim o total de esquemas em determinada população será um valor entre \(2^l\), caso todos os cromossomos sejam iguais, e \(n \cdot 2^l\), caso todos diferentes. Por essa razão o GA avalia uma quantidade de esquemas maior do que a quantidade de indivíduos presentes na população.
+
+\subsection{Teorema fundamental do GA}
+A definição do teorema dos esquemas de acordo com \cite{Linden2008} é "o GA tende a preservar com o decorrer do tempo aqueles esquemas com maior avaliação média e com menores ordem e tamanho, combinando-os como blocos de armar de forma a buscar a melhor solução". 
+
+O teorema pode ser verificado através da estimação do aumento ou diminuição das instâncias dos esquemas presentes na população. Consideremos uma população \(\Omega\) de tamanho \textit{N} de cromossomos com codificação binária e comprimento \textit{l}. Seja \textit{H} um esquema que tenha ao menos uma instância na população na geração \textit{t}, e \(m(H, t)\) o número de instâncias de \textit{H} no instante \textit{t}. Definimos \[\hat{u}(H,t) = \frac{\sum\limits_{x \in H}f(x)}{m(H,t)}\]
+onde \textit{x} é um indivíduo na população, e \(f(x)\) é a função de avaliação. Assim \(\hat{u}(H,t)\) é a média das avaliações das instâncias de \textit{H} no instante \textit{t}.
+
+Relembrando que a probabilidade de um indivíduo ser escolhido para seleção com o método da roleta viciada é definido por \(p(i) = f(i) / \sum_{j=0}^{N}{f(j)}\), com \(i = 1,2,\dots,n\). Sendo \(n(i,t)\) a quantidade de vezes que o cromossomo \textit{i} é selecionado na população na geração \textit{t}, o valor esperado de \textit{n} será \(E[n(i,t)] = N \cdot p(i)\). Se \(\overline{f}(t) = \sum_{i \in \Omega} {f(i)} / N\) é a média das avaliações da população no instante \textit{t}, o valor esperado de \(n(i,t)\) pode ser expresso como \(E[n(i,t)] = f(i) / \overline{f}(t)\)
+
+O valor esperado da quantidade de instâncias de \textit{H} em \(t+1\) considerando apenas a seleção descrita e sem usar os operadores de crossover e mutação será dado por:
+\begin{align}
+	E[m(H,t+1)] &= \frac{\sum\limits_{x \in H} {f(x)}}{\overline{f}(t)} \nonumber \\
+				&= \frac{\hat{u}(H,t)}{\overline{f}(t)} m(H,t)
+\label{eq:valor_esperado_H}
+\end{align}
+
+Assim é verificado que a quantidade de instâncias do esquema \textit{H} na próxima geração depende diretamente da média das avaliações das instâncias do esquema na geração atual e pode ser concluído que esquemas com avaliação maior que a média irão aumentar ao passo que os avaliação menor diminuirão.
+
+Como visto antes, os operadores de crossover e mutação podem tanto construir como destruir as instâncias do esquema \textit{H}, e que a probabilidade de destruir é proporcional as características do esquema dado pela ordem (\(o(H)\)) e pelo tamanho (\(\delta(H)\)). Considerando apenas o fato destrutivo dos operadores, para o caso do crossover de ponto único, com \(p_c\) sendo a probabilidade de ser aplicado, o limite inferior da probabilidade de sobrevivência do esquema pode ser estimado como:
+\[S_c(H) \ge 1 - p_c \frac{\delta(H)}{l - 1}\] % parte depois do 1 - é o limite superior da probabilidade de destruir ele, e 1 - p_destroy e a probabilidade de sobreviver%
+e pela equação é verificado que quanto menor o tamanho do esquema, maior sua probabilidade de sobrevivência.
+
+Já para o operador de mutação, considerando \(p_m\) como a probabilidade de um bit sofrer mutação, a probabilidade de sobrevivência do esquema é dada por:
+\[S_m(H) = (1 - p_m)^{o(H)}\]
+e novamente quanto menor a ordem do esquema, maior probabilidade de sobrevivência.
+
+Por fim, a \autoref{eq:valor_esperado_H} pode ser alterada para definir um limite inferior dado por:
+\begin{equation}
+E[n(H,t+1)] \ge \frac{\hat{u}(H,t)}{\overline{f}(t)} m(H,t)\left( 1 - p_c \frac{\delta(H)}{l - 1} \right) \left[(1 - p_m)^{o(H)} \right]
+\label{eq:schema_theorem}
+\end{equation}
+A \autoref{eq:schema_theorem} define o Teorema dos Esquemas proposto por \citeauthor{Holland1992} e que pode ser visto também em \citeonline{Goldberg1989}. 
+
+\subsection{Two-armed bandit}
+\citeauthor{Holland1992} menciona que a adaptação possui uma tensão entre os componentes de \textit{exploitation} e \textit{exploration}, e que a análise de esquemas demonstrava, assumindo certas condições, que o GA atingi um certo equilíbrio próximo do ótimo. A permutação entre os dois podem ser comparados com o \textit{``Two-armed bandit problem''}\footnote{Uma máquina caça-níquel é também conhecida como \textit{One-armed bandit}}.\cite{Mitchell1996}
+
+O problema é descrito como um jogador com \textit{N} moedas e uma máquina caça-níquel com duas alavancas, sendo que uma delas(\(A_1\)) paga com média \(\mu_1\) e desvio-padrão \(\sigma_1\) e a outra(\(A_2\)) paga com média \(\mu_2\) e desvio-padrão \(\sigma_2\). Esses valores não variam e são independentes, e são desconhecidos ao jogador. O objetivo do jogador é maximizar os lucros, porém como não tem informações sobre qual das alavancas paga mais, só pode estimar realizando jogadas nas duas. 
+
+\citeauthor{Mitchell1996} descreve uma solução simples para o problema seguindo o que foi proposto por \citeauthor{Holland1992} e que pode ser visto em detalhes em \citeonline{Holland1992}. Considerando sem perda de generalidade que \(\mu_1 > \mu_2\), ou seja, a alavanca \(A_1\) paga mais que a \(A_2\), e sendo \(A_h(N, N-n)\) e \(A_l(N,n)\) sendo as alavancas com maior e menor valores pagos observados respectivamente, após \textit{N} tentativas, sendo \(N-n\) tentativas usadas em \(A_h\) e \textit{n} tentativas no \(A_l\). O que se busca é o valor \(n = n^*\) que maximize o lucro. A melhor estratégia seria colocar as \textit{N} apostas na alavanca que paga mais, porém como ela não é conhecida isso não é possível.
+
+Duas possibilidades podem ocorrer, ou \(A_l\) corresponde a pior alavanca e nesse caso houve prejuízo somente nas \(n\) apostas feitas em \(A_l\) (\((N-n)(\mu_1-\mu_2)\)), ou \(A_l\) corresponde a melhor alavanca e então houve prejuízo nas \(N- n\) apostas colocadas em \(A_h\) (\(n(\mu_1-\mu_2)\)). Seja \textit{q} a probabilidade de \(A_l\) ser na verdade a melhor alavanca \(A_1\), isto é, \(q = P(A_l(N,n) = A_1)\), assim as perdas \(L(N-n,n)\) após \textit{N} tentativas é dado por:
+
+\begin{equation*}
+L(N-n,n) = q(N-n)(\mu_1-\mu_2) + (1-q)n(\mu_1-\mu_2)
+\end{equation*}
+
+Como o desejado é \(n = n^*\) que minimiza essa função (ou seja maximiza o lucro), tomando a derivada com relação a \textit{n} e igualando a zero.
+\begin{equation*}
+\frac{dL}{dn} = (\mu_1-\mu_2)\left( 1 - 2q + (N-2n)\frac{dq}{dn}\right) = 0
+\end{equation*}
+
+Que para ter uma solução é necessário expressar \textit{q} em função de \textit{n}. Sejam \(S_1^n\) a soma recebida pelas apostas em \(A_1\) e \(S_2^{N-n}\) a soma recebida pelas apostas em \(A_2\). Então \textit{q} pode ser expresso na forma:
+
+\begin{align}
+q 	&= P\left(\frac{S_2^{N-n}}{N-m} > \frac{S_1^}{n}\right) \nonumber \\
+	&= P\left( \left( \frac{S_2^{N-n}}{N-m} - \frac{S_1^}{n}\right) < 0 \right)
+\label{eq:prob_q}
+\end{align}
+
+que indica de fato a probabilidade de observar que \(A_2\) pagou mais que \(A_1\). Como \(S_1^n\) e \(S_2^{N-n}\) são variáveis aleatórias, sua diferença também é uma v.a. e a probabilidade descrita em \autoref{eq:prob_q} é a área abaixo da curva de distribuição na parte menor que zero. \citeauthor{Holland1992} aproximou essa probabilidade usando o teorema central do limite assumindo a distribuição normal. Na segunda edição, Holland atribui a correção dessa aproximação para Dan Frantz, que usou a teoria dos grandes desvios(\textit{theory of large deviations}), para aproximar essa probabilidade e chegar ao resultado:
+
+\begin{equation*}
+n^* \approx c_1 ln\left( \frac{c_2 N^2}{ln(c_3 N^2)} \right)
+\end{equation*}
+
+onde \(c_1\), \(c_2\) e \(c_3\) são constantes positivas. Rearranjando os termos obtêm-se:
+
+\begin{equation*}
+N - n^* \approx e^{n^*/2c_1} \sqrt{\frac{ln(c_3 N^2)}{c_2}} - n^*
+\end{equation*}
+
+Conforme \(n^*\) aumenta, o termo exponencial domina a equação, e pode-se aproximar mais ainda obtendo:
+
+\begin{equation*}
+N - n^* \approx e^{cn^*}
+\end{equation*}
+
+que indica em resumo que o valor ótimo de apostas \(N-n^*\) feitas à melhor alavanca observada deve aumentar exponencialmente conforme o número de apostas feitas na pior alavanca observada. \cite{Mitchell1996}
+
+O que o Teorema dos Esquemas sugere é que da mesma forma que o problema descrito \textit{``two-armed bandit''} que pode ser estendido a um problema com \textit{k} alavancas(\textit{``k-armed bandit''}), o GA aumenta de forma exponencial as tentativas feitas com os melhores esquemas observados com relação as tentativas feitas aos piores esquemas. \citeauthor{Goldberg1989} indica que na verdade o GA deve ser comparado a uma composição de \textit{k-armed bandits}.
+
+\citeauthor{Mitchell1996} faz uma ressalva com a comparação com relação ao fato de que no caso do \textit{two-armed bandit}, as alavancas são independentes, que não é o caso do GA, pois os esquemas interagem entre eles, pois por exemplo, o valor observado de retorno do esquema \(111*\ldots*\) tem influência sobre o valor observado do retorno de \(1***\ldots*\).
+
+\subsection{O GA como uma cadeia de Markov}
+O teorema dos esquemas versa sobre a evolução dos esquemas presentes no algoritmo, porém para tentar determinar exatamente fatores como a distribuição da população, das avaliações e da convergência do algoritmo conforme as iterações, foram procurados outros modelos matemáticos para determinar o comportamento do GA. Uma das formas é a proposta por \citeauthor{Vose1999}, usando cadeias de Markov para representar a evolução da população do algoritmo através das gerações.
+
+No modelo, os cromossomos são sequências binárias de comprimento \textit{l}. A população é definida por dois vetores de reais com tamanho \(2^l\), \(\overrightarrow{p}(t)\) com cada coordenada representando a probabilidade do elemento \textit{i} ser encontrado na população no instante \textit{t}, e \(\overrightarrow{s}(t)\) com cada coordenada representando a probabilidade do elemento \textit{i} da população ser selecionado para reprodução.
+
+Como \(\overrightarrow{p}(t)\) representa a composição da população em determinado instante e \(\overrightarrow{s}(t)\) define suas probabilidades de seleção baseado nas avaliações dos indivíduos, define-se uma matriz \textit{F} com valores 0 exceto em sua diagonal principal que tem os valores \(f(i)\), onde \textit{f} é a função de avaliação. Assim \(\overrightarrow{s}(t)\) pode ser escrito como:
+
+\begin{equation*}
+\overrightarrow{s}(t) = \frac{F\overrightarrow{p}(t)}{\text{tr}(F\overrightarrow{p}(t))}
+\end{equation*}
+onde no denominador está definido o traço de \(F\overrightarrow{p}(t)\), isto é, a soma de todas as avaliações da população.
