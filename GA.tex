@@ -255,7 +255,7 @@ Goldberg usou o simbolo \textit{H} pois o esquema define um hiperplano do espaç
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=0.75\linewidth]{imagens/schema_hyperplane.png}
-	\caption{Represetação dos esquemas como hyperplanos em um espaço tridimensional. \cite{Goldberg1989}}
+	\caption{Representação dos esquemas como hiperplanos em um espaço tridimensional. \cite{Goldberg1989}}
 	\label{fig:schema_hyperplane}
 \end{figure}
 
@@ -300,11 +300,11 @@ A \autoref{eq:schema_theorem} define o Teorema dos Esquemas proposto por \citeau
 \subsection{Two-armed bandit}
 \citeauthor{Holland1992} menciona que a adaptação possui uma tensão entre os componentes de \textit{exploitation} e \textit{exploration}, e que a análise de esquemas demonstrava, assumindo certas condições, que o GA atingi um certo equilíbrio próximo do ótimo. A permutação entre os dois podem ser comparados com o \textit{``Two-armed bandit problem''}\footnote{Uma máquina caça-níquel é também conhecida como \textit{One-armed bandit}}.\cite{Mitchell1996}
 
-O problema é descrito como um jogador com \textit{N} moedas e uma máquina caça-níquel com duas alavancas, sendo que uma delas(\(A_1\)) paga com média \(\mu_1\) e desvio-padrão \(\sigma_1\) e a outra(\(A_2\)) paga com média \(\mu_2\) e desvio-padrão \(\sigma_2\). Esses valores não variam e são independentes, e são desconhecidos ao jogador. O objetivo do jogador é maximizar os lucros, porém como não tem informações sobre qual das alavancas paga mais, só pode estimar realizando jogadas nas duas. 
+O problema é descrito como um jogador com \textit{N} moedas e uma máquina caça-níquel com duas alavancas, sendo que uma delas(\(A_1\)) paga com média \(\mu_1\) e desvio-padrão \(\sigma_1\) e a outra(\(A_2\)) paga com média \(\mu_2\) e desvio-padrão \(\sigma_2\). Esses valores não variam, são independentes e são desconhecidos ao jogador. O objetivo do jogador é maximizar os lucros, porém como não tem informações sobre qual das alavancas paga mais, só pode estimar realizando jogadas nas duas. 
 
-\citeauthor{Mitchell1996} descreve uma solução simples para o problema seguindo o que foi proposto por \citeauthor{Holland1992} e que pode ser visto em detalhes em \citeonline{Holland1992}. Considerando sem perda de generalidade que \(\mu_1 > \mu_2\), ou seja, a alavanca \(A_1\) paga mais que a \(A_2\), e sendo \(A_h(N, N-n)\) e \(A_l(N,n)\) sendo as alavancas com maior e menor valores pagos observados respectivamente, após \textit{N} tentativas, sendo \(N-n\) tentativas usadas em \(A_h\) e \textit{n} tentativas no \(A_l\). O que se busca é o valor \(n = n^*\) que maximize o lucro. A melhor estratégia seria colocar as \textit{N} apostas na alavanca que paga mais, porém como ela não é conhecida isso não é possível.
+\citeauthor{Mitchell1996} descreve uma solução simples para o problema seguindo o que foi proposto por \citeauthor{Holland1992} e que pode ser visto em detalhes em \citeonline{Holland1992}. Considerando sem perda de generalidade que \(\mu_1 > \mu_2\), ou seja, a alavanca \(A_1\) paga mais que a \(A_2\), e sendo \(A_h(N, N-n)\) e \(A_l(N,n)\) as alavancas com maior e menor valores pagos observados respectivamente, após \textit{N} tentativas, sendo \(N-n\) tentativas usadas em \(A_h\) e \textit{n} tentativas na \(A_l\). O que se busca é o valor \(n = n^*\) que maximize o lucro. A melhor estratégia seria colocar as \textit{N} apostas na alavanca que paga mais, porém como ela não é conhecida isso não é possível.
 
-Duas possibilidades podem ocorrer, ou \(A_l\) corresponde a pior alavanca e nesse caso houve prejuízo somente nas \(n\) apostas feitas em \(A_l\) (\((N-n)(\mu_1-\mu_2)\)), ou \(A_l\) corresponde a melhor alavanca e então houve prejuízo nas \(N- n\) apostas colocadas em \(A_h\) (\(n(\mu_1-\mu_2)\)). Seja \textit{q} a probabilidade de \(A_l\) ser na verdade a melhor alavanca \(A_1\), isto é, \(q = P(A_l(N,n) = A_1)\), assim as perdas \(L(N-n,n)\) após \textit{N} tentativas é dado por:
+Duas possibilidades podem ocorrer, ou \(A_l\) corresponde a pior alavanca e nesse caso houve prejuízo somente nas \(n\) apostas feitas em \(A_l\) (as perdas dadas por \((N-n)(\mu_1-\mu_2)\)), ou \(A_l\) corresponde a melhor alavanca e então houve prejuízo nas \(N- n\) apostas colocadas em \(A_h\) (perdas dadas por \(n(\mu_1-\mu_2)\)). Seja \textit{q} a probabilidade de \(A_l\) ser na verdade a melhor alavanca \(A_1\), isto é, \(q = P(A_l(N,n) = A_1)\), assim as perdas \(L(N-n,n)\) após \textit{N} tentativas é dado por:
 
 \begin{equation*}
 L(N-n,n) = q(N-n)(\mu_1-\mu_2) + (1-q)n(\mu_1-\mu_2)
@@ -318,8 +318,8 @@ Como o desejado é \(n = n^*\) que minimiza essa função (ou seja maximiza o lu
 Que para ter uma solução é necessário expressar \textit{q} em função de \textit{n}. Sejam \(S_1^n\) a soma recebida pelas apostas em \(A_1\) e \(S_2^{N-n}\) a soma recebida pelas apostas em \(A_2\). Então \textit{q} pode ser expresso na forma:
 
 \begin{align}
-q 	&= P\left(\frac{S_2^{N-n}}{N-m} > \frac{S_1^}{n}\right) \nonumber \\
-	&= P\left( \left( \frac{S_2^{N-n}}{N-m} - \frac{S_1^}{n}\right) < 0 \right)
+q 	&= P\left(\frac{S_2^{N-n}}{N-m} > \frac{S_1^n}{n}\right) \nonumber \\
+	&= P\left( \left( \frac{S_2^{N-n}}{N-m} - \frac{S_1^n}{n} \right) < 0 \right)
 \label{eq:prob_q}
 \end{align}
 
@@ -348,13 +348,55 @@ O que o Teorema dos Esquemas sugere é que da mesma forma que o problema descrit
 \citeauthor{Mitchell1996} faz uma ressalva com a comparação com relação ao fato de que no caso do \textit{two-armed bandit}, as alavancas são independentes, que não é o caso do GA, pois os esquemas interagem entre eles, pois por exemplo, o valor observado de retorno do esquema \(111*\ldots*\) tem influência sobre o valor observado do retorno de \(1***\ldots*\).
 
 \subsection{O GA como uma cadeia de Markov}
-O teorema dos esquemas versa sobre a evolução dos esquemas presentes no algoritmo, porém para tentar determinar exatamente fatores como a distribuição da população, das avaliações e da convergência do algoritmo conforme as iterações, foram procurados outros modelos matemáticos para determinar o comportamento do GA. Uma das formas é a proposta por \citeauthor{Vose1999}, usando cadeias de Markov para representar a evolução da população do algoritmo através das gerações.
+O teorema dos esquemas versa sobre a evolução dos esquemas presentes no algoritmo, porém para tentar determinar exatamente fatores como a distribuição da população, das avaliações e da convergência do algoritmo conforme as iterações, foram procurados outros modelos matemáticos para determinar o comportamento do GA. Um desses modelos descritos por \citeauthor{Nix1992}, modela o GA na forma de uma cadeia de Markov, para uma população finita. Assim o estado atual é definido pela presente população, que através de uma matriz de transição \textit{Q} define a probabilidade de ir para uma nova população dada a atual.
 
-No modelo, os cromossomos são sequências binárias de comprimento \textit{l}. A população é definida por dois vetores de reais com tamanho \(2^l\), \(\overrightarrow{p}(t)\) com cada coordenada representando a probabilidade do elemento \textit{i} ser encontrado na população no instante \textit{t}, e \(\overrightarrow{s}(t)\) com cada coordenada representando a probabilidade do elemento \textit{i} da população ser selecionado para reprodução.
+Seja o espaço de soluções definido por \(\Omega\) formado por cromossomos codificados como sequências binárias de comprimento \textit{l}, assim \(r=2^l\) define a quantidade de soluções possíveis, e seja \textit{P} uma população de elementos de \(\Omega\) de tamanho \textit{n}. \textit{N} é a quantidade de possíveis populações que podem ser formadas e pode ser calculado como:
+\[N = \binom{n+2^l-1}{2^l-1}\]
+que de fato é a combinação com repetição de \textit{n} elementos de um conjunto com \(2^l\) elementos.
 
-Como \(\overrightarrow{p}(t)\) representa a composição da população em determinado instante e \(\overrightarrow{s}(t)\) define suas probabilidades de seleção baseado nas avaliações dos indivíduos, define-se uma matriz \textit{F} com valores 0 exceto em sua diagonal principal que tem os valores \(f(i)\), onde \textit{f} é a função de avaliação. Assim \(\overrightarrow{s}(t)\) pode ser escrito como:
+Define-se a matriz \textit{Z} com tamanho \(r\times N\) cuja as colunas representam todas as possíveis populações de tamanho \textit{n}. Cada coluna é um vetor coluna das incidências de cada elemento \textit{y} de \(\Omega\) na população \(P_i\), isto é,  cada elemento \(z_{y,i}\) representa o número de ocorrências do indivíduo \textit{y} na população \(P_i\), com \textit{y} sendo o indexador do indivíduo começando com 0. A matriz \textit{Z} define assim os possíveis estados da cadeia de Markov.
+
+Agora seja \textit{Q} a matriz de transição de tamanho \(N \times N\), onde \(Q_{i,j}\) é a probabilidade de a partir da população \(P_i\) passar para a população \(P_j\). Para determinar a as probabilidades de transição, defini-se \(p_i(y)\) como a probabilidade de do indivíduo \textit{y} ser gerado a partir de \(P_i\) através dos operadores genéticos de seleção e recombinação(crossover e mutação). Na próxima população \(P_j\), \textit{y} está presente o número de vezes determinado em \(z_{y,j}\), e para determinar a probabilidade, Nix e Vose enumeraram as formas possíveis de gerar as sequências presentes em \(P_j\).
+
+A quantidade de formas de selecionar \(z_{0,j}\) vezes o indivíduo 0 dentro da população de tamanho \textit{n} é dado por \(\binom{n}{z_{0,j}}\), e sobram \(n - z_{0,j}\) posições na população para serem preenchidas. Seguindo para o indivíduo 1, a quantidade de formas de selecionar ele \(z_{1,j}\) vezes é definido por \(\binom{n-z_{0,j}}{z_{1,j}}\). Continuando da mesma maneira, o total de combinações para todas os indivíduos é dado por:
+\begin{equation*}
+\binom{n}{z_{0,j}}\binom{n-z_{0,j}}{z_{1,j}}\cdots \binom{n-z_{0,j}-\cdots -z_{2^l-2,j}}{z_{2^l-1,j}} = \frac{n!}{z_{0,j}!z_{1,j}!\cdots z_{2^l-1,j}!}
+\end{equation*}
+
+Como a probabilidade de produzir a quantidade certa do indivíduo \textit{y} na população \(P_j\) a partir da população \(P_i\) é dado por:
+\[ \prod_{y=0}^{2^l-1}\left(p_i(y)\right)^{z_{y,j}} \]
+
+A probabilidade de produzir \(P_j\) a partir de \(P_i\) fica definido como a distribuição multinomial dada por:
+\begin{equation*}
+Q_{i,j} = \frac{n!}{z_{0,j}!z_{1,j}!\cdots z_{2^l-1,j}!} \prod_{y=0}^{2^l-1}\left(p_i(y)\right)^{z_{y,j}} = n!\prod_{y=0}^{2^l-1} \frac{\left(p_i(y)\right)^{z_{y,j}}}{z_{y,j}!}
+\end{equation*}
+
+Para calcular a probabilidade \(p_i(y)\) no artigo de \citeonline{Vose1991PunctuatedEI} são derivados duas matrizes, \textit{F} que define a avaliação dos indivíduos em sua diagonal principal e \textit{M} que define a recombinação do algoritmo genético simples. Seja \(\overrightarrow{\phi}_i\) o vetor coluna que representa a população \(P_i\) e portanto é uma das colunas de \textit{Z}, e define-se \(\left| \overrightarrow{\phi}_i \right|\) como a soma dos elementos do vetor. Dessa forma a proporção dos indivíduos \textit{y} na população \(P_i\) é dada por \((\overrightarrow{\phi}_i / \left| \overrightarrow{\phi}_i \right| )_y\).
+A probabilidade de \textit{y} ser selecionado é dado por
+\[\left( \frac{F \overrightarrow{\phi}_i}{\left| F \overrightarrow{\phi}_i \right|} \right)_y\]
+e o valor esperado da proporção de \textit{y} na próxima geração dado por
+\[\left[ M \left( \frac{F \overrightarrow{\phi}_i}{\left| F \overrightarrow{\phi}_i \right|} \right) \right]_y\]
+e como \(p_i(y)\) é equivalente a proporção esperada de \textit{y}, a matriz de transição então pode ser escrita como 
 
 \begin{equation*}
-\overrightarrow{s}(t) = \frac{F\overrightarrow{p}(t)}{\text{tr}(F\overrightarrow{p}(t))}
+Q_{i,j} = n!\prod_{y=0}^{2^l-1} \frac{\left[ M \left( \frac{F \overrightarrow{\phi}_i}{\left| F \overrightarrow{\phi}_i \right|} \right)_y \right]^{z_{y,j}}}{z_{y,j}!}
 \end{equation*}
-onde no denominador está definido o traço de \(F\overrightarrow{p}(t)\), isto é, a soma de todas as avaliações da população.
+
+Assim a cadeia de Markov fica definida com \textit{Z} sendo a matriz de estados, e \textit{Q} a matriz de transições. Com base nas propriedades das cadeias de Markov, \citeauthor{Nix1992} derivaram alguns resultados importantes, como por exemplo, quando \(n \to \infty\), a cadeia converge para iterações de \textit{G}, com probabilidade próxima de 1, onde \(G = F \circ M \). Também mostraram que para \textit{n} suficientemente grande, e se \(G_p\) tem um ponto fixo, o GA tende a ficar o tempo todo com a população correspondente a este ponto. Se \(G_p\) tem mais de um ponto, o GA gasta um tempo fora desses pontos com tendência a 0.\(G_p(\overrightarrow{x}) = M \left( {F \overrightarrow{x}}/{\left| F \overrightarrow{x} \right|} \right) \)
+
+Apesar de lucidar alguns pontos sobre o GA, esses modelos são impraticáveis para predizer modelos reais por serem muitos detalhados e necessitarem de matrizes muito grandes conforme \textit{l} e \textit{n} aumentam.
+
+\subsection{Mecânica estatística}
+Uma outra forma de avaliar o GA indicado por \citeauthor{Mitchell1996} é o uso da mecânica estatística, que em vez de procurar determinar como cada parte define o comportamento do algoritmo, procura ver o GA de uma forma mais macroscópica. Um estudo feito sobre esse tema pode ser encontrado no \citeonline{Pruegel-Bennett1994}, onde usaram o modelo de Ising de uma dimensão e o GA para minimizar a energia na grade. O objetivo era verificar e tentar prever o comportamento da distribuição de energia na população conforme as gerações do algoritmo. Para o modelo de uma dimensão, \citeauthor{Pruegel-Bennett1994}, conseguiram gerar uma previsão sobre os dois primeiros momentos, média e variância, da distribuição de energia na população.
+
+Como será visto no \autoref{chap:implementGA} foi escolhido o modelo de Ising com duas dimensões, e será feito uma simulação para verificar o comportamento da distribuição da população durante as gerações do algoritmo, variando alguns dos parâmetros do GA para averiguar quais mudanças causam nos resultados.
+
+\section{Problemas associados ao GA}
+\label{sec:problemas_GA}
+Existem duas situações conhecidas que levam o GA a ter uma piora de desempenho podendo se tornar ineficiente. Uma delas é chamado de carona (\textit{hitchhiking}), e consiste no fato de que genes vizinhos aos que formam esquemas com alta avaliação, tendem a se manter nas próximas gerações como caronistas. Isso levanta questões sobre o teorema dos esquemas, dando argumentos aos que se opõe a ele. No exemplo de codificação binária, a ocorrência desses bits que pegam caronas se deve ao operador de crossover, que deveria ter seus pontos de corte sorteados de tal forma a precisamente manter somente os bits que geram a alta avaliação no esquema e remover os caronas, mas que dependendo do comprimento das cadeias de bits e dos esquemas passam a ter probabilidade pequena de ocorrerem. 
+
+Outra questão levantada sobre os GAs é com relação aos problemas que foram definidos como enganadores (\textit{deceptives}), que são problemas que apresentam esquemas que não contêm o máximo global com média de avaliação superior aos esquemas que o contêm. \citeauthor{Linden2008} descreve esses problemas como tendo o máximo global em forma de pico cercados por valores de avaliação muito baixos, porém da mesma forma que impõem uma dificuldade ao GA, também será difícil para outros métodos.
+
+\citeauthor{Spall2003} também menciona a questão sobre epistasia, onde genes interagem entre si e combinados produzem um resultado melhor do que avaliados individualmente, o que vai contra a teoria dos blocos de construção de \citeauthor{Goldberg1989}, onde pequenos blocos com alta avaliação garantem ao GA sua eficiência. Na forma do algoritmo genético simples apoiado no teorema dos esquemas, ficou definido que o GA tende a preservar esquemas com menor ordem e tamanho, mas no caso deveria-se preservar esquemas que podem ter o tamanho grande se os genes que interagem ocupam posições distantes no cromossomo.
+
+Mesmo com o GA apresentando alguns problemas, ele pode ser uma opção interessante, principalmente se o conhecimento do problema permitir que esses efeitos sejam reduzidos, como o posicionamento dos genes no cromossomo, ou o uso de outros operadores, como o de inversão que explora novos posicionamentos dos genes, ou usar operadores modificados de crossover, ou de mutação direcionados. Além disso ainda existe a opção de combinar o GA com outros métodos de otimização locais, por exemplo, usar o método de \textit{hill-climbing} na fase de mutação.

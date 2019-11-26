@@ -68,7 +68,7 @@
 % Pacotes de citações
 % ---
 \usepackage[brazilian,hyperpageref]{backref}	 % Paginas com as citações na bibl
-\usepackage[alf]{abntex2cite}	% Citações padrão ABNT
+\usepackage[alf, abnt-emphasize=bf]{abntex2cite}	% Citações padrão ABNT
 
 % --- 
 % CONFIGURAÇÕES DE PACOTES
@@ -77,22 +77,27 @@
 % ---
 % Configurações do pacote backref
 % Usado sem a opção hyperpageref de backref
-\renewcommand{\backrefpagesname}{Citado na(s) página(s):~}
+%\renewcommand{\backrefpagesname}{Citado na(s) página(s):~}
+\renewcommand{\backrefpagesname}{}
 % Texto padrão antes do número das páginas
 \renewcommand{\backref}{}
 % Define os textos da citação
-\renewcommand*{\backrefalt}[4]{
-	\ifcase #1 %
-		Nenhuma citação no texto.%
-	\or
-		Citado na página #2.%
-	\else
-		Citado #1 vezes nas páginas #2.%
-	\fi}%
+%\renewcommand*{\backrefalt}[4]{
+%	\ifcase #1 %
+%		Nenhuma citação no texto.%
+%	\or
+%		Citado na página #2.%
+%	\else
+%		Citado #1 vezes nas páginas #2.%
+%	\fi}%
+\renewcommand*{\backrefalt}[4]{}%
+% workaround referências a anexos
+\newcommand{\refanexo}[1]{\hyperref[#1]{Anexo~\ref{#1}}}
 % --- Pacote próprios
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
+\usepackage{bm}
 \usepackage{bbm}
 \usepackage{mathrsfs}
 %\usepackage{graphicx}
@@ -100,7 +105,8 @@
 \usepackage{url}
 \usepackage{verbatim}
 \usepackage{babel}
-\usepackage[portuguesekw]{algorithm2e}
+\usepackage{subcaption}
+\usepackage[portuguesekw, boxed]{algorithm2e}
 \usepackage[font=small,labelfont=bf]{caption}
 % --- 
 % --- Configurações extras
@@ -630,6 +636,28 @@ Com isso poderemos avaliar o funcionamento e perfomance do método e como os par
 \chapter{Conclusão}
 % ---
 %\lipsum[31-33]
+O algoritmo genético é uma outra ferramenta que dispomos pela busca de soluções ótimas. Como visto na literatura, podemos considerar que na verdade é um algoritmo com foco em busca de soluções satisfatórias do que exatamente da solução ótima. Uma das vantagens está na facilidade de implementação do algoritmo, porém possui parâmetros de configuração que ainda não se conhece formas de definir analiticamente os melhores valores, além de dependerem das condições do problema a ser resolvido. Com isso a maior parte dos trabalhos se baseiam em resultados empíricos para ajuste dos parâmetros. Foi visto que o GA também apresenta algumas dificuldades com certas condições, mas que podem ser amenizadas se propriamente codificado e parametrizado. 
+
+Nos testes realizados, o GA se mostrou bem mais eficiente que a busca aleatória, alcançando resultados mais expressivos. Portanto em problemas que por limitações inerentes seriam usados o algoritmo de busca aleatória, o algoritmo genético se apresenta como uma outra abordagem possível. 
+
+Ficou demonstrado que é muito importante as escolhas feitas para a arquitetura do GA e seus parâmetros podem definir o sucesso do algoritmo. No teste sobre o modelo de Ising, percebeu-se que a utilização de uma função de avaliação, que não era a mais apropriada, resultou em ineficiência do algoritmo obtendo resultados iguais e até inferiores que a busca aleatória, fato contornado usando outra função. Esse tipo de detalhe é exatamente o \citeauthor{Linden2008} menciona sobre quanto mais informação sobre o problema conseguir inserir no algoritmo, melhor será a resposta, e por isso não existe uma padrão do GA que seja ideal para todos os problemas.
+
+Outro conceito que impôs diferença nos resultados foi o uso do elitismo, pois ao manter os melhores cromossomos de uma geração para outra, sustentou-se o melhor resultado até o fim do processo. Sem o elitismo era possível ver nos gráficos que o melhor cromossomo em gerações \(t+1\) ficavam com pior resultado que o o melhor da geração \(t\).
+
+No modelo de Ising, o algoritmo mostrou através da análise das médias e variâncias, que caminhava para uma convergência, e com boa probabilidade de se tiver gerações suficientes, encontrar o estado de menor energia
+
+As aplicações para o GA são as mais variadas, podendo ser usado em problemas de busca de máximo ou mínimo de funções multivariadas e também com multiobjetivos, na busca de ordenações mais eficientes, como é o caso do problema do caixeiro viajante, e programação genética, onde o GA consegue criar pequenos algoritmos para solução de problemas. 
+
+Umas das aplicações interessantes para o algoritmo é na busca dos coeficientes de uma rede neural. Para as redes usadas em processos de \textit{machine learning} para classificação, pode ser usado de forma a determinar os coeficientes iniciais para o algoritmo de \textit{backpropagation}, que por ser uma função com vários máximos locais, dependendo do ponto inicial utilizado pode ficar preso a um que não seja o máximo global. Normalmente o ponto inicial é definido aleatoriamente, e nesse sentido que poderia ser usado o GA, que teria uma população definida por cromossomos de valores reais definindo os coeficientes inicias da rede. Para cada cromossomo poderia ser executado o \textit{backpropagation} e verificado através dos resultados qual obteve melhor taxa de sucesso de classificação, e usado esse valor como função de avaliação.
+
+Ainda com redes neurais, existem os casos que a rede define o comportamento de um sistema em resposta a sensores de entrada. O caso clássico de demonstração dessa aplicação é do treinar o computador para jogar determinado jogo eletrônico. A população fica definida como cromossomos de valores reais com os coeficientes da rede e o resultado da rede só pode ser visto após determinada simulação. A população do GA testada contra o resultado de pontuação, que será a função de avaliação do algoritmo, é evoluída então combinando os melhores resultados e aplicando mutação em alguns.
+
+Outra característica interessante, que ainda pode ser explorada, é a possibilidade de combinar o GA com outro algoritmo de otimização, por exemplo direcionando a mutação para uma busca de máximo local da função de avaliação. Esse pode ser um diferencial combinando a qualidade do GA de encontrar soluções satisfatórias ou próximas a máximos locais e combinar com um algoritmo mais eficiente de maximização local, como o \textit{hill climbing}.
+
+O algoritmo genético ainda precisa ser muito analisado de forma a entender melhor seu mecanismo de funcionamento e dessa forma conseguir determinar os melhores parâmetros, e tem demonstrado certa popularidade com as novas técnicas de AI e \textit{machine learning}.
+
+Para trabalhos futuros podem ser seguido os testes com o modelo proposto de Ising, trabalhando com contornos e busca de soluções para acoplamentos do modelo, também podem ser explorados as técnicas de combinar com outros métodos. Ainda é necessário também avaliar o algoritmo com relação a seu desempenho computacional e outro passo importante seria o de executar o algoritmo usando paralelismo, pois a fase de avaliação e seleção poderia facilmente ser colocada em tarefas concorrentes, otimizando o tempo de resposta do algoritmo.  
+
 
 % ----------------------------------------------------------
 % ELEMENTOS PÓS-TEXTUAIS
@@ -641,6 +669,7 @@ Com isso poderemos avaliar o funcionamento e perfomance do método e como os par
 % Referências bibliográficas
 % ----------------------------------------------------------
 %\bibliography{abntex2-modelo-references}
+\nocite{LeeJacobson2015} % colocar nessa forma todos aqueles que não foram citados diretamente
 \bibliography{TC}
 
 % ----------------------------------------------------------
@@ -658,10 +687,10 @@ Com isso poderemos avaliar o funcionamento e perfomance do método e como os par
 % ---
 % Inicia os apêndices
 % ---
-\begin{apendicesenv}
+%\begin{apendicesenv}
 
 % Imprime uma página indicando o início dos apêndices
-\partapendices
+%\partapendices
 
 %% ----------------------------------------------------------
 %\chapter{Quisque libero justo}
@@ -675,7 +704,7 @@ Com isso poderemos avaliar o funcionamento e perfomance do método e como os par
 %% ----------------------------------------------------------
 %\lipsum[55-57]
 
-\end{apendicesenv}
+%\end{apendicesenv}
 % ---
 
 
@@ -689,7 +718,9 @@ Com isso poderemos avaliar o funcionamento e perfomance do método e como os par
 \begin{anexosenv}
 
 % Imprime uma página indicando o início dos anexos
-\partanexos
+%\partanexos
+
+\include{anexos}
 
 %% ---
 %\chapter{Morbi ultrices rutrum lorem.}
