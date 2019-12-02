@@ -104,6 +104,7 @@
 %\usepackage{float}
 \usepackage{url}
 \usepackage{verbatim}
+\usepackage{listings}
 \usepackage{babel}
 \usepackage{subcaption}
 \usepackage[portuguesekw, boxed]{algorithm2e}
@@ -112,6 +113,31 @@
 % --- Configurações extras
 % Acerta nomes dos algoritmos
 \SetAlgorithmName{Algoritmo}{Algoritmo}{Lista de algoritmos}
+% Acerta o nome de listagens
+\renewcommand{\lstlistingname}{Listagem}% Listing -> Algorithm
+% parametros das listagens
+\lstset{
+	language={}, %% Troque para PHP, C, Java, etc... bash é o padrão
+	basicstyle=\ttfamily\tiny,
+	numberstyle=\footnotesize,
+	numbers=left,
+	%	backgroundcolor=\color{gray!10},
+	frame=single,
+	tabsize=2,
+	%	rulecolor=\color{black!30},
+	title=\lstname,
+	escapeinside={\%*}{*)},
+	breaklines=true,
+	breakatwhitespace=true,
+	framextopmargin=2pt,
+	framexbottommargin=2pt,
+	inputencoding=utf8,
+	extendedchars=true,
+	literate={á}{{\'a}}1 {ã}{{\~a}}1 {é}{{\'e}}1 {ç}{{\c{c}}}1 {Ç}{{\c{C}}}1,
+	numberbychapter=false
+}
+% evitar rodapé separar em páginas diferentes
+\interfootnotelinepenalty=10000
 % ---
 % Informações de dados para CAPA e FOLHA DE ROSTO
 % ---
@@ -247,37 +273,37 @@
 %     \includepdf{fig_ficha_catalografica.pdf}
 % \end{fichacatalografica}
 
-\begin{fichacatalografica}
-	\sffamily
-	\vspace*{\fill}					% Posição vertical
-	\begin{center}					% Minipage Centralizado
-	\fbox{\begin{minipage}[c][8cm]{13.5cm}		% Largura
-	\small
-	\imprimirautor
-	%Sobrenome, Nome do autor
-	
-	\hspace{0.5cm} \imprimirtitulo  / \imprimirautor. --
-	\imprimirlocal, \imprimirdata-
-	
-	\hspace{0.5cm} \thelastpage p. : il. (algumas color.) ; 30 cm.\\
-	
-	\hspace{0.5cm} \imprimirorientadorRotulo~\imprimirorientador\\
-	
-	\hspace{0.5cm}
-	\parbox[t]{\textwidth}{\imprimirtipotrabalho~--~\imprimirinstituicao,
-	\imprimirdata.}\\
-	
-	\hspace{0.5cm}
-		1. Algoritmos Evolutivos.
-		2. Algoritmos Genéticos.
-		3. Otimização.
-		I. Orientador.
-		II. Universidade de São Paulo - USP.
-		III. Instituto de Matemática e Estatística - IME.
-		IV. Titulo			
-	\end{minipage}}
-	\end{center}
-\end{fichacatalografica}
+%\begin{fichacatalografica}
+%	\sffamily
+%	\vspace*{\fill}					% Posição vertical
+%	\begin{center}					% Minipage Centralizado
+%	\fbox{\begin{minipage}[c][8cm]{13.5cm}		% Largura
+%	\small
+%	\imprimirautor
+%	%Sobrenome, Nome do autor
+%	
+%	\hspace{0.5cm} \imprimirtitulo  / \imprimirautor. --
+%	\imprimirlocal, \imprimirdata-
+%	
+%	\hspace{0.5cm} \thelastpage p. : il. (algumas color.) ; 30 cm.\\
+%	
+%	\hspace{0.5cm} \imprimirorientadorRotulo~\imprimirorientador\\
+%	
+%	\hspace{0.5cm}
+%	\parbox[t]{\textwidth}{\imprimirtipotrabalho~--~\imprimirinstituicao,
+%	\imprimirdata.}\\
+%	
+%	\hspace{0.5cm}
+%		1. Algoritmos Evolutivos.
+%		2. Algoritmos Genéticos.
+%		3. Otimização.
+%		I. Orientador.
+%		II. Universidade de São Paulo - USP.
+%		III. Instituto de Matemática e Estatística - IME.
+%		IV. Titulo			
+%	\end{minipage}}
+%	\end{center}
+%\end{fichacatalografica}
 % ---
 
 % ---
@@ -322,41 +348,41 @@
 % \includepdf{folhadeaprovacao_final.pdf}
 % \end{folhadeaprovacao}
 %
-\begin{folhadeaprovacao}
-
-  \begin{center}
-    {\ABNTEXchapterfont\large\imprimirautor}
-
-    \vspace*{\fill}\vspace*{\fill}
-    \begin{center}
-      \ABNTEXchapterfont\bfseries\Large\imprimirtitulo
-    \end{center}
-    \vspace*{\fill}
-    
-    \hspace{.45\textwidth}
-    \begin{minipage}{.5\textwidth}
-        \imprimirpreambulo
-    \end{minipage}%
-    \vspace*{\fill}
-   \end{center}
-        
-   Trabalho aprovado. \imprimirlocal, 24 de novembro de 2012:
-
-   \assinatura{\textbf{\imprimirorientador} \\ Orientador} 
-   \assinatura{\textbf{Professor} \\ Convidado 1}
-   \assinatura{\textbf{Professor} \\ Convidado 2}
-   %\assinatura{\textbf{Professor} \\ Convidado 3}
-   %\assinatura{\textbf{Professor} \\ Convidado 4}
-      
-   \begin{center}
-    \vspace*{0.5cm}
-    {\large\imprimirlocal}
-    \par
-    {\large\imprimirdata}
-    \vspace*{1cm}
-  \end{center}
-  
-\end{folhadeaprovacao}
+%\begin{folhadeaprovacao}
+%
+%  \begin{center}
+%    {\ABNTEXchapterfont\large\imprimirautor}
+%
+%    \vspace*{\fill}\vspace*{\fill}
+%    \begin{center}
+%      \ABNTEXchapterfont\bfseries\Large\imprimirtitulo
+%    \end{center}
+%    \vspace*{\fill}
+%    
+%    \hspace{.45\textwidth}
+%    \begin{minipage}{.5\textwidth}
+%        \imprimirpreambulo
+%    \end{minipage}%
+%    \vspace*{\fill}
+%   \end{center}
+%        
+%   Trabalho aprovado. \imprimirlocal, 24 de novembro de 2012:
+%
+%   \assinatura{\textbf{\imprimirorientador} \\ Orientador} 
+%   \assinatura{\textbf{Professor} \\ Convidado 1}
+%   \assinatura{\textbf{Professor} \\ Convidado 2}
+%   %\assinatura{\textbf{Professor} \\ Convidado 3}
+%   %\assinatura{\textbf{Professor} \\ Convidado 4}
+%      
+%   \begin{center}
+%    \vspace*{0.5cm}
+%    {\large\imprimirlocal}
+%    \par
+%    {\large\imprimirdata}
+%    \vspace*{1cm}
+%  \end{center}
+%  
+%\end{folhadeaprovacao}
 % ---
 
 % ---
@@ -410,6 +436,8 @@
 %\end{epigrafe}
 % ---
 
+\cleardoublepage
+
 % ---
 % RESUMOS
 % ---
@@ -417,11 +445,22 @@
 % resumo em português
 \setlength{\absparsep}{18pt} % ajusta o espaçamento dos parágrafos do resumo
 \begin{resumo}
-Um dos problemas mais comuns em matemática é a busca de soluções que maximizem ou minimizem certa função e temos a disposição diversas formas de resolver que podem ser classificadas em técnicas baseadas em cálculo, aleatórias ou métodos que verificam todo o espaço solução pela melhor delas. Dentre as técnicas aleatórias temos aquelas puramente aleatória como o \textit{random walk} e aquelas consideradas aleatórias guiadas como por exemplo o \textit{simulated annealing} ou resfriamento simulado. No âmbito de sistemas evolutivos, os algoritmos genéticos podem ser classificado também como
-um método aleatório guiado, onde o estado corrente influencia a próxima escolha para a solução. 
 
-O objetivo desse trabalho é verificar e avaliar os algoritmos genéticos, explorando as técnicas e os mecanismos usados nesse método. Para tal será desenvolvido o algoritmo em uma linguagem de programação usando o paradigma de orientação a objetos e aplicá-lo em um problema de busca pela solução ótima, sendo que buscaremos a melhor solução para um modelo de Ising.
-Com isso poderemos avaliar o funcionamento e perfomance do método e como os parâmetros utilizados podem influenciar o resultado
+O presente trabalho explora uma alternativa de algoritmo de busca de soluções para maximizar ou minimizar funções. Esse algoritmo é baseado na biologia, no que se refere as teorias da evolução e da genética, e é conhecido por algoritmo genético, que pode ser classificado como um método de busca aleatório guiado. No \autoref{chap:introducao} serão apresentados os conceitos básicos da inspiração do algoritmo e uma breve história do desenvolvimento dele. 
+
+No \autoref{chap:GA} serão explorados os conceitos básicos do algoritmo, definindo seus operadores e funcionamento básico. Também será exposto alguns conceitos teóricos sobre o algoritmo, e algumas análises feitas sobre seu funcionamento.
+
+Para a implementação e testes, foram selecionados dois problemas, o primeiro é uma função bivariada, e será explorado no começo do \autoref{chap:implementGA} sua implementação e alguns testes. Essa primeira função à ser maximizada tem o objetivo de demonstrar os funcionamentos básicos do algoritmo em operação.
+
+Na sequência do \autoref{chap:implementGA}, é introduzido o modelo de Ising que será a base para as demais implementações e testes. Esse modelo é muito utilizado em mecânica estatística e também em estudos de fenômenos colaborativos. Nesse trabalho será utilizado como um problema de minimização na busca do estado que deixará o modelo com a menor energia. Além disso serão explorados os vários parâmetros do algoritmo e como influenciam o resultado.
+
+Por fim, no \autoref{chap:conclusao} serão avaliados alguns aprendizados dos testes executados e comentado quais novos desafios sobre o algoritmo genético podem ser testados em trabalhos futuros.
+	
+%Um dos problemas mais comuns em matemática é a busca de soluções que maximizem ou minimizem certa função e temos a disposição diversas formas de resolver que podem ser classificadas em técnicas baseadas em cálculo, aleatórias ou métodos que verificam todo o espaço solução pela melhor delas. Dentre as técnicas aleatórias temos aquelas puramente aleatória como o \textit{random walk} e aquelas consideradas aleatórias guiadas como por exemplo o \textit{simulated annealing} ou resfriamento simulado. No âmbito de sistemas evolutivos, os algoritmos genéticos podem ser classificado também como
+%um método aleatório guiado, onde o estado corrente influencia a próxima escolha para a solução. 
+%
+%O objetivo desse trabalho é verificar e avaliar os algoritmos genéticos, explorando as técnicas e os mecanismos usados nesse método. Para tal será desenvolvido o algoritmo em uma linguagem de programação usando o paradigma de orientação a objetos e aplicá-lo em um problema de busca pela solução ótima, sendo que buscaremos a melhor solução para um modelo de Ising.
+%Com isso poderemos avaliar o funcionamento e perfomance do método e como os parâmetros utilizados podem influenciar o resultado
 
 %\textit{Talvez acrescentar que será comparado com outro método como o resfriamento simulado}
 	
@@ -434,18 +473,29 @@ Com isso poderemos avaliar o funcionamento e perfomance do método e como os par
 % resumo, antecedidas da expressão Palavras-chave:, separadas entre si por
 % ponto e finalizadas também por ponto.
 
- \textbf{Palavras-chave}: Algoritmos Evolutivos. Algoritmos Genéticos. Otimização. Programação Orientada a Objetos.
+\vspace{\onelineskip}
+
+\noindent 
+ \textbf{Palavras-chave}: Algoritmos Evolucionários. Algoritmos Genéticos. Otimização. Modelo de Ising.
 \end{resumo}
 
 % resumo em inglês
 \begin{resumo}[Abstract]
  \begin{otherlanguage*}{english}
-   This is the english abstract.
+   The present work explores an alternative solution search algorithm to maximize or minimize functions. This algorithm is based on biology, on the topics of theories of evolution and genetics, and is known as the genetic algorithm, which can be classified as a guided random search method. In chapter \ref{chap:introducao} the basic concepts that gives inspiration to the algorithm will be presented and a brief history of its development.
+   
+   In chapter \ref{chap:GA} will be explored the basic concepts of the algorithm, defining its operators and basic operation. It will also be exposed some theoretical concepts about the algorithm, and some analyzes made about its operation.
+   
+   For implementation and testing, two problems were selected, the first is a bivariate function that will be explored at the beginning of chapter \ref{chap:implementGA} its implementation and some tests. This first function to be maximized has the goal to demonstrate the basic functioning of the algorithm operation.
+   
+   Following chapter \ref{chap:implementGA} is introduced the Ising model that will be the basis for the other implementations and tests. This model is widely used in statistical mechanics and in studies of collaborative phenomena. On this paper will be used as a minimizing problem on the search for the state that the model will present the lowest energy. In addition, the various algorithm parameters and how they influence the outcome will be explored.
+   
+   Finally, on chapter \ref{chap:conclusao} will be considered some thoughts taken from the tests performed and commented which new challenges about the genetic algorithm can be tested in future works.
 
    \vspace{\onelineskip}
  
    \noindent 
-   \textbf{Keywords}: Evolutionary Algorithms. Genetic Algorithms. Optimization. Object Oriented Programming.
+   \textbf{Keywords}: Evolutionary Algorithms. Genetic Algorithms. Optimization. Ising model.
  \end{otherlanguage*}
 \end{resumo}
 
@@ -461,9 +511,9 @@ Com isso poderemos avaliar o funcionamento e perfomance do método e como os par
 % ---
 % inserir lista de quadros
 % ---
-\pdfbookmark[0]{\listofquadrosname}{loq}
-\listofquadros*
-\cleardoublepage
+%\pdfbookmark[0]{\listofquadrosname}{loq}
+%\listofquadros*
+%\cleardoublepage
 % ---
 
 % ---
@@ -478,23 +528,24 @@ Com isso poderemos avaliar o funcionamento e perfomance do método e como os par
 % inserir lista de abreviaturas e siglas
 % ---
 \begin{siglas}
-	\item[SGA] Simple Genetic Algorithm
-	\item[GA] Genetic Algorithm
-	\item[NFL] No-Free-Lunch Theorem
-	\item[EA] Evolutionary Algorithm
+	\item[EA] \textit{Evolutionary Algorithm} - Algoritmo evolucionário
+	\item[GA] \textit{Genetic Algorithm}	- Algoritmo Genético
+	\item[NFL] \textit{No-Free-Lunch Theorem} - Teorema da inexistência do almoço grátis
 	\item[OO] Orientação a objetos
+	\item[RS] \textit{Random Search} - Busca Aleatória
+	\item[SGA] \textit{Simple Genetic Algorithm} - Algoritmo Genético Simples
 \end{siglas}
 % ---
 
 % ---
 % inserir lista de símbolos
 % ---
-\begin{simbolos}
-  \item[$ \Gamma $] Letra grega Gama
-  \item[$ \Lambda $] Lambda
-  \item[$ \zeta $] Letra grega minúscula zeta
-  \item[$ \in $] Pertence
-\end{simbolos}
+%\begin{simbolos}
+%  \item[$ \Gamma $] Letra grega Gama
+%  \item[$ \Lambda $] Lambda
+%  \item[$ \zeta $] Letra grega minúscula zeta
+%  \item[$ \in $] Pertence
+%\end{simbolos}
 % ---
 
 % ---
@@ -634,6 +685,7 @@ Com isso poderemos avaliar o funcionamento e perfomance do método e como os par
 % Conclusão
 % ---
 \chapter{Conclusão}
+\label{chap:conclusao}
 % ---
 %\lipsum[31-33]
 O algoritmo genético é uma outra ferramenta que dispomos pela busca de soluções ótimas. Como visto na literatura, podemos considerar que na verdade é um algoritmo com foco em busca de soluções satisfatórias do que exatamente da solução ótima. Uma das vantagens está na facilidade de implementação do algoritmo, porém possui parâmetros de configuração que ainda não se conhece formas de definir analiticamente os melhores valores, além de dependerem das condições do problema a ser resolvido. Com isso a maior parte dos trabalhos se baseiam em resultados empíricos para ajuste dos parâmetros. Foi visto que o GA também apresenta algumas dificuldades com certas condições, mas que podem ser amenizadas se propriamente codificado e parametrizado. 
@@ -654,9 +706,9 @@ Ainda com redes neurais, existem os casos que a rede define o comportamento de u
 
 Outra característica interessante, que ainda pode ser explorada, é a possibilidade de combinar o GA com outro algoritmo de otimização, por exemplo direcionando a mutação para uma busca de máximo local da função de avaliação. Esse pode ser um diferencial combinando a qualidade do GA de encontrar soluções satisfatórias ou próximas a máximos locais e combinar com um algoritmo mais eficiente de maximização local, como o \textit{hill climbing}.
 
-O algoritmo genético ainda precisa ser muito analisado de forma a entender melhor seu mecanismo de funcionamento e dessa forma conseguir determinar os melhores parâmetros, e tem demonstrado certa popularidade com as novas técnicas de AI e \textit{machine learning}.
+O algoritmo genético ainda precisa ser muito analisado de forma a entender melhor seu mecanismo de funcionamento e dessa forma conseguir determinar os melhores parâmetros, e tem demonstrado certa popularidade com as novas técnicas de AI e \textit{machine learning}. Portanto, com que foi apresentado de recursos e resultados do algoritmo, compensa estudar seu uso para determinados problemas, caso esses não estejam respondendo bem aos métodos convencionais e mais eficientes.
 
-Para trabalhos futuros podem ser seguido os testes com o modelo proposto de Ising, trabalhando com contornos e busca de soluções para acoplamentos do modelo, também podem ser explorados as técnicas de combinar com outros métodos. Ainda é necessário também avaliar o algoritmo com relação a seu desempenho computacional e outro passo importante seria o de executar o algoritmo usando paralelismo, pois a fase de avaliação e seleção poderia facilmente ser colocada em tarefas concorrentes, otimizando o tempo de resposta do algoritmo.  
+Para trabalhos futuros podem ser seguido os testes com o modelo proposto de Ising, trabalhando com contornos e busca de soluções para acoplamentos do modelo, e modificando o valor de \(\beta\) ou até mesmo fazendo ele variar conforme as iterações do algoritmo. Podem ser exploradas as técnicas de combinar com outros métodos de otimização, e também avaliar o algoritmo modificado que trabalha com uma ou mais populações isoladas e com troca de indivíduos aleatórias entre elas. Ainda é necessário também avaliar o algoritmo com relação a seu desempenho computacional e outro passo importante seria o de executar o algoritmo usando paralelismo, pois a fase de avaliação e seleção poderia facilmente ser colocada em tarefas concorrentes, otimizando o tempo de resposta do algoritmo.
 
 
 % ----------------------------------------------------------
@@ -669,7 +721,7 @@ Para trabalhos futuros podem ser seguido os testes com o modelo proposto de Isin
 % Referências bibliográficas
 % ----------------------------------------------------------
 %\bibliography{abntex2-modelo-references}
-\nocite{LeeJacobson2015} % colocar nessa forma todos aqueles que não foram citados diretamente
+\nocite{LeeJacobson2015, Melo2014, Grefenstette2012, ColinR.Reeves2002, Vose1999} % colocar nessa forma todos aqueles que não foram citados diretamente
 \bibliography{TC}
 
 % ----------------------------------------------------------

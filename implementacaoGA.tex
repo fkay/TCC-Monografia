@@ -73,11 +73,36 @@ O operador de crossover testado foi o com único ponto de corte, e seu algoritmo
 	\label{alg:crossover}
 \end{algorithm}
 
-Seguem alguns resultados para execução do GA, com os parâmetros: \(P = 30\), \(T = 10\), \(p_c = 0,8\), \(p_m = 0,01\), onde \textit{P} é o tamanho da população, \textit{T} é por quantas gerações o GA irá evoluir, \(p_c\) e \(p_m\) as probabilidades de crossover e mutação. No \autoref{qd:resultado_reproducao_t1} temos o resultado dos operadores de seleção, crossover e mutação para um descendente. O \textit{``HERITAGE MAP''} mostra qual porção do cromossomo herdou do pai 1 ou 2 e o \textit{``MUTATE MAP''} representa os bits que sofreram mutação. Além disso demonstra quantas vezes cada pai foi selecionado para produzir a nova geração, e com esses dados foi possível verificar os funcionamentos básicos do algoritmo, correspondendo ao esperado. %Como usamos 15 bits em cada uma das variáveis, o espaço de soluções possíveis tem \(2^{15} \cdot 2^{15} = 1.073.741.824\), e no caso da busca randômica cobre cerca de \(3000 / 1.073.741.824‬\) do espaço.
+Seguem alguns resultados para execução do GA, com os parâmetros: \(P = 30\), \(T = 10\), \(p_c = 0,8\), \(p_m = 0,01\), onde \textit{P} é o tamanho da população, \textit{T} é por quantas gerações o GA irá evoluir, \(p_c\) e \(p_m\) as probabilidades de crossover e mutação. Na \autoref{lst:resultado_reproducao_t1} temos o resultado dos operadores de seleção, crossover e mutação para um descendente. O \textit{``HERITAGE MAP''} mostra qual porção do cromossomo herdou do pai 1 ou 2 e o \textit{``MUTATE MAP''} representa os bits que sofreram mutação. Além disso demonstra quantas vezes cada pai foi selecionado para produzir a nova geração, e com esses dados foi possível verificar os funcionamentos básicos do algoritmo, correspondendo ao esperado. %Como usamos 15 bits em cada uma das variáveis, o espaço de soluções possíveis tem \(2^{15} \cdot 2^{15} = 1.073.741.824\), e no caso da busca randômica cobre cerca de \(3000 / 1.073.741.824‬\) do espaço.
 
-\begin{quadro}
-\caption{\label{qd:resultado_reproducao_t1}Resultado de um ciclo de seleção, crossover e mutação do teste preliminar}
-\begin{verbatim}
+%\begin{quadro}[htb]
+%\caption{\label{qd:resultado_reproducao_t1}Resultado de um ciclo de seleção, crossover e mutação do teste preliminar}
+%\begin{verbatim}
+%Geração: 1 | Média Avaliação: 2847,450535
+%#### CHILD #####
+%ID: 31
+%Fenotipo: x = -13,91949 | y = -94,32356
+%Avaliação: 1270,770525
+%#### PARENT 1 #####
+%ID: 11
+%Fenotipo: x = -13,91949 | y = -19,02829
+%Avaliação: 183,079928
+%Selecionado 1 vezes, 0,03
+%
+%#### PARENT 2 #####
+%ID: 13
+%Fenotipo: x = 38,99960 | y = -94,28694
+%Avaliação: 3584,173001
+%Selecionado 6 vezes, 0,20
+%
+%### HERITAGE MAP ###
+%111111111111111111122222222222
+%### MUTATE MAP
+%000000000000000000000000000000
+%\end{verbatim}
+%\end{quadro}
+
+\begin{lstlisting}[caption = {Resultado de um ciclo de seleção, crossover e mutação do teste preliminar}, label=lst:resultado_reproducao_t1]
 Geração: 1 | Média Avaliação: 2847,450535
 #### CHILD #####
 ID: 31
@@ -99,9 +124,7 @@ Selecionado 6 vezes, 0,20
 111111111111111111122222222222
 ### MUTATE MAP
 000000000000000000000000000000
-#### CHILD #####
-\end{verbatim}
-\end{quadro}
+\end{lstlisting}
 
 Na \autoref{tab:resultados_teste1} é feito um comparativo entre o GA e a busca randômica (RS), executados em 1000 testes e calculado médias com intervalo de confiança e qual proporção o GA teve melhor resultado que o RS. Pode ser verificado que com poucas gerações, o GA apresentou resultados melhores que o RS, aumentando a população para 50 \(P=50\) o GA teve ainda uma pequena melhora com relação ao RS, mas aumentando para 100 gerações (\(T=100\)) os resultados praticamente são similares considerando os intervalos de confiança, porém percebe-se que ambos começaram a apresentar média de resultados maiores, e o GA supera o RS em menor quantidade de testes. Isso deve ocorrer, primeiro pelo fato do GA já não conseguir pelos operadores normais, refinar a solução, e segundo pelo RS ter cada vez mais amostras e com isso melhorar seu resultado.
 
@@ -210,35 +233,40 @@ A população inicial é definida sorteando os \(\sigma_t\) de cada posição da
 
 Da mesma forma que o teste inicial, serão testados algumas variações dos parâmetros do algoritmo e comparado com os resultados da busca aleatória. Além disso será verificado, assim como no mencionado em \citeonline{Mitchell1996} sobre o trabalho de \citeonline{Pruegel-Bennett1994}, as distribuições dos valores de \(\mathcal{H}(\sigma)\) para as gerações 0, 10, 20, 30 e 40 do GA, e calculando as estatísticas para média e variância da amostra de 1000 testes. De forma ampliar as comparações dos resultados finais, os dois algoritmos foram modificado para ordenar as populações, que no caso do GA é feito a cada geração.
 
-O começo da \autoref{tab:resultados_teste2} demonstra os resultados mantendo-se os parâmetros fixo e alterando apenas o método usado no crossover, indicado pelo índice nos valores de \(p_c\), com 1 para ponto único, 2 para crossover em dois pontos e \textit{u} para uniforme. Todos são muitos superiores ao método RS, provavelmente em virtude do espaço de soluções ser dado por \(2^{10*10}\) e a quantidade de observações geradas para o método estar cobrir uma parte pequena do espaço. Comparando o resultado entre os 3 métodos de crossover, é possível pela média dos resultados verificar pequena melhora usando o método para 2 pontos e mais uma pequena melhora para o uniforme, mais visível nos testes com mais gerações. Isso pode ser explicado pela construção do genótipo do cromossomos, como cada linha da matriz está na sequência da outra, podemos ter \textit{clusters} com bom resultados de forma quadrada, como mostrado na \autoref{fig:Map_ising}. A região vermelha possui uma baixa energia contribuindo de forma positiva para a avaliação do indivíduo, porém essa área não consegue ser isolada pelos operadores de crossover de 1 ou 2 pontos, mas tem boa probabilidade de ser compartilhada em partes ou inteira através do operador uniforme. Outro fator que piora nessa condição é os genes caronistas, discutidos na \autoref{sec:problemas_GA}, pois a área azul ao apresentar pior resultado tem alta probabilidade de pegar carona com a área vermelha do cromossomo.
+\section{Testes e resultados}
+O começo da \autoref{tab:resultados_teste2} demonstra os resultados mantendo-se os parâmetros fixo e alterando apenas o método usado no crossover, indicado pelo índice nos valores de \(p_c\), com 1 para ponto único, 2 para crossover em dois pontos e \textit{u} para uniforme. Todos são muitos superiores ao método RS, provavelmente em virtude do espaço de soluções ser dado por \(2^{10*10}\) e a quantidade de observações geradas para o método estar cobrir uma parte pequena do espaço. 
 
-\begin{table}[htb]
+\begin{table}[h!]
 	\centering
 	\begin{tabular}{|l|l|l|l|l|l|l|l|l|}
 		\hline
 		\multicolumn{4}{|c|}{\textbf{Parâmetros}}                                                    & \multicolumn{2}{c|}{\textbf{Resultados GA}}                                        & \multicolumn{2}{c|}{\textbf{Resultados RS}}                                        & \multicolumn{1}{c|}{\textbf{\#}}                      \\ \hline
 		\textbf{P} & \textbf{T} & $\bm{p_c}$ & $\bm{p_m}$ & \textbf{Média $\pm$ IC} & \textbf{D.P.} & \textbf{Média $\pm$ IC} & \textbf{D.P.} & \textbf{GA < RS} \\ \hline
-	30                          & 10                          & $0,8_1$    & 0,02       & -58.90 $\pm$ 0,54                            & 8,77                           & -39,05 $\pm$ 0,33                            & 5,43                           & 978                                          \\ \hline
-	30                          & 10                          & $0,8_2$    & 0,02       & -60,21 $\pm$ 0,57                            & 9,33                           & -38,98 $\pm$ 0,32                            & 5,22                           & 970                                          \\ \hline
-	30                          & 10                          & $0,8_u$    & 0,02       & -60,42 $\pm$ 0,63                            & 10,30                          & -39,39 $\pm$ 0,35                            & 5,68                           & 960                                          \\ \hline
-	30                          & 100                         & $0,8_1$    & 0,02       & -122,24 $\pm$ 0,71                           & 11,57                          & -48,54 $\pm$ 0,27                            & 4,49                           & 1000                                         \\ \hline
-	30                          & 100                         & $0,8_2$    & 0,02       & -126,05 $\pm$ 0,75                           & 12,19                          & -47,94 $\pm$ 0,27                            & 4,48                           & 1000                                         \\ \hline
-	30                          & 100                         & $0,8_u$    & 0,02       & -130,47 $\pm$ 0,73                           & 11,89                          & -48,23 $\pm$ 0,28                            & 4,54                           & 1000                                         \\ \hline
-\end{tabular}
-\caption{Resultados da média de energia para 1000 testes com modelo Ising alterando tipo de crossover}
-\label{tab:resultados_teste2}
+		30                          & 10                          & $0,8_1$    & 0,02       & -58.90 $\pm$ 0,54                            & 8,77                           & -39,05 $\pm$ 0,33                            & 5,43                           & 978                                          \\ \hline
+		30                          & 10                          & $0,8_2$    & 0,02       & -60,21 $\pm$ 0,57                            & 9,33                           & -38,98 $\pm$ 0,32                            & 5,22                           & 970                                          \\ \hline
+		30                          & 10                          & $0,8_u$    & 0,02       & -60,42 $\pm$ 0,63                            & 10,30                          & -39,39 $\pm$ 0,35                            & 5,68                           & 960                                          \\ \hline
+		30                          & 100                         & $0,8_1$    & 0,02       & -122,24 $\pm$ 0,71                           & 11,57                          & -48,54 $\pm$ 0,27                            & 4,49                           & 1000                                         \\ \hline
+		30                          & 100                         & $0,8_2$    & 0,02       & -126,05 $\pm$ 0,75                           & 12,19                          & -47,94 $\pm$ 0,27                            & 4,48                           & 1000                                         \\ \hline
+		30                          & 100                         & $0,8_u$    & 0,02       & -130,47 $\pm$ 0,73                           & 11,89                          & -48,23 $\pm$ 0,28                            & 4,54                           & 1000                                         \\ \hline
+	\end{tabular}
+	\caption{Resultados da média de energia para 1000 testes com modelo Ising alterando tipo de crossover}
+	\label{tab:resultados_teste2}
 \end{table}
 
-\begin{figure}[ht]
+Comparando o resultado entre os 3 métodos de crossover, é possível pela média dos resultados verificar pequena melhora usando o método para 2 pontos e mais uma pequena melhora para o uniforme, mais visível nos testes com mais gerações. Isso pode ser explicado pela construção do genótipo do cromossomos, como cada linha da matriz está na sequência da outra, podemos ter \textit{clusters} com bom resultados de forma quadrada, como mostrado na \autoref{fig:Map_ising}. A região vermelha possui uma baixa energia contribuindo de forma positiva para a avaliação do indivíduo, porém essa área não consegue ser isolada pelos operadores de crossover de 1 ou 2 pontos, mas tem boa probabilidade de ser compartilhada em partes ou inteira através do operador uniforme. Outro fator que piora nessa condição é os genes caronistas, discutidos na \autoref{sec:problemas_GA}, pois a área azul ao apresentar pior resultado tem alta probabilidade de pegar carona com a área vermelha do cromossomo.
+
+\begin{figure}[h!]
 	\centering
-	\includegraphics[width=0.5\linewidth]{imagens/Mapa_ising.png}
+	\includegraphics[width=0.35\linewidth]{imagens/Mapa_ising.png}
 	\caption{Exemplo de uma região (vermelha) com baixa energia, próxima de outras com energias superiores}
 	\label{fig:Map_ising}
 \end{figure}
 
-Nos próximos testes fica fixado o crossover uniforme, além disso pela característica do GA, quanto mais iterações do algoritmo permitida, melhores resultados deve apresentar, portanto serão avaliados os demais parâmetros temos os resultados apresentados na \autoref{tab:resultados_teste3}. Pelos valores de média apresentado é possível ver que os parâmetros \(p_c = 0,8\) e \(p_m = 0,02\), apresentaram os melhores resultados, quando o \(p_m\) é aumentado, como o algoritmo não tem elitismo, é provável que os melhores esquemas se perdem com a mutação. O \(p_c\) com valores mais baixos teve um resultado pior, que indica que com menos crossover deve ter ocorrido menos \textit{exploitation} do algoritmo levando a uma convergência mais lenta.
 
-\begin{table}[htb]
+
+Nos próximos testes fica fixado o crossover uniforme, além disso pela característica do GA, quanto mais iterações do algoritmo permitida, melhores resultados deve apresentar, portanto serão avaliados os demais parâmetros e os resultados estão apresentados na \autoref{tab:resultados_teste3}. Pelos valores de média apresentado é possível ver que os parâmetros \(p_c = 0,8\) e \(p_m = 0,02\), apresentaram os melhores resultados, quando o \(p_m\) é aumentado, como o algoritmo não tem elitismo, é provável que os melhores esquemas se perdem com a mutação. O \(p_c\) com valores mais baixos teve um resultado pior, que indica que com menos crossover deve ter ocorrido menos \textit{exploitation} do algoritmo levando a uma convergência mais lenta.
+
+\begin{table}[h!]
 	\centering
 	\begin{tabular}{|l|l|l|l|l|l|l|l|l|}
 		\hline
@@ -258,7 +286,7 @@ Nos próximos testes fica fixado o crossover uniforme, além disso pela caracter
 
 Os resultados mostrados foram para o melhor cromossomo encontrado entre todas as gerações do GA. A \autoref{tab:resultados_teste4} mostra mais dois resultados para a implementação do elitismo mantendo os 3 melhores cromossomos para a próxima população. Os valores indicam que houve pequena melhora no algoritmo.
 
-\begin{table}[htb]
+\begin{table}[h!]
 	\centering
 	\begin{tabular}{|l|l|l|l|l|l|l|l|l|}
 		\hline
@@ -271,10 +299,49 @@ Os resultados mostrados foram para o melhor cromossomo encontrado entre todas as
 	\label{tab:resultados_teste4}
 \end{table}
 
+Outro parâmetro que pode ser modificado é \(\beta\), introduzido na função de avaliação e portanto com impacto direto na seleção. A \autoref{tab:resultados_teste5} mostra os resultados que se comportam como o esperado. Diminuir o \(\beta\) equivale aumentar a temperatura, e todos os estados passam a ter maior probabilidade de ser selecionado. Já quando o valor é elevado, ou seja, a temperatura fica menor, os estados de menor energia possuem maior probabilidade de ocorrerem, o que eleva a pressão seletiva do algoritmo. 
+
+\begin{table}[h!]
+	\centering
+	\begin{tabular}{|l|l|l|l|l|l|l|l|l|l|}
+		\hline
+		\multicolumn{5}{|c|}{\textbf{Parâmetros}}                                                    & \multicolumn{2}{c|}{\textbf{Resultados GA}}                                        & \multicolumn{2}{c|}{\textbf{Resultados RS}}                                        & \multicolumn{1}{c|}{\textbf{\#}}                      \\ \hline
+		\textbf{P} & \textbf{T} & $\bm{p_c}$ & $\bm{p_m}$ & $\beta$ & \textbf{Média $\pm$ IC} & \textbf{D.P.} & \textbf{Média $\pm$ IC} & \textbf{D.P.} & \textbf{GA < RS} \\ \hline
+		30                          & 40                          & 0,8        & 0,02  & 0,05      & -113,69 $\pm$ 0,70                           & 11,36                          & -44,75 $\pm$ 0,30                            & 4,99                           & 1000                                      \\ \hline
+		30                          & 40                          & 0,95        & 0,02 & 0,01      & -90,78 $\pm$ 0,66                            & 10,74                          & -44,79 $\pm$ 0,30                            & 4,87                           & 1000                                      \\ \hline
+		30                          & 40                          & 0,95        & 0,02 & 0,1      & -120,45 $\pm$ 0,70                            & 11,35                          & -44,95 $\pm$ 0,30                            & 4,95                           & 1000                                      \\ \hline
+	\end{tabular}
+	\caption{Resultados da média de energia para 1000 testes com modelo Ising, usando elitismo com 3 cromossomos e variando \(\beta\)}
+	\label{tab:resultados_teste5}
+\end{table}
+
+\begin{figure}[h!]
+	\centering
+	\begin{subfigure}[b]{0.47\linewidth}
+		\includegraphics[width=\linewidth]{imagens/graph_pc_0_950_pm_0_020_pop_50_g_300__1_beta_0_01.png}
+		\caption{}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.47\linewidth}
+		\includegraphics[width=\linewidth]{imagens/graph_pc_0_950_pm_0_020_pop_50_g_300__1_beta_0_1.png}
+		\caption{}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.47\linewidth}
+		\includegraphics[width=\linewidth]{imagens/graph_pc_0_950_pm_0_020_pop_50_g_300__1_beta_0_05.png}
+		\caption{}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.47\linewidth}
+		\includegraphics[width=\linewidth]{imagens/graph_pc_0_950_pm_0_020_pop_50_g_300__1_beta_0_2.png}
+		\caption{}
+	\end{subfigure}
+	\caption{Evolução do GA variando o \(\beta\)}
+	\label{fig:evolucaoGA_beta}
+\end{figure}
+
+Na \autoref{fig:evolucaoGA_beta} percebe-se que ao aumentar o \(\beta\), o algoritmo converge mais rapidamente e pode gerar melhores soluções, porém é necessário manter o equilíbrio entre o \textit{exploitation} e \textit{exploration}. Um valor muito alto para esse parâmetro, pode levar a uma convergência genética prematura, diminuindo as possibilidades de exploração do espaço de soluções (\textit{exploration}).
 
 Para completar as avaliações, mantendo os parâmetros \(P = 50\), \(T = 40\), \(p_c = 0,95\), \(p_m = 0,02\) e com elitismo mantendo 3 cromossomos, foram salvos os valores de energia da população dos 1000 testes para as gerações 0, 10, 20, 30 e 40. Depois foi calculado a média e variância dessas gerações para cada um dos testes e finalmente feita a média dos parâmetros entre os 1000 testes obtendo os valores mostrados na \autoref{tab:resultados_medias_var}
 
-\begin{table}[htb]
+\begin{table}[h!]
 	\centering
 	\begin{tabular}{|l|c|c|c|c|c|}
 		\hline
@@ -286,7 +353,7 @@ Para completar as avaliações, mantendo os parâmetros \(P = 50\), \(T = 40\), 
 	\label{tab:resultados_medias_var}
 \end{table}
 
-\begin{figure}[ht]
+\begin{figure}[h!]
 	\centering
 	\begin{subfigure}[b]{0.47\linewidth}
 		\includegraphics[width=\linewidth]{imagens/distribuicao_t50.png}
@@ -308,9 +375,9 @@ Para completar as avaliações, mantendo os parâmetros \(P = 50\), \(T = 40\), 
 	\label{fig:distribuicao_ising_1}
 \end{figure}
 
-Diferente resultados vistos em \citeonline{Pruegel-Bennett1994}, a variância reduz pouco, o que é esperado, pois no teste proposto só foi usado o operador de crossover. Refazendo os testes com \(p_m = 0\) obtemos a seguinte \autoref{tab:resultados_medias_var2}. O operador de mutação mantém a variância na população pois ele garante o \textit{exploration}, mantendo a diversidade da população.
+Diferente dos resultados vistos em \citeonline{Pruegel-Bennett1994}, que não usou operador de mutação, a variância no teste executado reduz pouco conforme se passam as gerações, o que é esperado já que a mutação busca manter diversidade na população. Refazendo os testes com \(p_m = 0\) obtemos a seguinte \autoref{tab:resultados_medias_var2}. O operador de mutação mantém a variância na população pois ele garante o \textit{exploration}, mantendo a diversidade da população.
 
-\begin{table}[htb]
+\begin{table}[h!]
 	\centering
 	\begin{tabular}{|l|c|c|c|c|c|}
 		\hline
@@ -323,7 +390,7 @@ Diferente resultados vistos em \citeonline{Pruegel-Bennett1994}, a variância re
 \end{table}
 
 
-\begin{figure}[ht]
+\begin{figure}[h!]
 	\centering
 	\begin{subfigure}[b]{0.47\linewidth}
 		\includegraphics[width=\linewidth]{imagens/distribuicao_t43_2.png}
@@ -343,7 +410,7 @@ Diferente resultados vistos em \citeonline{Pruegel-Bennett1994}, a variância re
 
 Na \autoref{fig:distribuicao_ising_geracoes} pode ser visto os resultados das médias e variâncias da população durante as gerações. Os gráficos representam a média das duas medidas de cada geração pelos 500 testes realizados. Quando a taxa de mutação é mantida em 0, percebe-se a rápida convergência do GA, chegando a um patamar mínimo de energia, e a variância com tendência a zero. Ao colocar uma pequena taxa de mutação, o algoritmo converge mais lentamente, porém obtém resultados de média melhores, e a variância se mantém em um patamar. Isso é desejável no GA, pois indica que se manteve a diversidade genética. Além disso também é mostrado novamente o desempenho entre os operadores de crossover de um ponto e uniforme, e como esperado, o uniforme conseguiu médias melhores, mas a variância levou mais iterações para diminuir, justificado pelo fato desse operador obter maior diversidade genética no início, explorando melhor o espaço de soluções e garantindo melhores médias.
 
-\begin{figure}[ht]
+\begin{figure}[h!]
 	\centering
 	\begin{subfigure}[b]{0.47\linewidth}
 		\includegraphics[width=\linewidth]{imagens/curva_media_var_1.png}
@@ -361,9 +428,9 @@ Na \autoref{fig:distribuicao_ising_geracoes} pode ser visto os resultados das m�
 	\label{fig:distribuicao_ising_geracoes}
 \end{figure}
 
-Por último na \autoref{fig:evolucaoGA} é exposto a evolução do algoritmo durante as gerações com variações no parâmetro de probabilidade de mutação, mostrando o melhor, pior cromossomo da população além de sua avaliação média. As linhas horizontais tracejadas mostram o melhor, pior e média do método de busca aleatório, considerando sempre a amostra para esse método de tamanho \(P \cdot T\).
+Por último na \autoref{fig:evolucaoGA} é exposto a evolução do algoritmo durante as gerações com variações no parâmetro de probabilidade de mutação, mostrando o melhor, pior cromossomo da população além de sua avaliação média. As linhas horizontais tracejadas mostram o melhor, pior e média do método de busca aleatório, considerando sempre a amostra para esse método de tamanho \(P \cdot T\) e portanto com \(50 \cdot 300 = 15000\) observações.
 
-\begin{figure}[ht]
+\begin{figure}[h!]
 	\centering
 	\begin{subfigure}[b]{0.47\linewidth}
 		\includegraphics[width=\linewidth]{imagens/graph_pc_0_950_pm_0_000_pop_50_g_300__1.png}
