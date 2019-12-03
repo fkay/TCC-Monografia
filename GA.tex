@@ -251,13 +251,11 @@ Também existem as versões dos operadores apresentados para cromossomos diplói
 \label{sec:esquemas}
 O conceito de esquema (\textit{schema} ou \textit{schemata}) foi primeiro definido por \citeauthor{Holland1992}, em uma tentativa de especificar por qual razão o algoritmo genético funciona e pode ser eficiente. Foi apresentado também por \citeauthor{Goldberg1989} como teorema fundamental do GA, e ficou conhecido por Teorema dos Esquemas (\textit{Schema Theorem}). Por trás desse conceito, Holland ainda explica a teoria do paralelismo implícito presente no algoritmo razão da qual ele apresentar certa eficiência se comparado a outros algoritmos.
 
-Para explicar o conceito primeiro define-se que o cromossomo é uma sequência, de comprimento \textit{l}, de genes que podem ter os valores presentes no alfabeto \(\mathcal{A}\). Para simplificar as definições e cálculos e sem perda de generalidade, foi escolhido um alfabeto binário \(\mathcal{A} = \{0, 1\}\) e os cromossomos são portanto sequências binárias. 
+Para explicar o conceito primeiro define-se que o \textbf{cromossomo} é uma sequência, de comprimento \textit{l}, de genes que podem ter os valores presentes no alfabeto \(\mathcal{A}\). Para simplificar as definições e cálculos e sem perda de generalidade, foi escolhido um alfabeto binário \(\mathcal{A} = \{0, 1\}\) e os cromossomos são portanto sequências binárias. 
 
-Define-se o esquema, \textit{H}, como uma sequência de tamanho \textit{l}, e que pode ter os valores contidos em \(\mathcal{A}^+ = \{0, 1 , *\}\), sendo \textit{*} considerado um valor coringa e representa uma posição no cromossomo que não importa (\textit{don't care}). É possível definir um esquema para qualquer alfabeto, apenas acrescentando o caractere coringa ao alfabeto gerador dos cromossomos. O esquema funciona como um gabarito ou \textit{template} e existirão subconjuntos de cromossomos que se encaixam nesse gabarito. 
+Define-se o \textbf{esquema}, \textit{H}, como uma sequência de tamanho \textit{l}, e que pode ter os valores contidos em \(\mathcal{A}^+ = \{0, 1 , *\}\), sendo \textit{*} considerado um valor coringa e representa uma posição no cromossomo que não importa (\textit{don't care}). É possível definir um esquema para qualquer alfabeto, apenas acrescentando o caractere coringa ao alfabeto gerador dos cromossomos. O esquema funciona como um gabarito ou \textit{template} e existirão subconjuntos de cromossomos que se encaixam nesse gabarito. 
 
-Define-se instância como cada cromossomo que se enquadra em determinado esquema.
-
-Por exemplo, supondo uma população de cromossomos com comprimento \(l=8\), o esquema \mbox{\(H=**11*0*1\)} tem os cromossomos \(A_1=00110001\) e \(A_2=10111011\) como instâncias. Assim seja \(\mathcal{C}_l\) o conjunto de todos possíveis cromossomos binários de comprimento \textit{l}, e \(\mathcal{E}_l\) o conjunto de todos possíveis esquemas de comprimento \textit{l}, então \(\mathcal{C}_l \subset \mathcal{E}_l \) e temos \(2^l = |\mathcal{C}_l|\) possíveis cromossomos e \(3^l = |\mathcal{E}_l|\) possíveis esquemas.
+Define-se \textbf{instância} como cada cromossomo que se enquadra em determinado esquema. Por exemplo, supondo uma população de cromossomos com comprimento \(l=8\), o esquema \mbox{\(H=**11*0*1\)} tem os cromossomos \(A_1=00110001\) e \(A_2=10111011\) como instâncias. Assim seja \(\mathcal{C}_l\) o conjunto de todos possíveis cromossomos binários de comprimento \textit{l}, e \(\mathcal{E}_l\) o conjunto de todos possíveis esquemas de comprimento \textit{l}, então \(\mathcal{C}_l \subset \mathcal{E}_l \) e temos \(2^l = |\mathcal{C}_l|\) possíveis cromossomos e \(3^l = |\mathcal{E}_l|\) possíveis esquemas.
 
 Define-se \textbf{ordem} do esquema \textit{H}, denotada por \(o(H)\), como quantas posições possuem valor fixo no esquemas, isto é, quantas posições no esquema são diferentes de \textit{*}. No exemplo anterior \(H=**11*0*1\) possui ordem 4, \(o(**11*0*1) = 4\).
 
@@ -280,20 +278,24 @@ Como esquemas de ordem e tamanho maiores estão mais sujeitos a serem destruído
 O que \citeauthor{Holland1992} indica como \textbf{paralelismo intrínseco} se atribui ao fato, de que apesar do algoritmo estar avaliando \textit{n} indivíduos contidos na população da geração presente, ele está também avaliando de forma implícita um número bem maior de esquemas. Qualquer sequência binária de comprimento \textit{l} é uma instância de \(2^l\) esquemas. Por exemplo a sequência 11, é uma instância dos seguintes esquemas: **, 1*, *1 e 11. Estendendo para a população de tamanho \textit{n} existem portanto um total de até \(n \cdot 2^l\) esquemas, assim o total de esquemas em determinada população será um valor entre \(2^l\), caso todos os cromossomos sejam iguais, e \(n \cdot 2^l\), caso todos diferentes. Por essa razão o GA avalia uma quantidade de esquemas maior do que a quantidade de indivíduos presentes na população.
 
 \subsection{Teorema fundamental do GA}
+Considere uma população \(\theta\) de tamanho \textit{n} de cromossomos com codificação binária e comprimento \textit{l} e seja \textit{H} um esquema que tenha ao menos uma instância na população na geração \textit{t} e lembrando que \(p_c\) é a probabilidade de aplicar o operador de crossover e \(p_m\) é a probabilidade de aplicar o operador de mutação.
+
+Defini-se \(M(H)\) o conjunto de todos os cromossomos que são instâncias de \textit{H} e \(M(H, t) \subseteq M(H)\) o conjunto dos cromossomos que são instâncias de \textit{H} na população no instante \textit{t}. Assim \(m(H, t) = |M(H,t)|\) é definido como o número de instâncias de \textit{H} no instante \textit{t} presentes na população. 
+
+Definição: 
+\[\hat{u}(H,t) = \frac{\sum\limits_{i \in M(H,t)}f(i)}{m(H,t)}\]
+onde \textit{i} é um cromossomo na população que é instância de \textit{H}, e \(f(i)\) é a função de avaliação do cromossomo. Assim \(\hat{u}(H,t)\) é a média das avaliações das instâncias de \textit{H} no instante \textit{t}.
+
 A \autoref{eq:schema_theorem} define o Teorema dos Esquemas proposto por \citeauthor{Holland1992} e que pode ser visto também em \citeonline{Goldberg1989}.
 
 \begin{equation}
-E[m(H,t+1)] \ge \frac{\hat{u}(H,t)}{\overline{f}(t)} m(H,t)\left( 1 - p_c \frac{\delta(H)}{l - 1} \right) \left[(1 - p_m)^{o(H)} \right]
+\boxed{ E[m(H,t+1)] \ge \frac{\hat{u}(H,t)}{\overline{f}(t)} m(H,t)\left( 1 - p_c \frac{\delta(H)}{l - 1} \right) \left[(1 - p_m)^{o(H)} \right] }
 \label{eq:schema_theorem}
 \end{equation}
 
-A equação define que o valor esperado da quantidade de esquemas presentes na próxima população baseado em sua avaliação comparada com a média, as probabilidades de crossover e mutação associadas aos seus tamanho \(\delta(H)\) e ordem \(o(H)\).
+A equação define que o valor esperado da quantidade de instâncias de  um esquema \textit{H} presentes na próxima população será baseado na média das avaliações das suas instâncias na população comparada com a média das avaliações de todos os cromossomos na população, e também nas probabilidades de crossover e de mutação associadas ao seu tamanho \(\delta(H)\) e ordem \(o(H)\).
 
-O teorema pode ser verificado através da estimação do aumento ou diminuição das instâncias dos esquemas presentes na população. Consideremos uma população \(\theta\) de tamanho \textit{n} de cromossomos com codificação binária e comprimento \textit{l}. Seja \textit{H} um esquema que tenha ao menos uma instância na população na geração \textit{t}. Defini-se \(M(H)\) o conjunto de todos os cromossomos que são instâncias de \textit{H} e \(M(H, t) \subseteq M(H)\) o conjunto dos cromossomos que são instâncias de \textit{H} na população no instante \textit{t}. Temos \(m(H, t) = |M(H,t)|\) definido como o número de instâncias de \textit{H} no instante \textit{t} presentes na população. 
-
-Definimos 
-\[\hat{u}(H,t) = \frac{\sum\limits_{i \in M(H,t)}f(i)}{m(H,t)}\]
-onde \textit{i} é um cromossomo na população que é instância de \textit{H}, e \(f(i)\) é a função de avaliação. Assim \(\hat{u}(H,t)\) é a média das avaliações das instâncias de \textit{H} no instante \textit{t}.
+O teorema pode ser verificado através da estimação do aumento ou diminuição das instâncias dos esquemas presentes na população. 
 
 Relembrando que a probabilidade de um indivíduo ser escolhido para seleção com o método da roleta viciada é definido por \(p_i = f(i) / \sum_{j \in \theta}{f(j)}\), com \(i = 1,2,\dots,n\). Sendo \(\eta(i,t)\) a quantidade de vezes que o cromossomo \textit{i} é selecionado na população no instante \textit{t}, o valor esperado de \(\eta\) será \(E[\eta(i,t)] = n \cdot p_i\). Se \(\overline{f}(t) = \sum_{j \in \theta} {f(j)} / n\) é a média das avaliações dos cromossomos da população no instante \textit{t}, o valor esperado de \(\eta(i,t)\) pode ser expresso como \(E[\eta(i,t)] = f(i) / \overline{f}(t)\)
 
@@ -420,10 +422,10 @@ Em palavras o teorema pode ser interpretado como: "o GA tende a preservar com o 
 %
 %Como será visto no \autoref{chap:implementGA} foi escolhido o modelo de Ising com duas dimensões, e será feito uma simulação para verificar o comportamento da distribuição da população durante as gerações do algoritmo, variando alguns dos parâmetros do GA para averiguar quais mudanças causam nos resultados.
 
-\subsection{Modelos matemáticos para o GA}
+\subsection{Modelos matemáticos alternativos para o funcionamento do GA}
 Apesar do teorema dos esquemas indicarem previsões sobre o valor esperado da quantidade dos esquemas nas próximas gerações, ele não faz avaliações sobre como a composição da população irá se transformar com o tempo, nem sobre velocidade de convergência e outros itens do gênero. Por essa razão surgiram algumas objeções sobre esse teorema elucidar todo o funcionamento do algoritmo, mesmo porque apenas considera os efeitos destrutivos dos operadores genéticos e não avalia como esses operadores poderiam definir o sucesso do algoritmo. Existem criticas também ao fato de considerarem apenas que blocos pequenos e isolados poderiam levar as melhores soluções, sendo que em alguns problemas o que existe é a interação entre diversos genes levando a uma boa avaliação.
 
-Devido a isso outro modelos foram propostos sobre os GA. Um deles feito por \citeauthor{Nix1992}, se baseia em um processo de cadeia de Markov, onde as populações definem os estados da cadeia, e os operadores atuando em conjunto definem a matriz de transição. Outro forma foi modelar o GA como um sistema dinâmico visto em \citeonline{Vose1991PunctuatedEI}.
+Devido a isso outros modelos foram propostos sobre os GA. Um deles feito por \citeauthor{Nix1992}, se baseia em um processo de cadeia de Markov, onde as populações definem os estados da cadeia, e os operadores atuando em conjunto definem a matriz de transição. Outro forma foi modelar o GA como um sistema dinâmico visto em \citeonline{Vose1991PunctuatedEI}.
 
 Em \citeonline{Pruegel-Bennett1994} foi feito um estudo usando mecânica estatística para verificar e procurar prever o comportamento das médias e variâncias da população no decorrer das gerações. Para tal foi utilizado o modelo de Ising de uma dimensão e o objetivo do GA era minimizar a energia na estrutura do modelo. Nesse trabalho os autores conseguiram gerar uma previsão para os dois primeiros momentos, média e variância, da distribuição de energia nos elementos da população.
 
