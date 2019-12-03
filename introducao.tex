@@ -10,7 +10,7 @@
 
 Os algoritmos evolucionários são um subconjunto da computação evolutiva, sendo essa um conjunto de algoritmos para busca de soluções ótimas globais. A computação evolutiva é baseada na evolução das espécies definida na biologia, e assim os algoritmos evolucionários se baseiam em processos encontrados na natureza de seleção, reprodução e mutação das espécies, com o propósito de otimizar a solução para um problema definido.
 
-Um problema de otimização é definido como maximizar, ou minimizar, $f(x)$ sujeito a \(g_i(x) \leq 0\,i = \{1,\ldots, m\}\), e \(h_j(x) = 0, j=\{1,\ldots,n\}\) com \(x \in \Omega \). A solução maximiza, ou minimiza, o escalar \(f(x)\) onde \(x\) é um vetor com dimensão \(n\), \(x=\{x_1,x_2,\ldots,x_n\}\) do espaço de soluções \(\Omega\). \cite{Coello2007} 
+Um problema de otimização é definido como maximizar, ou minimizar, $f(x)$ sujeito a \(g_i(x) \leq 0\), \(i = \{1,\ldots, m\}\), e \(h_j(x) = 0\), \(j=\{1,\ldots,n\}\) com \(x \in \Omega \). A solução maximiza, ou minimiza, o escalar \(f(x)\) onde \(x\) é um vetor com dimensão \(n\), \(x=\{x_1,x_2,\ldots,x_n\}\) do espaço de soluções \(\Omega\). \cite{Coello2007} 
 
 Dessa forma o problema de otimização tem os seguintes componentes:
 \begin{itemize}
@@ -33,7 +33,7 @@ Existem vários métodos para se otimizar um problema conforme pode ser visto na
 
 Dentre a categoria dos métodos estocásticos existem os que são completamente aleatórios, como a busca randômica (ou passeio aleatório -- \textit{random walk}), e os que são de alguma forma guiado como o método de resfriamento simulado (\textit{simulated annealling}) por exemplo. O algoritmo evolucionário se encaixa nessa ultima definição, onde existem componentes aleatórios atuando na seleção e reprodução dos indivíduos mas de forma guiada pelos resultados da função de avaliação.
 
-De acordo com \citeauthor{Linden2008}, os AE são \textbf{heurísticas}\footnote{Heurísticas são algoritmos polinomiais que usualmente tendem a encontrar soluções ótimas ou próximas delas, mas sem garantias} que não asseguram obter o melhor resultado possível, e além disso o resultado pode diferir entre as execuções do algoritmo.
+De acordo com \citeauthor{Linden2008}, os Algoritmos Evolucionários são \textbf{heurísticas}\footnote{Heurísticas são algoritmos polinomiais que usualmente tendem a encontrar soluções ótimas ou próximas delas, mas sem garantias} que não asseguram obter o melhor resultado possível, e além disso o resultado pode diferir entre as execuções do algoritmo.
 
 Para \citeauthor{Sivanandam2007}, um algoritmo evolucionário são processos estocásticos e iterativos que operam em um conjunto de indivíduos (população). Cada individuo representa uma possível solução para o problema de otimização ou busca, sendo que os parâmetros estão de alguma forma codificados nesses indivíduos. A população inicial é gerada aleatoriamente e são avaliados usando alguma função, que determina o quão bem o indivíduo responde ao problema. Esse valor determina a direção de busca do algoritmo. 
 
@@ -83,7 +83,7 @@ O algoritmo genético geral proposto por Holland se baseia em uma população de
 	\item \label{en:gene} Aplicações dos operadores genéticos sobre uma cópia do individuo selecionado em \ref{en:loop}.
 	\item Seleção de outro cromossomo de forma aleatória com probabilidade igual para todos a ser substituído pelo novo cromossomo gerado em \ref{en:gene}
 	\item Avaliar o novo cromossomo
-	\item Retonar ao \ref{en:loop}
+	\item Retornar ao \ref{en:loop}
 \end{enumerate}
 
 Essa é uma descrição bem resumida sobre o algoritmo e serve de base para as derivações. Por exemplo no caso do uso de um operador de crossover no \autoref{en:gene}, há a necessidade de seleção de outro cromossomo para formar um par e assim gerar uma nova estrutura.

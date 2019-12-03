@@ -5,13 +5,13 @@
 \chapter{Implementação do algoritmo genético}
 \label{chap:implementGA}
 
-Para implementação do algoritmo foi utilizado a linguagem de programação JAVA de forma a aproveitar o paradigma de orientação a objetos com a característica de reaproveitamento de código. A estrutura do programa permite com classes básicas formar a lógica do algoritmo e com classes derivadas especializar o algoritmo para especificações de cada problema. Dessa forma com pouco código extra sendo feito é possível reaproveitar as classes já definidas, e usando o polimorfismo inerente a linguagens OO, é possível reescrever e acrescentar as partes necessárias para embutir conhecimento específico no problema.
+Para implementação do algoritmo foi utilizado a linguagem de programação Java, e os testes feitos com dois problemas distintos. As avaliações foram feitas através de gráficos e estatísticas geradas no R.
 
 \section{Implementação inicial}
 Os testes começam sobre um modelo simples usando codificação binária para representar duas variáveis reais \textit{x} e \textit{y} com valores no intervalo \([-100,100]\), e 15 bits de comprimento. A conversão é feita usando um fator \textit{C} definido por \(C = \dfrac{200}{2^{15} - 1}\) que multiplicado pela representação binária transformada para o inteiro \textit{i} e somado ao valor mínimo, apresenta o valor real da variável, com resolução definida pelo fator,
 \(x = C \cdot i_x - 100\). O cromossomo é formado por uma sequência de 30 bits, 15 para cada variável, concatenados na forma de um vetor (Em Java será utilizado os conceitos de Listas por serem mais versáteis com relação aos elementos que podem ser guardados e manipulados). A função que deve ser maximizada, que será a mesma de avaliação, é dada pela equação seguinte e apresenta o gráfico visto na \autoref{fig:grafico_teste1}: 
 \[f(x,y) = \left| x \cdot y \cdot \sin\left(\frac{\pi \cdot y}{4}\right) \right|\] 
-É possível ver que a função possui 4 pontos máximos definidos dentro do domínio, e utilizando o R para encontrar o máximo da função em um desses pontos, foi obtido os seguintes resultados: \(x = 100\), \(y = 98,01654\) e \(f(x,y) = 9800,827\). O ponto com é critico de ser encontrado pelo fato de possuir vários máximos locais dentro do domínio. Para comparação dos resultados do GA, sempre será executado uma busca aleatório com a quantidade de pontos gerados equivalentes a \(P * T\), onde \textit{P} é o tamanho da população definido como parâmetro do GA e \textit{T} o total de gerações que o algoritmo será executado.
+É possível ver que a função possui 4 pontos máximos definidos dentro do domínio, e utilizando o R para encontrar o máximo da função em um desses pontos, foi obtido os seguintes resultados: \(x = 100\), \(y = 98,01654\) e \(f(x,y) = 9800,827\). O ponto com é critico de ser encontrado pelo fato de possuir vários máximos locais dentro do domínio. Para comparação dos resultados do GA, sempre será executado uma busca aleatório com a quantidade de pontos gerados equivalentes a \(n * T\), onde \textit{n} é o tamanho da população definido como parâmetro do GA e \textit{T} o total de gerações que o algoritmo será executado.
 
 %\begin{figure}[ht]
 %	\centering
@@ -34,46 +34,106 @@ Os testes começam sobre um modelo simples usando codificação binária para re
 	\label{fig:grafico_teste1}
 \end{figure}
 
-Para esse GA foi utilizado o método de seleção da roleta viciada, com um algoritmo simples que pode ser visto em \autoref{alg:roleta}, considerando a função \textit{random()} como um gerador de números aleatórios entre 0 e 1. Como pode ser visto, sorteia-se um número entre 0 e o valor da soma das avaliações da população, depois é feito um \textit{loop} iterando pelos valores das avaliações de cada cromossomo e somando a uma variável auxiliar. Ao atingir o valor sorteado, o ultimo individuo que teve seu valor somado a variável auxiliar é retornado.
+Para esse GA foi utilizado o método de seleção da roleta viciada, com um algoritmo simples que pode ser visto em \autoref{alg:roleta}, considerando as funções \textbf{random()} como um gerador de números aleatórios entre 0 e 1, \textbf{somaAvaliacao} que soma todas as avaliações da população e \textbf{calculaAvaliacao} que calcula a avaliação de um cromossomo da população. Como pode ser visto, sorteia-se um número entre 0 e o valor da soma das avaliações da população, depois é feito um \textit{loop} iterando pelos valores das avaliações de cada cromossomo e somando a uma variável auxiliar. Ao atingir o valor sorteado, o ultimo individuo que teve seu valor somado a variável auxiliar é retornado.
 
-\begin{algorithm}
+\begin{algorithm}[h!]
 	\LinesNumbered
-	\Entrada{População de cromossomos: populacao}
-	\Saida{Cromossomo selecionado: cromossomo}
-	valor = random() * somaAvaliacao(populacao)\;
-	aux = 0\;
-	i = 1\;
+	\SetKwFunction{somaAvaliacao}{somaAvaliacao}\SetKwFunction{calculaAvaliacao}{calculaAvaliacao}
+	\SetKwFunction{random}{random}
+	\Entrada{População de cromossomos: $populacao$}
+	\Saida{Cromossomo selecionado: $cromossomo$}
+	$valor$ = \random() * \somaAvaliacao($populacao$)\;
+	$aux$ = 0\;
+	$i$ = 1\;
 	\Enqto{aux < valor  {\normalfont \textbf{e}} i <= populacao.tamanho()} {
-			aux = aux + calculaAvaliacao(populacao[i])\;
-			i = i + 1\;
+			$aux = aux$ + \calculaAvaliacao($populacao[i]$) \;
+			$i = i + 1$ \;
 	}
 	\Retorna{populacao[i-1]}
 	\caption{Roleta viciada}
 	\label{alg:roleta}
 \end{algorithm}
 
-O operador de crossover testado foi o com único ponto de corte, e seu algoritmo pode ser visto em \autoref{alg:crossover}. O operador de mutação é feito apenas invertendo o estado do bit caso o sorteio seja positivo para aquele bit, respeitando o parâmetro de probabilidade de mutação. O critério de parada ficou definido apenas pela quantidade de iterações, isto é, quantas gerações da população foram produzidas. Para a população inicial são gerados cromossomos com bits aleatórios, sendo que é feito um sorteio individual para cada bit. Essa mesma operação é usada para gerar os valores para a busca randômica. Nesse primeiro teste a população é toda substituída por uma nova a cada geração, mas o melhor cromossomos de todas as gerações é guardado e apresentado como resultado final do algoritmo genético.
+O operador de crossover testado foi o com único ponto de corte, e seu algoritmo pode ser visto em \autoref{alg:crossover}, sendo \textbf{concatenar()} a função responsável por unir as duas partes dos cromossomos pais e formar um novo cromossomos que é colocado na variável \textit{Filho}. O crossover somente é executado se no sorteio inicial, o valor for menor que \(p_c\). Caso não seja aplicado o operador, é feito uma cópia do \textit{PaiA}.
 
-\begin{algorithm}
+\begin{algorithm}[h!]
 	\LinesNumbered
-	\Entrada{Cromossomos: PaiA e PaiB; probabilidade de crossover: $p_c$}
-	\Saida{Cromossomo Filho}
-	\eSe{random() <= $p_c$}{
-		corte = random() * PaiA.tamanho()\;
-		\eSe{random() <= 0.5}{
-			Filho = concatenar(PaiA[0:corte], PaiB[corte:PaiB.tamanho()])\;
+	\SetKwFunction{concatenar}{concatenar} \SetKwFunction{random}{random}
+	\Entrada{Cromossomos: $PaiA$ e $PaiB$; probabilidade de crossover: $p_c$}
+	\Saida{Cromossomo: $Filho$}
+	\eSe{ \random() <= $p_c$}{
+		$corte$ = \random() * $PaiA.tamanho()$\;
+		\eSe{ \random() <= 0.5}{
+			$Filho$ = \concatenar($PaiA[0:corte]$, $PaiB[corte:PaiB.tamanho()$])\;
 		}{
-			Filho = concatenar(PaiB[0:corte], PaiA[corte:PaiA.tamanho()])\;
+			$Filho$ = \concatenar($PaiB[0:corte]$, $PaiA[corte:PaiA.tamanho()]$)\;
 		}
 	}{
-		Filho = PaiA\;
+		$Filho = PaiA$\;
 	}
 	\Retorna{Filho}
 	\caption{Crossover com um ponto de corte}
 	\label{alg:crossover}
 \end{algorithm}
 
-Seguem alguns resultados para execução do GA, com os parâmetros: \(P = 30\), \(T = 10\), \(p_c = 0,8\), \(p_m = 0,01\), onde \textit{P} é o tamanho da população, \textit{T} é por quantas gerações o GA irá evoluir, \(p_c\) e \(p_m\) as probabilidades de crossover e mutação. Na \autoref{lst:resultado_reproducao_t1} temos o resultado dos operadores de seleção, crossover e mutação para um descendente. O \textit{``HERITAGE MAP''} mostra qual porção do cromossomo herdou do pai 1 ou 2 e o \textit{``MUTATE MAP''} representa os bits que sofreram mutação. Além disso demonstra quantas vezes cada pai foi selecionado para produzir a nova geração, e com esses dados foi possível verificar os funcionamentos básicos do algoritmo, correspondendo ao esperado. %Como usamos 15 bits em cada uma das variáveis, o espaço de soluções possíveis tem \(2^{15} \cdot 2^{15} = 1.073.741.824\), e no caso da busca randômica cobre cerca de \(3000 / 1.073.741.824‬\) do espaço.
+O operador de mutação é feito apenas invertendo o estado do bit caso o sorteio seja positivo para aquele bit, respeitando o parâmetro de probabilidade de mutação, \(p_m\), e o seu algoritmo está descrito em \autoref{alg:mutacao}. A expressão \(bit = !bit\) indica a inversão do estado do bit do cromossomo.
+
+\begin{algorithm}[h!]
+	\LinesNumbered
+	\SetKwFunction{random}{random}
+	\Entrada{Cromossomo: $cromo$; probabilidade de mutação: $p_m$}
+	\Saida{Cromossomo: $cromo$}
+	\ParaCada{bit {\normalfont \textbf{em}} cromo}{
+		\Se{ \random() <= $p_m$} {
+			\tcp{inversão do bit}
+			$bit$ = !$bit$ \;
+		}
+	}
+	\Retorna{cromo}
+	\caption{Mutação em cromossomo binário}
+	\label{alg:mutacao}
+\end{algorithm}
+
+O critério de parada ficou definido apenas pela quantidade de iterações, isto é, quantas gerações da população foram produzidas. Para a população inicial são gerados cromossomos com bits aleatórios, sendo que é feito um sorteio individual para cada bit. Essa mesma operação é usada para gerar os valores para a busca randômica. Nesse primeiro teste a população é toda substituída por uma nova a cada geração, mas o melhor cromossomos de todas as gerações é guardado e apresentado como resultado final do algoritmo genético. O algoritmo básico de execução do GA pode ser visto em \autoref{alg:GA}. Nesse algoritmo, as funções \textbf{operadorCross}, \textbf{operadorMutacao} e \textbf{roletaViciada} representam os algoritmos descritos anteriormente. A função \textbf{geraPopulacaoInicial} é responsável em criar a população de tamanho \textit{n} com os bits escolhidos aleatoriamente, a função \mbox{\textbf{pegaMelhorCromossomo}} retorna o cromossomo melhor avaliado na população e a função \textbf{calculaAvaliacao} calcula a avaliação do cromossomo.
+
+\begin{algorithm}[h!]
+	\LinesNumbered
+	\SetKwFunction{geraPopulacaoInicial}{geraPopulacaoInicial} \SetKwFunction{operadorCross}{operadorCross}
+	\SetKwFunction{operadorMutacao}{operadorMutacao} \SetKwFunction{roletaViciada}{roletaViciada}
+	\SetKwFunction{pegaMelhorCromossomo}{pegaMelhorCromossomo} \SetKwFunction{calculaAvaliacao}{calculaAvaliacao}
+	\Entrada{Tamanho população: $n$; Iterações: $T$ ;probabilidade de crossover: $p_c$; probabilidade de mutação: $p_m$}
+	\Saida{Melhor Cromossomo: $melhor$}
+	$populacao$ = \geraPopulacaoInicial($n$) \;
+	$melhor$ = \pegaMelhorCromossomo($populacao$) \;
+	\Para{t = 1 \Ate T}{
+		\tcp{Gera nova população}
+		$novaPopulacao$ = [] \;
+		\Para{j = 1 \Ate n} {
+			\tcp{Sorteia os pais}
+			$PaiA$ = \roletaViciada($populacao$) \;
+			$PaiB$ = \roletaViciada($população$) \;
+			\tcp{Aplica operadores}
+			$Filho$ = \operadorCross($PaiA$, $PaiB$, $p_c$) \;
+			$Filho$ = \operadorMutacao($Filho$, $p_m$) \;
+			\tcp{Guarda novo cromossomo na população}
+			$novaPopulacao[j] = Filho$ \;
+ 		}
+ 		\tcp{Substitui população anterior}
+ 		$populacao$ = $novaPopulacao$ \;
+ 		\tcp{Verifica se deve trocar o melhor cromossomo}
+ 		$novoMelhor$ = \pegaMelhorCromossomo($populacao$) \;
+ 		\Se{ \calculaAvaliacao($melhor$) < \calculaAvaliacao($novoMelhor$) } {
+ 			\tcp{substitui o melhor cromossomo encontrado até o momento}
+ 			$melhor$ = $novoMelhor$ \;
+ 		}
+	}
+	
+\Retorna{melhor}
+\caption{Algoritmo Genético Simples}
+\label{alg:GA}
+\end{algorithm}
+
+Seguem alguns resultados para execução do GA, com os parâmetros: \(n = 30\), \(T = 10\), \(p_c = 0,8\), \(p_m = 0,01\), onde \textit{n} é o tamanho da população, \textit{T} é por quantas gerações o GA irá evoluir, \(p_c\) e \(p_m\) as probabilidades de crossover e mutação. Na \autoref{lst:resultado_reproducao_t1} temos o resultado dos operadores de seleção, crossover e mutação para um descendente. O \textit{``HERITAGE MAP''} mostra qual porção do cromossomo herdou do pai 1 ou 2 e o \textit{``MUTATE MAP''} representa os bits que sofreram mutação. Além disso demonstra quantas vezes cada pai foi selecionado para produzir a nova geração, e com esses dados foi possível verificar os funcionamentos básicos do algoritmo, correspondendo ao esperado. %Como usamos 15 bits em cada uma das variáveis, o espaço de soluções possíveis tem \(2^{15} \cdot 2^{15} = 1.073.741.824\), e no caso da busca randômica cobre cerca de \(3000 / 1.073.741.824‬\) do espaço.
 
 %\begin{quadro}[htb]
 %\caption{\label{qd:resultado_reproducao_t1}Resultado de um ciclo de seleção, crossover e mutação do teste preliminar}
@@ -102,6 +162,8 @@ Seguem alguns resultados para execução do GA, com os parâmetros: \(P = 30\), 
 %\end{verbatim}
 %\end{quadro}
 
+\begin{minipage}{\linewidth}
+	\noindent
 \begin{lstlisting}[caption = {Resultado de um ciclo de seleção, crossover e mutação do teste preliminar}, label=lst:resultado_reproducao_t1]
 Geração: 1 | Média Avaliação: 2847,450535
 #### CHILD #####
@@ -125,16 +187,17 @@ Selecionado 6 vezes, 0,20
 ### MUTATE MAP
 000000000000000000000000000000
 \end{lstlisting}
+\end{minipage}
 
-Na \autoref{tab:resultados_teste1} é feito um comparativo entre o GA e a busca randômica (RS), executados em 1000 testes e calculado médias com intervalo de confiança e qual proporção o GA teve melhor resultado que o RS. Pode ser verificado que com poucas gerações, o GA apresentou resultados melhores que o RS, aumentando a população para 50 \(P=50\) o GA teve ainda uma pequena melhora com relação ao RS, mas aumentando para 100 gerações (\(T=100\)) os resultados praticamente são similares considerando os intervalos de confiança, porém percebe-se que ambos começaram a apresentar média de resultados maiores, e o GA supera o RS em menor quantidade de testes. Isso deve ocorrer, primeiro pelo fato do GA já não conseguir pelos operadores normais, refinar a solução, e segundo pelo RS ter cada vez mais amostras e com isso melhorar seu resultado.
+Na \autoref{tab:resultados_teste1} é feito um comparativo entre o GA e a busca randômica (RS), executados em 1000 testes e calculado médias com intervalo de confiança e qual proporção o GA teve melhor resultado que o RS. Pode ser verificado que com poucas gerações, o GA apresentou resultados melhores que o RS, aumentando a população para 50, \(n=50\), o GA teve ainda uma pequena melhora com relação ao RS, mas aumentando para 100 gerações (\(T=100\)) os resultados praticamente são similares considerando os intervalos de confiança, porém percebe-se que ambos começaram a apresentar média de resultados maiores, e o GA supera o RS em menor quantidade de testes. Isso deve ocorrer, primeiro pelo fato do GA já não conseguir pelos operadores normais, refinar a solução, e segundo pelo RS ter cada vez mais amostras e com isso melhorar seu resultado.
 
-Os testes com os outros parâmetros do GA se mostraram significativos também, com \(P = 30\), \(T = 10\), \(p_c = 0,8\), \(p_m = 0,05\), o GA apresentou resultados ainda melhores, particularmente com \(T=100\), mostrou expressiva melhora com relação ao teste anterior e ao RS. Isso mostra a necessidade do operador de mutação para garantir a exploração (\textit{exploration}) do espaço de soluções. Os testes alterando \(p_c = 0,9\) apresentaram nenhum efeito prático para esse problema, e o destaque ficou na ultima linha da tabela, onde ao usar em conjunto os parâmetros que individualmente melhoraram os resultados, obteve-se soluções muito próximas da ótima e um desempenho bem superior à busca aleatória.
+Os testes com os outros parâmetros do GA se mostraram significativos também, com \(n = 30\), \(T = 10\), \(p_c = 0,8\), \(p_m = 0,05\), o GA apresentou resultados ainda melhores, particularmente com \(T=100\), mostrou expressiva melhora com relação ao teste anterior e ao RS. Isso mostra a necessidade do operador de mutação para garantir a exploração (\textit{exploration}) do espaço de soluções. Os testes alterando \(p_c = 0,9\) apresentaram nenhum efeito prático para esse problema, e o destaque ficou na ultima linha da tabela, onde ao usar em conjunto os parâmetros que individualmente melhoraram os resultados, obteve-se soluções muito próximas da ótima e um desempenho bem superior à busca aleatória.
 
 \begin{table}[h]
 	\begin{tabular}{|l|l|l|l|l|l|l|l|l|}
 		\hline
 		\multicolumn{4}{|c|}{\textbf{Parâmetros}} & \multicolumn{2}{c|}{\textbf{Resultados GA}} & \multicolumn{2}{c|}{\textbf{Resultados RS}} & \multicolumn{1}{c|}{\textbf{\#}} \\ \hline
-		\textbf{P}     & \textbf{T}      & $\bm{p_c}$   & $\bm{p_m}$   & \textbf{Média $\pm$ IC}            & \textbf{D.P.}       & \textbf{Média $\pm$ IC}              & \textbf{D.P.}           & \textbf{GA $>$ RS}                                                               \\ \hline
+		\textbf{\textit{n}}     & \textbf{\textit{T}}      & $\bm{p_c}$   & $\bm{p_m}$   & \textbf{Média $\pm$ IC}            & \textbf{D.P.}       & \textbf{Média $\pm$ IC}              & \textbf{D.P.}           & \textbf{GA $>$ RS}                                                               \\ \hline
 		30    & 10     & 0,8	& 0,01    & 8693,10 $\pm$ 47,04     & 758,98    & 8419,40 $\pm$ 39,28       & 633,80        & 659                                                            \\ \hline
 		50    & 10     & 0,8	& 0,01    & 9084,39 $\pm$ 32,39     & 522,60    & 8736,45 $\pm$ 32,43       & 523,22        & 716                                                            \\ \hline
 		30    & 100    & 0,8	& 0,01    & 9369,35 $\pm$ 26,09     & 421,03    & 9352,98 $\pm$ 15,41       & 248,67        & 578                                                            \\ \hline
@@ -180,13 +243,13 @@ Além disso, pode ser vista a distribuição de um dos testes de busca aleatóri
 
 O modelo de Ising\footnote{O modelo também é conhecido como Lenz-Ising, pois Lenz introduziu o modelo, porém nunca calculou nenhuma de suas propriedades} é um modelo da física para estudos de fênomenos magnéticos em materiais. Ising resolveu analiticamente o modelo para uma dimensão e depois Onsanger resolveu para uma rede quadrada (2D). Apesar do modelo ter sido elaborado para compreender melhor o propriedades magnéticas de certos materiais, ele se mostrou de grande utilidade para modelar problemas de outras áreas de estudos de fenômenos cooperativos, como por exemplo a dissertação de \citeonline{Lucena2014} onde usa o modelo de Ising aplicado a um estudo de criminalidade. É considerado um dos mais simples e estudado dos modelos de mecânica estatística.
 
-O modelo define uma grade de \textit{spins} \(\sigma_t\) que podem conter os valores -1 e +1 somente. Esses spins possuem uma interação de energia dada por \(-J(t, t')\sigma_i\sigma_{t'}\), ou seja, o valor de energia de dois spins será \(-J(t, t')\) se os spins forem diferentes, e \(+J(t, t')\) se forem iguais, e adicionalmente podem interagir com um campo magnético externo \textit{H} com energia \(-H\sigma_t\). \cite{McCoy1973}.
+O modelo define uma grade de \textit{spins} \(\sigma_s\) que podem conter os valores -1 e +1 somente. Esses spins possuem uma interação de energia dada por \(-J(s, s')\sigma_s\sigma_{s'}\), ou seja, o valor de energia de dois spins será \(-J(s, s')\) se os spins forem diferentes, e \(+J(s, s')\) se forem iguais, e adicionalmente podem interagir com um campo magnético externo \textit{h} com energia \(-h\sigma_s\). \cite{McCoy1973}.
 
-Seja então \( \sigma_t \in \{ -1, +1 \} \) cada vértice do modelo, \(\Lambda\) representando a grade do modelo, e \(\Omega_{\Lambda} = \{-1, +1 \} ^ {\Lambda} \) o espaço de possíveis estados do modelo, define-se \(\sigma \in  \Omega_{\Lambda}\), \( \sigma = (\sigma_t)_{t \in \Lambda} \) como um estado possível do modelo de Ising para essas configurações. O Hamiltoniano do sistema para o estado \(\sigma\) (\(\mathcal{H}(\sigma)\)) será dado por: 
+Seja então \( \sigma_s \in \{ -1, +1 \} \) cada vértice do modelo, \(\Lambda\) representando a grade do modelo, e \(\Omega_{\Lambda} = \{-1, +1 \} ^ {\Lambda} \) o espaço de possíveis estados do modelo, define-se \(\sigma \in  \Omega_{\Lambda}\), \( \sigma = (\sigma_s)_{s \in \Lambda} \) como um estado possível do modelo de Ising para essas configurações. O Hamiltoniano do sistema para o estado \(\sigma\), \(\mathcal{H}(\sigma)\), será dado por: 
 
-\[ \mathcal{H}(\sigma) = -\sum_{t,t' \in \Lambda}J(t,t')\sigma_{i}\sigma_{t'} -\sum_{t \in \Lambda}H \sigma_t \]
+\[ \mathcal{H}(\sigma) = -\sum_{s,s' \in \Lambda}J(s,s')\sigma_{s}\sigma_{s'} -\sum_{s \in \Lambda}h \sigma_s \]
 
-Sendo \(\beta = 1/kT\), com \textit{T} a temperatura em Kelvin e \textit{k} a constante de Boltzmann, a função de partição é definida por
+Sendo \(\beta = 1/\kappa \mathcal{T}\), com \(\mathcal{T}\) a temperatura em Kelvin e \(\kappa \) a constante de Boltzmann, a função de partição é definida por
 \[ Z(\beta) = \sum_{\sigma \in \Omega_{\Lambda}} e^{-\beta \mathcal{H}(\sigma)} \]
 
 e a probabilidade de encontrar o estado \(\sigma \)
@@ -194,14 +257,14 @@ e a probabilidade de encontrar o estado \(\sigma \)
 
 Temperaturas altas deixam \(\beta\) baixo, o que torna a distribuição mais plana, e todos os estados tem probabilidades mais próximas de serem encontrados, conforme a temperatura baixa, os estados de menor energia passam a ter a maior probabilidade de ser encontrado.
 
-O modelo de duas dimensões mais simples usa uma estrutura formada por quadrados com formato retangular de dimensões \(\Lambda = n \times m\), facilmente representada por uma matriz. Além disso \(J(t, t') = J_{tt'}\) é um valor fixo independente dos spins e que se \textit{t} e \textit{t'} não forem vizinhos será igual 0. Por fim será sem campo magnético externo, ou seja, \(H = 0\), e assim o Hamiltoniano pode ser reescrito na forma:
+O modelo de duas dimensões mais simples usa uma estrutura formada por quadrados com formato retangular de dimensões \(\Lambda = n \times m\), facilmente representada por uma matriz. Além disso \(J(s, s') = J_{ss'}\) é um valor fixo independente dos spins e que se \textit{s} e \textit{s'} não forem vizinhos será igual 0. Por fim será sem campo magnético externo, ou seja, \(h = 0\), e assim o Hamiltoniano pode ser reescrito na forma:
 
 \begin{equation}
-\mathcal{H}(\sigma) = - \sum_{i = 1}^{n-1} \sum_{j = 1}^{m-1} J_{tt'}\sigma_{i,j}\sigma_{i,j+1} + J_{tt'}\sigma_{i,j}\sigma_{i+1,j}
+\mathcal{H}(\sigma) = - \sum_{i = 1}^{n-1} \sum_{j = 1}^{m-1} \left( J_{ss'}\sigma_{i,j}\sigma_{i,j+1} + J_{ss'}\sigma_{i,j}\sigma_{i+1,j} \right)
 \label{eq:Energia_modelo_ising}
 \end{equation}
 
-O algoritmo genético simples será usado para apresentar uma solução, isto é \(\sigma\), para modelo de Ising em uma matriz \(10 \times 10\), com \(J_{tt'} = 1\) para os spins vizinhos, sendo \(\Lambda = \left[1,10\right]^2\) as posições da matriz, e a função de avaliação utilizada será baseada na \autoref{eq:Energia_modelo_ising}.
+O algoritmo genético simples será usado para apresentar uma solução, isto é \(\sigma\), para modelo de Ising em uma matriz \(10 \times 10\), com \(J_{ss'} = 1\) para os spins vizinhos, sendo \(\Lambda = \left[1,10\right]^2\) as posições da matriz, e a função de avaliação utilizada será baseada na \autoref{eq:Energia_modelo_ising}.
 
 \section{GA para o modelo de Ising}
 A classe cromossomo será usada para representar cada solução para o problema e conterá um vetor de valores inteiros de tamanho $100$, representando assim a matriz \( 10 \times 10 \), alinhando uma linha da matriz na sequencia da outra no vetor. Assim o nosso genótipo é uma cadeia de inteiros, onde o fenótipo será a matriz correspondente quebrando o vetor em linhas de tamanho $10$.
@@ -216,32 +279,32 @@ Exemplo da relação genótipo x fenótipo para uma matriz \( 3 \times 3 \):
 \end{bmatrix}
 \end{align*}
 
-Usando os conceitos de OO, os cromossomos são definidos como classes, encapsulando os genes, os métodos dos operadores genéticos de crossover e mutação, e os métodos para avaliação e classificação dos cromossomos quando necessário. Para outros tipos de verificação também guardou informações sobre os cromossomos pais.
+Na implementação em Java, os cromossomos são definidos como classes, encapsulando os genes, os métodos dos operadores genéticos de crossover e mutação, e os métodos para avaliação e classificação dos cromossomos quando necessário. Para outros tipos de verificação cada cromossomo também guardou informações sobre seus cromossomos pais.
 
 Para o método de seleção foi usado o método da roleta viciada, definindo a proporção de seleção de cada estado presente na população relacionado diretamente a sua função de avaliação. A primeira função testada foi usando o resultado da \autoref{eq:Energia_modelo_ising} somando o valor de \(\min\limits_{\sigma \in \Omega_{\sigma}}(\mathcal{H}(\sigma))\) e multiplicando por \(-1\) para conter somente valores positivos. Essa função não mostrou bons resultados pois não houve muita pressão seletiva, pois cromossomos com melhores valores recebiam pouco ou nenhum destaque na fase de seleção, assim o algoritmo precisava de muitas gerações para começar um avanço em encontrar melhores soluções. Na literatura sobre GA é mencionado o fato da função de avaliação ser muito plana o algoritmo passa a ser menos eficiente, isso também ocorre com outros métodos de otimização, como por exemplo os que usam gradientes por aproximação numérica, pois em funções que mostram pouco crescimento, a aproximação pode falhar em indicar a direção de maior crescimento. Os resultados para a seleção de uma das gerações pode ser visto na \autoref{tab:resumo_GA_H} do \refanexo{chap:anexos} .Para corrigir isso foi adotada a função de avaliação \(e^{-\beta \mathcal{H}(\sigma)} \) o que leva a uma probabilidade de seleção do indivíduo definida por:
 
 \begin{equation}
-Pr(\sigma) = \frac{e^{-\beta \mathcal{H}(\sigma)}}{\sum_{\sigma \in \Phi_{\Lambda}}e^{-\beta \mathcal{H}(\sigma)}}
+Pr(\sigma) = \frac{e^{-\beta \mathcal{H}(\sigma)}}{\sum_{\sigma \in \theta_{\Lambda}}e^{-\beta \mathcal{H}(\sigma)}}
 \label{eq:selecao_modelo_ising}
 \end{equation}
 
-Onde \(\Phi_{\Lambda} \in \Omega_{\Lambda} \) representa a população de estados daquela geração do algoritmo e o método de seleção é parecido com o apresentado como seleção de Boltzmann na \autoref{subsec:selecao}. O problema que deve ser definido um novo parâmetro para o algoritmo dado por \(\beta \), que como valor inicial será usado o 0,05. Os resultados foram muito melhores e podem ser verificados na \autoref{tab:resumo_GA_expH} do \refanexo{chap:anexos}.
+Onde \(\theta_{\Lambda} \in \Omega_{\Lambda} \) representa a população de estados daquela geração do algoritmo e o método de seleção é parecido com o apresentado como seleção de Boltzmann na \autoref{subsec:selecao}. O problema que deve ser definido um novo parâmetro para o algoritmo dado por \(\beta \), que como valor inicial será usado o 0,05. Os resultados foram muito melhores e podem ser verificados na \autoref{tab:resumo_GA_expH} do \refanexo{chap:anexos}.
 
 O operador de crossover será testado com o método de ponto único, dois pontos e uniforme, e para o operador de mutação cada posição do gene será sorteado com a probabilidade \(p_m\) para ser eleito para alteração e depois cada estado possível, no caso dois \(\{ -1, +1\}\), será sorteado com probabilidades iguais para definir o novo estado do gene.
 
-A população inicial é definida sorteando os \(\sigma_t\) de cada posição das matrizes de cada um dos indivíduos. O programa terá definido uma classe para a população que é responsável por criar a geração inicial aleatória, controlar aspectos sobre a geração como melhor e pior cromossomo e algumas estatísticas sobre a população como quantidade de indivíduos que sofreram mutação e crossover, entre outros. 
+A população inicial é definida sorteando os \(\sigma_s\) de cada posição das matrizes de cada um dos indivíduos. O programa terá definido uma classe para a população que é responsável por criar a geração inicial aleatória, controlar aspectos sobre a geração como melhor e pior cromossomo e algumas estatísticas sobre a população como quantidade de indivíduos que sofreram mutação e crossover, entre outros. 
 
 Da mesma forma que o teste inicial, serão testados algumas variações dos parâmetros do algoritmo e comparado com os resultados da busca aleatória. Além disso será verificado, assim como no mencionado em \citeonline{Mitchell1996} sobre o trabalho de \citeonline{Pruegel-Bennett1994}, as distribuições dos valores de \(\mathcal{H}(\sigma)\) para as gerações 0, 10, 20, 30 e 40 do GA, e calculando as estatísticas para média e variância da amostra de 1000 testes. De forma ampliar as comparações dos resultados finais, os dois algoritmos foram modificado para ordenar as populações, que no caso do GA é feito a cada geração.
 
 \section{Testes e resultados}
-O começo da \autoref{tab:resultados_teste2} demonstra os resultados mantendo-se os parâmetros fixo e alterando apenas o método usado no crossover, indicado pelo índice nos valores de \(p_c\), com 1 para ponto único, 2 para crossover em dois pontos e \textit{u} para uniforme. Todos são muitos superiores ao método RS, provavelmente em virtude do espaço de soluções ser dado por \(2^{10*10}\) e a quantidade de observações geradas para o método estar cobrir uma parte pequena do espaço. 
+O começo da \autoref{tab:resultados_teste2} demonstra os resultados mantendo-se os parâmetros fixo e alterando apenas o método usado no crossover, indicado pelo índice nos valores de \(p_c\), com 1 para ponto único, 2 para crossover em dois pontos e \textit{u} para uniforme. Todos são muitos superiores ao método RS, provavelmente em virtude do espaço de soluções ser dado por \(2^{10*10}\) e a quantidade de observações geradas para o método cobrir uma parte pequena do espaço. 
 
 \begin{table}[h!]
 	\centering
 	\begin{tabular}{|l|l|l|l|l|l|l|l|l|}
 		\hline
 		\multicolumn{4}{|c|}{\textbf{Parâmetros}}                                                    & \multicolumn{2}{c|}{\textbf{Resultados GA}}                                        & \multicolumn{2}{c|}{\textbf{Resultados RS}}                                        & \multicolumn{1}{c|}{\textbf{\#}}                      \\ \hline
-		\textbf{P} & \textbf{T} & $\bm{p_c}$ & $\bm{p_m}$ & \textbf{Média $\pm$ IC} & \textbf{D.P.} & \textbf{Média $\pm$ IC} & \textbf{D.P.} & \textbf{GA < RS} \\ \hline
+		\textbf{\textit{n}} & \textbf{\textit{T}} & $\bm{p_c}$ & $\bm{p_m}$ & \textbf{Média $\pm$ IC} & \textbf{D.P.} & \textbf{Média $\pm$ IC} & \textbf{D.P.} & \textbf{GA < RS} \\ \hline
 		30                          & 10                          & $0,8_1$    & 0,02       & -58.90 $\pm$ 0,54                            & 8,77                           & -39,05 $\pm$ 0,33                            & 5,43                           & 978                                          \\ \hline
 		30                          & 10                          & $0,8_2$    & 0,02       & -60,21 $\pm$ 0,57                            & 9,33                           & -38,98 $\pm$ 0,32                            & 5,22                           & 970                                          \\ \hline
 		30                          & 10                          & $0,8_u$    & 0,02       & -60,42 $\pm$ 0,63                            & 10,30                          & -39,39 $\pm$ 0,35                            & 5,68                           & 960                                          \\ \hline
@@ -271,7 +334,7 @@ Nos próximos testes fica fixado o crossover uniforme, além disso pela caracter
 	\begin{tabular}{|l|l|l|l|l|l|l|l|l|}
 		\hline
 		\multicolumn{4}{|c|}{\textbf{Parâmetros}}                                                    & \multicolumn{2}{c|}{\textbf{Resultados GA}}                                        & \multicolumn{2}{c|}{\textbf{Resultados RS}}                                        & \multicolumn{1}{c|}{\textbf{\#}}                      \\ \hline
-		\textbf{P} & \textbf{T} & $\bm{p_c}$ & $\bm{p_m}$ & \textbf{Média $\pm$ IC} & \textbf{D.P.} & \textbf{Média $\pm$ IC} & \textbf{D.P.} & \textbf{GA < RS} \\ \hline
+		\textbf{\textit{n}} & \textbf{\textit{T}} & $\bm{p_c}$ & $\bm{p_m}$ & \textbf{Média $\pm$ IC} & \textbf{D.P.} & \textbf{Média $\pm$ IC} & \textbf{D.P.} & \textbf{GA < RS} \\ \hline
 		30                          & 40                          & 0,8        & 0,02       & -105,07 $\pm$ 0,72                           & 11,66                          & -44,98 $\pm$ 0,31                            & 5,01                           & 1000                                      \\ \hline
 		30                          & 40                          & 0,8        & 0,05       & -93,90 $\pm$ 0,71                            & 11,52                          & -44,63 $\pm$ 0,29                            & 4,81                           & 1000                                      \\ \hline
 		30                          & 40                          & 0,8        & 0,01       & -101,69 $\pm$ 0,74                           & 11,96                          & -44,91 $\pm$ 0,30                            & 4,85                           & 1000                                      \\ \hline
@@ -291,7 +354,7 @@ Os resultados mostrados foram para o melhor cromossomo encontrado entre todas as
 	\begin{tabular}{|l|l|l|l|l|l|l|l|l|}
 		\hline
 		\multicolumn{4}{|c|}{\textbf{Parâmetros}}                                                    & \multicolumn{2}{c|}{\textbf{Resultados GA}}                                        & \multicolumn{2}{c|}{\textbf{Resultados RS}}                                        & \multicolumn{1}{c|}{\textbf{\#}}                      \\ \hline
-		\textbf{P} & \textbf{T} & $\bm{p_c}$ & $\bm{p_m}$ & \textbf{Média $\pm$ IC} & \textbf{D.P.} & \textbf{Média $\pm$ IC} & \textbf{D.P.} & \textbf{GA < RS} \\ \hline
+		\textbf{\textit{n}} & \textbf{\textit{T}} & $\bm{p_c}$ & $\bm{p_m}$ & \textbf{Média $\pm$ IC} & \textbf{D.P.} & \textbf{Média $\pm$ IC} & \textbf{D.P.} & \textbf{GA < RS} \\ \hline
 		30                          & 40                          & 0,8        & 0,02       & -110,66 $\pm$ 0,66                           & 10,73                          & -44,81 $\pm$ 0,30                            & 5,88                           & 1000                                      \\ \hline
 		30                          & 40                          & 0,95        & 0,02       & -113,69 $\pm$ 0,70                            & 11,36                          & -44,75 $\pm$ 0,30                            & 4,99                           & 1000                                      \\ \hline
 	\end{tabular}
@@ -306,7 +369,7 @@ Outro parâmetro que pode ser modificado é \(\beta\), introduzido na função d
 	\begin{tabular}{|l|l|l|l|l|l|l|l|l|l|}
 		\hline
 		\multicolumn{5}{|c|}{\textbf{Parâmetros}}                                                    & \multicolumn{2}{c|}{\textbf{Resultados GA}}                                        & \multicolumn{2}{c|}{\textbf{Resultados RS}}                                        & \multicolumn{1}{c|}{\textbf{\#}}                      \\ \hline
-		\textbf{P} & \textbf{T} & $\bm{p_c}$ & $\bm{p_m}$ & $\beta$ & \textbf{Média $\pm$ IC} & \textbf{D.P.} & \textbf{Média $\pm$ IC} & \textbf{D.P.} & \textbf{GA < RS} \\ \hline
+		\textbf{\textit{n}} & \textbf{\textit{T}} & $\bm{p_c}$ & $\bm{p_m}$ & $\beta$ & \textbf{Média $\pm$ IC} & \textbf{D.P.} & \textbf{Média $\pm$ IC} & \textbf{D.P.} & \textbf{GA < RS} \\ \hline
 		30                          & 40                          & 0,8        & 0,02  & 0,05      & -113,69 $\pm$ 0,70                           & 11,36                          & -44,75 $\pm$ 0,30                            & 4,99                           & 1000                                      \\ \hline
 		30                          & 40                          & 0,95        & 0,02 & 0,01      & -90,78 $\pm$ 0,66                            & 10,74                          & -44,79 $\pm$ 0,30                            & 4,87                           & 1000                                      \\ \hline
 		30                          & 40                          & 0,95        & 0,02 & 0,1      & -120,45 $\pm$ 0,70                            & 11,35                          & -44,95 $\pm$ 0,30                            & 4,95                           & 1000                                      \\ \hline
@@ -339,7 +402,7 @@ Outro parâmetro que pode ser modificado é \(\beta\), introduzido na função d
 
 Na \autoref{fig:evolucaoGA_beta} percebe-se que ao aumentar o \(\beta\), o algoritmo converge mais rapidamente e pode gerar melhores soluções, porém é necessário manter o equilíbrio entre o \textit{exploitation} e \textit{exploration}. Um valor muito alto para esse parâmetro, pode levar a uma convergência genética prematura, diminuindo as possibilidades de exploração do espaço de soluções (\textit{exploration}).
 
-Para completar as avaliações, mantendo os parâmetros \(P = 50\), \(T = 40\), \(p_c = 0,95\), \(p_m = 0,02\) e com elitismo mantendo 3 cromossomos, foram salvos os valores de energia da população dos 1000 testes para as gerações 0, 10, 20, 30 e 40. Depois foi calculado a média e variância dessas gerações para cada um dos testes e finalmente feita a média dos parâmetros entre os 1000 testes obtendo os valores mostrados na \autoref{tab:resultados_medias_var}
+Para completar as avaliações, mantendo os parâmetros \(n = 50\), \(T = 40\), \(p_c = 0,95\), \(p_m = 0,02\) e com elitismo mantendo 3 cromossomos, foram salvos os valores de energia da população dos 1000 testes para as gerações 0, 10, 20, 30 e 40. Depois foi calculado a média e variância dessas gerações para cada um dos testes e finalmente feita a média dos parâmetros entre os 1000 testes obtendo os valores mostrados na \autoref{tab:resultados_medias_var}
 
 \begin{table}[h!]
 	\centering
@@ -428,7 +491,7 @@ Na \autoref{fig:distribuicao_ising_geracoes} pode ser visto os resultados das m�
 	\label{fig:distribuicao_ising_geracoes}
 \end{figure}
 
-Por último na \autoref{fig:evolucaoGA} é exposto a evolução do algoritmo durante as gerações com variações no parâmetro de probabilidade de mutação, mostrando o melhor, pior cromossomo da população além de sua avaliação média. As linhas horizontais tracejadas mostram o melhor, pior e média do método de busca aleatório, considerando sempre a amostra para esse método de tamanho \(P \cdot T\) e portanto com \(50 \cdot 300 = 15000\) observações.
+Por último na \autoref{fig:evolucaoGA} é exposto a evolução do algoritmo durante as gerações com variações no parâmetro de probabilidade de mutação, mostrando o melhor, pior cromossomo da população além de sua avaliação média. As linhas horizontais tracejadas mostram o melhor, pior e média do método de busca aleatório, considerando sempre a amostra para esse método de tamanho \(n \cdot T\) e portanto com \(50 \cdot 300 = 15000\) observações.
 
 \begin{figure}[h!]
 	\centering
