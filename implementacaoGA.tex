@@ -257,12 +257,23 @@ e a probabilidade de encontrar o estado \(\sigma \)
 
 Temperaturas altas deixam \(\beta\) baixo, o que torna a distribuição mais plana, e todos os estados tem probabilidades mais próximas de serem encontrados, conforme a temperatura baixa, os estados de menor energia passam a ter a maior probabilidade de ser encontrado.
 
-O modelo de duas dimensões mais simples usa uma estrutura formada por quadrados com formato retangular de dimensões \(\Lambda = n \times m\), facilmente representada por uma matriz. Além disso \(J(s, s')\) é um valor fixo independente dos spins e que se \textit{s} e \textit{s'} não forem vizinhos será igual 0. Por fim será sem campo magnético externo, ou seja, \(h = 0\), e assim o Hamiltoniano pode ser reescrito na forma:
+O modelo de duas dimensões mais simples usa uma estrutura formada por quadrados com formato retangular de dimensões \(\Lambda = n \times m\), facilmente representada por uma matriz. Além disso \(J(s, s')\) é um valor fixo independente dos spins e que se \(s\) e \(s'\) não forem vizinhos será igual 0. Por fim será sem campo magnético externo, ou seja, \(h = 0\), e assim o Hamiltoniano pode ser reescrito na forma:
 
-\begin{equation}
-\mathcal{H}(\sigma) = - \sum_{i = 1}^{n-1} \sum_{j = 1}^{m-1} \Bigl( J(s,s')\sigma_{i,j}\sigma_{i,j+1} + J(s,s')\sigma_{i,j}\sigma_{i+1,j} \Bigr)
+\begin{align}
+%\mathcal{H}(\sigma) = - \sum_{i = 1}^{n} \sum_{j = 1}^{m} \Bigl( \mathbbm{1}_{j \neq m}J((i,j),(i,j+1))\sigma_{i,j}\sigma_{i,j+1} + \mathbbm{1}_{i \neq n}J((i,j),(i+1),j)\sigma_{i,j}\sigma_{i+1,j} \Bigr)
+%\mathcal{H}(\sigma) = - \sum\limits_{\langle s, s' \rangle } J(s,s')\sigma_s \sigma_{s'}  \mbox{  , com $s$ e $s'$ vizinhos}
+\mathcal{H}(\sigma) &= - \sum\limits_{\langle s, s' \rangle } J(s,s')\sigma_s \sigma_{s'}  \nonumber \\
+	&= - \sum_{i = 1}^{n} \sum_{j = 1}^{m} \Bigl( \mathbbm{1}_{j \neq m}J\bigl((i,j),(i,j+1)\bigr)\sigma_{i,j}\sigma_{i,j+1} + \mathbbm{1}_{i \neq n}J\bigl((i,j),(i+1,j)\bigr)\sigma_{i,j}\sigma_{i+1,j} \Bigr)
 \label{eq:Energia_modelo_ising}
-\end{equation}
+\end{align}
+
+\begin{equation*}
+\mathbbm{1}_{A} = \left\{ \begin{array}{ll} 
+		1 & \mbox{, se A for verdade}   \\
+		0 & \mbox{, caso contrário}
+		\end{array}
+		\right.
+\end{equation*}
 
 O algoritmo genético simples será usado para apresentar uma solução, isto é \(\sigma\), para modelo de Ising em uma matriz \(10 \times 10\), com \(J(s,s') = 1\) para os spins vizinhos, sendo \(\Lambda = \left[1,10\right]^2\) as posições da matriz, e a função de avaliação utilizada será baseada na \autoref{eq:Energia_modelo_ising}.
 
@@ -281,7 +292,7 @@ Exemplo da relação genótipo x fenótipo para uma matriz \( 3 \times 3 \):
 
 Na implementação em Java, os cromossomos são definidos como classes, encapsulando os genes, os métodos dos operadores genéticos de crossover e mutação, e os métodos para avaliação e classificação dos cromossomos quando necessário. Para outros tipos de verificação cada cromossomo também guardou informações sobre seus cromossomos pais.
 
-Para o método de seleção foi usado o método da roleta viciada, definindo a proporção de seleção de cada estado presente na população relacionado diretamente a sua função de avaliação. A primeira função testada foi usando o resultado da \autoref{eq:Energia_modelo_ising} somando o valor de \(\min\limits_{\sigma \in \Omega_{\sigma}}(\mathcal{H}(\sigma))\) e multiplicando por \(-1\) para conter somente valores positivos. Essa função não mostrou bons resultados pois não houve muita pressão seletiva, pois cromossomos com melhores valores recebiam pouco ou nenhum destaque na fase de seleção, assim o algoritmo precisava de muitas gerações para começar um avanço em encontrar melhores soluções. Na literatura sobre GA é mencionado o fato da função de avaliação ser muito plana o algoritmo passa a ser menos eficiente, isso também ocorre com outros métodos de otimização, como por exemplo os que usam gradientes por aproximação numérica, pois em funções que mostram pouco crescimento, a aproximação pode falhar em indicar a direção de maior crescimento. Os resultados para a seleção de uma das gerações pode ser visto na \autoref{tab:resumo_GA_H} do \refanexo{chap:anexos}. Para corrigir isso foi adotada a função de avaliação \(e^{-\beta \mathcal{H}(\sigma)} \) o que leva a uma probabilidade de seleção do indivíduo definida por:
+Para o método de seleção foi usado o método da roleta viciada, definindo a proporção de seleção de cada estado presente na população relacionado diretamente a sua função de avaliação. A primeira função testada foi usando o resultado da \autoref{eq:Energia_modelo_ising} somando o valor de \(\min\limits_{\sigma \in \Omega_{\Lambda}}(\mathcal{H}(\sigma))\) e multiplicando por \(-1\) para conter somente valores positivos. Essa função não mostrou bons resultados pois não houve muita pressão seletiva, pois cromossomos com melhores valores recebiam pouco ou nenhum destaque na fase de seleção, assim o algoritmo precisava de muitas gerações para começar um avanço em encontrar melhores soluções. Na literatura sobre GA é mencionado o fato da função de avaliação ser muito plana o algoritmo passa a ser menos eficiente, isso também ocorre com outros métodos de otimização, como por exemplo os que usam gradientes por aproximação numérica, pois em funções que mostram pouco crescimento, a aproximação pode falhar em indicar a direção de maior crescimento. Os resultados para a seleção de uma das gerações pode ser visto na \autoref{tab:resumo_GA_H} do \refanexo{chap:anexos}. Para corrigir isso foi adotada a função de avaliação \(e^{-\beta \mathcal{H}(\sigma)} \) o que leva a uma probabilidade de seleção do indivíduo definida por:
 
 \begin{equation}
 Pr(\sigma) = \frac{e^{-\beta \mathcal{H}(\sigma)}}{\sum\limits_{\sigma \in \theta_{\Lambda}}e^{-\beta \mathcal{H}(\sigma)}}
@@ -370,7 +381,7 @@ Outro parâmetro que pode ser modificado é \(\beta\), introduzido na função d
 		\hline
 		\multicolumn{5}{|c|}{\textbf{Parâmetros}}                                                    & \multicolumn{2}{c|}{\textbf{Resultados GA}}                                        & \multicolumn{2}{c|}{\textbf{Resultados RS}}                                        & \multicolumn{1}{c|}{\textbf{\#}}                      \\ \hline
 		\textbf{\textit{n}} & \textbf{\textit{T}} & $\bm{p_c}$ & $\bm{p_m}$ & $\beta$ & \textbf{Média $\pm$ IC} & \textbf{D.P.} & \textbf{Média $\pm$ IC} & \textbf{D.P.} & \textbf{GA < RS} \\ \hline
-		30                          & 40                          & 0,8        & 0,02  & 0,05      & -113,69 $\pm$ 0,70                           & 11,36                          & -44,75 $\pm$ 0,30                            & 4,99                           & 1000                                      \\ \hline
+		30                          & 40                          & 0,95        & 0,02  & 0,05      & -113,69 $\pm$ 0,70                           & 11,36                          & -44,75 $\pm$ 0,30                            & 4,99                           & 1000                                      \\ \hline
 		30                          & 40                          & 0,95        & 0,02 & 0,01      & -90,78 $\pm$ 0,66                            & 10,74                          & -44,79 $\pm$ 0,30                            & 4,87                           & 1000                                      \\ \hline
 		30                          & 40                          & 0,95        & 0,02 & 0,1      & -120,45 $\pm$ 0,70                            & 11,35                          & -44,95 $\pm$ 0,30                            & 4,95                           & 1000                                      \\ \hline
 	\end{tabular}
@@ -402,19 +413,7 @@ Outro parâmetro que pode ser modificado é \(\beta\), introduzido na função d
 
 Na \autoref{fig:evolucaoGA_beta} percebe-se que ao aumentar o \(\beta\), o algoritmo converge mais rapidamente e pode gerar melhores soluções, porém é necessário manter o equilíbrio entre o \textit{exploitation} e \textit{exploration}. Um valor muito alto para esse parâmetro, pode levar a uma convergência genética prematura, diminuindo as possibilidades de exploração do espaço de soluções (\textit{exploration}).
 
-Para completar as avaliações, mantendo os parâmetros \(n = 50\), \(T = 40\), \(p_c = 0,95\), \(p_m = 0,02\) e com elitismo mantendo 3 cromossomos, foram salvos os valores de energia da população dos 1000 testes para as gerações 0, 10, 20, 30 e 40. Depois foi calculado a média e variância dessas gerações para cada um dos testes e finalmente feita a média dos parâmetros entre os 1000 testes obtendo os valores mostrados na \autoref{tab:resultados_medias_var}
-
-\begin{table}[h!]
-	\centering
-	\begin{tabular}{|l|c|c|c|c|c|}
-		\hline
-		\textbf{Geração}   & \textbf{0} & \textbf{10} & \textbf{20} & \textbf{30} & \textbf{40} \\ \hline
-		\textbf{Média}     & 0,00       & -47,49      & -78,76      & -96,46      & -106,86      \\ \hline
-		\textbf{Variância} & 178,55     & 158,42      & 117,09       & 106,79       & 103,55       \\ \hline
-	\end{tabular}
-	\caption{Resultados da média de energia para 1000 testes das gerações 0, 10, 20, 30 e 40 do modelo Ising e usando elitismo com 3 cromossomos}
-	\label{tab:resultados_medias_var}
-\end{table}
+Para completar as avaliações, mantendo os parâmetros \(n = 50\), \(T = 40\), \(p_c = 0,95\), \(p_m = 0,02\) e com elitismo mantendo 3 cromossomos, foram salvos os valores de energia da população dos 1000 testes para as gerações 0, 10, 20, 30 e 40. Depois foi calculado a média e variância dessas gerações para cada um dos testes e finalmente feita a média dos parâmetros entre os 1000 testes obtendo os valores mostrados na \autoref{tab:resultados_medias_var}, e gráficos da distribuição em \autoref{fig:distribuicao_ising_1}.
 
 \begin{figure}[h!]
 	\centering
@@ -438,7 +437,20 @@ Para completar as avaliações, mantendo os parâmetros \(n = 50\), \(T = 40\), 
 	\label{fig:distribuicao_ising_1}
 \end{figure}
 
-Diferente dos resultados vistos em \citeonline{Pruegel-Bennett1994}, que não usou operador de mutação, a variância no teste executado reduz pouco conforme se passam as gerações, o que é esperado já que a mutação busca manter diversidade na população. Refazendo os testes com \(p_m = 0\) obtemos a seguinte \autoref{tab:resultados_medias_var2}. O operador de mutação mantém a variância na população pois ele garante o \textit{exploration}, mantendo a diversidade da população.
+\begin{table}[h!]
+	\centering
+	\begin{tabular}{|l|c|c|c|c|c|}
+		\hline
+		\textbf{Geração}   & \textbf{0} & \textbf{10} & \textbf{20} & \textbf{30} & \textbf{40} \\ \hline
+		\textbf{Média}     & 0,00       & -47,49      & -78,76      & -96,46      & -106,86      \\ \hline
+		\textbf{Variância} & 178,55     & 158,42      & 117,09       & 106,79       & 103,55       \\ \hline
+	\end{tabular}
+	\caption{Resultados da média de energia para 1000 testes do modelo Ising, usando elitismo com 3 cromossomos e com mutação }
+	\label{tab:resultados_medias_var}
+\end{table}
+
+
+Diferente dos resultados vistos em \citeonline{Pruegel-Bennett1994}, que não usou operador de mutação, a variância no teste executado reduz pouco conforme se passam as gerações, o que é esperado já que a mutação busca manter diversidade na população. Refazendo os testes com \(p_m = 0\) obtemos a seguinte \autoref{tab:resultados_medias_var2} e gráficos de distribuição da energia na população na \autoref{fig:distribuicao_ising_2}. O operador de mutação mantém a variância na população pois ele garante o \textit{exploration}, mantendo a diversidade da população.
 
 \begin{table}[h!]
 	\centering
@@ -448,7 +460,7 @@ Diferente dos resultados vistos em \citeonline{Pruegel-Bennett1994}, que não us
 		\textbf{Média}     & -0,02       & -52,34      & -85,29      & -96,25      & -98,72      \\ \hline
 		\textbf{Variância} & 180,96     & 120,07      & 36,62       & 8,01       & 1,54       \\ \hline
 	\end{tabular}
-	\caption{Resultados da média de energia para 1000 testes com modelo Ising usando elitismo mantendo 3 cromossomos}
+	\caption{Resultados da média de energia para 1000 testes com modelo Ising usando elitismo mantendo 3 cromossomos e sem mutação}
 	\label{tab:resultados_medias_var2}
 \end{table}
 
