@@ -94,7 +94,7 @@ O operador de mutação é feito apenas invertendo o estado do bit caso o sortei
 	\label{alg:mutacao}
 \end{algorithm}
 
-O critério de parada ficou definido apenas pela quantidade de iterações, isto é, quantas gerações da população foram produzidas. Para a população inicial são gerados cromossomos com bits aleatórios, sendo que é feito um sorteio individual para cada bit. Essa mesma operação é usada para gerar os valores para a busca randômica. Nesse primeiro teste a população é toda substituída por uma nova a cada geração, mas o melhor cromossomos de todas as gerações é guardado e apresentado como resultado final do algoritmo genético. O algoritmo básico de execução do GA pode ser visto em \autoref{alg:GA}. Nesse algoritmo, as funções \textsf{operadorCross()}, \textsf{operadorMutacao()} e \textsf{roletaViciada()} representam os algoritmos descritos anteriormente. A função \textsf{geraPopulacaoInicial()} é responsável em criar a população de tamanho \textit{n} com os bits escolhidos aleatoriamente, a função \mbox{\textsf{pegaMelhorCromossomo()}} retorna o cromossomo melhor avaliado na população, isto é, o que teve o maior valor pela função de avaliação, e a função \textsf{calculaAvaliacao()} é a mesma descrita para \autoref{alg:roleta}
+O critério de parada ficou definido apenas pela quantidade de iterações, isto é, quantas gerações da população foram produzidas. Para a população inicial são gerados cromossomos com bits aleatórios, sendo que é feito um sorteio individual para cada bit. Essa mesma operação é usada para gerar os valores para a busca randômica. Nesse primeiro teste a população é toda substituída por uma nova a cada geração, mas o melhor cromossomos de todas as gerações é guardado e apresentado como resultado final do algoritmo genético. O algoritmo básico de execução do GA pode ser visto no \autoref{alg:GA}. Nesse algoritmo, as funções \textsf{operadorCross()}, \textsf{operadorMutacao()} e \textsf{roletaViciada()} representam os algoritmos descritos anteriormente. A função \textsf{geraPopulacaoInicial()} é responsável em criar a população de tamanho \textit{n} com os bits escolhidos aleatoriamente, a função \mbox{\textsf{pegaMelhorCromossomo()}} retorna o cromossomo melhor avaliado na população, isto é, o que teve o maior valor pela função de avaliação, e a função \textsf{calculaAvaliacao()} é a mesma descrita para \autoref{alg:roleta}
 
 \begin{algorithm}[h!]
 	\LinesNumbered
@@ -284,11 +284,11 @@ Na implementação em Java, os cromossomos são definidos como classes, encapsul
 Para o método de seleção foi usado o método da roleta viciada, definindo a proporção de seleção de cada estado presente na população relacionado diretamente a sua função de avaliação. A primeira função testada foi usando o resultado da \autoref{eq:Energia_modelo_ising} somando o valor de \(\min\limits_{\sigma \in \Omega_{\sigma}}(\mathcal{H}(\sigma))\) e multiplicando por \(-1\) para conter somente valores positivos. Essa função não mostrou bons resultados pois não houve muita pressão seletiva, pois cromossomos com melhores valores recebiam pouco ou nenhum destaque na fase de seleção, assim o algoritmo precisava de muitas gerações para começar um avanço em encontrar melhores soluções. Na literatura sobre GA é mencionado o fato da função de avaliação ser muito plana o algoritmo passa a ser menos eficiente, isso também ocorre com outros métodos de otimização, como por exemplo os que usam gradientes por aproximação numérica, pois em funções que mostram pouco crescimento, a aproximação pode falhar em indicar a direção de maior crescimento. Os resultados para a seleção de uma das gerações pode ser visto na \autoref{tab:resumo_GA_H} do \refanexo{chap:anexos}. Para corrigir isso foi adotada a função de avaliação \(e^{-\beta \mathcal{H}(\sigma)} \) o que leva a uma probabilidade de seleção do indivíduo definida por:
 
 \begin{equation}
-Pr(\sigma) = \frac{e^{-\beta \mathcal{H}(\sigma)}}{\sum_{\sigma \in \theta_{\Lambda}}e^{-\beta \mathcal{H}(\sigma)}}
+Pr(\sigma) = \frac{e^{-\beta \mathcal{H}(\sigma)}}{\sum\limits_{\sigma \in \theta_{\Lambda}}e^{-\beta \mathcal{H}(\sigma)}}
 \label{eq:selecao_modelo_ising}
 \end{equation}
 
-Onde \(\theta_{\Lambda} \in \Omega_{\Lambda} \) representa a população de estados daquela geração do algoritmo e o método de seleção é parecido com o apresentado como seleção de Boltzmann na \autoref{subsec:selecao}. O problema que deve ser definido um novo parâmetro para o algoritmo dado por \(\beta \), que como valor inicial será usado o 0,05. Os resultados foram muito melhores e podem ser verificados na \autoref{tab:resumo_GA_expH} do \refanexo{chap:anexos}.
+Onde \(\theta_{\Lambda} \subset \Omega_{\Lambda} \) representa a população de estados daquela geração do algoritmo e o método de seleção é parecido com o apresentado como seleção de Boltzmann na \autoref{subsec:selecao}. O problema que deve ser definido um novo parâmetro para o algoritmo dado por \(\beta \), que como valor inicial será usado o 0,05. Os resultados foram muito melhores e podem ser verificados na \autoref{tab:resumo_GA_expH} do \refanexo{chap:anexos}.
 
 O operador de crossover será testado com o método de ponto único, dois pontos e uniforme, e para o operador de mutação cada posição do gene será sorteado com a probabilidade \(p_m\) para ser eleito para alteração e depois cada estado possível, no caso dois \(\{ -1, +1\}\), será sorteado com probabilidades iguais para definir o novo estado do gene.
 
@@ -487,7 +487,7 @@ Na \autoref{fig:distribuicao_ising_geracoes} pode ser visto os resultados das m�
 		\includegraphics[width=\linewidth]{imagens/comp_cross_1pto_unif.png}
 		\caption{Usando \(p_m = 0\) e comparando dois métodos de crossover}
 	\end{subfigure}
-\caption{Valores das médias e variâncias da população durante as gerações com \(p_m=0,005\). Os valores apresentados são da média de 500 testes}
+\caption{Valores das médias e variâncias da população durante as gerações. Os valores apresentados são da média de 500 testes}
 	\label{fig:distribuicao_ising_geracoes}
 \end{figure}
 
